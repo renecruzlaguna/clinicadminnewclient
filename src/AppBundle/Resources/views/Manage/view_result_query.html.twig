@@ -1,0 +1,716 @@
+{% extends 'base.html.twig' %}
+{% block css %}
+    {{ parent() }}
+    <link href="{{ asset('bundles/app/css/plugins/chosen/bootstrap-chosen.css') }}" rel="stylesheet">
+    <link href="{{ asset('bundles/app/css/plugins/datapicker/datepicker3.css') }}" rel="stylesheet">
+    <link href="{{ asset('bundles/app/css/plugins/steps/jquery.steps.css') }}" rel="stylesheet">
+    <link href="{{ asset('bundles/app/css/plugins/iCheck/custom.css') }}" rel="stylesheet">
+
+{% endblock %}
+{% block content %}
+    <h3>Visualizar historia clínica</h3>
+    <div class="panel  panel-primary"></div>
+    <form id="form" action="#" class="wizard-big" method="post" action="#">
+        <h1>Datos del paciente</h1>
+        <input  name="tto" id="ttosend" type="hidden" value="{{result.tto  }}">
+        <input  name="areas" id="areas" type="hidden" value="{{ result.areas }}">
+
+
+        <fieldset>
+            <h2>Datos del paciente</h2>
+            <div class="panel  panel-primary"></div>
+            <div class="row">
+                <div class="col-lg-10">
+                    <div class="form-group">
+                        <div class="col-lg-offset-5">
+                            <label>NOMBRE DEL PACIENTE:</label>
+                        </div>
+                        <input disabled="disabled" type="text" class="form-control required"
+                               value="{{ result.cliente.getCompleteName() }}">
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="row">
+                <div class="form-horizontal">
+
+
+                    <div class="col-lg-5">
+                        <div class="form-group">
+
+                            <label class="control-label col-lg-2" for="ci">CI:</label>
+                            <div class="col-lg-10">
+                                <input value="{{ result.cliente.cedula }}" aria-describedby="ci"
+                                       disabled="disabled" type="text" class="form-control">
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-5">
+                        <div class="form-group">
+
+                            <label class="control-label col-lg-4" for="fecha">FECHA:</label>
+                            <div class="col-lg-8">
+                                <input disabled="disabled"  aria-describedby="fecha"
+                                       type="text" class="form-control" value="{{ "now"|date("m/d/Y") }}">
+
+                            </div>
+                        </div>
+                    </div>
+
+
+
+                </div>
+                </div>
+
+
+
+
+
+
+            <br><br><br>
+
+
+
+
+
+
+
+
+
+
+
+        </fieldset>
+        <h1>Datos de la consulta</h1>
+        <fieldset>
+            <h2>Datos de la consulta</h2>
+            <div class="panel  panel-primary"></div>
+            <div class="row">
+                <div class="col-lg-10">
+                    <div class="form-group">
+                        <div class="col-lg-offset-5">
+                            <label>MOTIVO:</label>
+                        </div>
+                        <textarea name="motivo" rows="5" cols="5" type="text" class="form-control required"
+                        >{{ result.motivo }}</textarea>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="row">
+                <div class="form-horizontal">
+
+
+                    <div class="col-lg-5">
+                        <div class="form-group">
+
+                            <label class="control-label col-lg-10" for="ci">HA TENIDO TTO ORTODONCIA:</label>
+                            <div class="col-lg-2">
+                                <div class="i-checks"><label> <input type="checkbox"  id="tto" {% if result.tto %} checked="checked" {% endif %}> <i></i>  </label></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-5">
+                        <div class="form-group">
+
+                            <label class="control-label col-lg-4" for="telefono">TIEMPO:</label>
+                            <div class="col-lg-8">
+                                <input name="tiempo" id="tiempo"  name="tiempo" {% if result.tto %} {% else %} disabled="disabled"  {% endif %} value="{{ result.tiempo }}" aria-describedby="telefono"
+                                        type="text" class="form-control">
+
+                            </div>
+                        </div>
+                    </div>
+
+
+
+                </div>
+            </div>
+
+
+
+            <div class="row">
+                <div class="col-lg-10">
+                    <div class="form-group">
+                        <div class="col-lg-offset-5">
+                            <label>A.P.P:</label>
+                        </div>
+                        <textarea  name="appp" rows="5" cols="5" type="text" class="form-control required"
+                        >{{ result.appp }}</textarea>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-10">
+                    <div class="form-group">
+                        <div class="col-lg-offset-5">
+                            <label>A.P.F:</label>
+                        </div>
+                        <textarea  name="apf"  rows="5" cols="5" type="text" class="form-control required"
+                        >{{ result.apf }}</textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-10">
+                    <div class="form-group">
+                        <div class="col-lg-offset-5">
+                            <label>REACCION A MEDICAMENTOS:</label>
+                        </div>
+                        <textarea  name="reaccionMedicamento" rows="5" cols="5" type="text" class="form-control required"
+                        >{{ result.reaccionMedicamento }}</textarea>
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+
+
+
+
+
+
+
+        <h1>Antecedentes</h1>
+        <fieldset>
+            <h2>Antecedentes</h2>
+            <div class="panel  panel-primary"></div>
+            <div class="row">
+                <div class="col-lg-10">
+                    <div class="form-group">
+                        <div class="col-lg-offset-3">
+                            <label>EXPERIENCIA ANTERIOR DE ANESTESIA DENTAL Y EXTRACCIONES DENTARIAS:</label>
+                        </div>
+                        <textarea  name="experienciaAnestesia" rows="5" cols="5" type="text" class="form-control required"
+                        >{{ result.experienciaAnestesia }}</textarea>
+                    </div>
+                </div>
+            </div>
+
+
+
+
+
+
+            <div class="row">
+                <div class="col-lg-10">
+                    <div class="form-group">
+                        <div class="col-lg-offset-5">
+                            <label>ANTECEDENTES HEMORRAGICOS:</label>
+                        </div>
+                        <textarea  name="antecedentesHemorragicos" rows="5" cols="5" type="text" class="form-control required"
+                        >{{ result.antecedentesHemorragicos }}</textarea>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-10">
+                    <div class="form-group">
+                        <div class="col-lg-offset-5">
+                            <label>CEPILLADO DENTARIO (FORMA,TIEMPO Y FRECUENCIA):</label>
+                        </div>
+                        <textarea  name="cepilladoDentario" rows="5" cols="5" type="text" class="form-control required"
+                        >{{ result.cepilladoDentario }}</textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-10">
+                    <div class="form-group">
+                        <div class="col-lg-offset-5">
+                            <label>HABITOS NOCIVOS Y HABITOS DEFORMANTES:</label>
+                        </div>
+                        <textarea   name="habitosNocivos" rows="5" cols="5" type="text" class="form-control required"
+                        >{{ result.habitosNocivos }}</textarea>
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+
+
+
+
+
+
+
+
+        <h1>Diagnóstico y tratamiento</h1>
+        <fieldset>
+            <h2>Diagnóstico y tratamiento</h2>
+            <div class="panel  panel-primary"></div>
+            <div class="row">
+                <div class="col-lg-10">
+                    <div class="form-group">
+                        <div class="col-lg-offset-5">
+                            <label>DIAGNOSTICOS:</label>
+                        </div>
+                        <textarea   name="diagnostico" rows="5" cols="5" type="text" class="form-control required"
+                        >{{ result.diagnostico }}</textarea>
+                    </div>
+                </div>
+            </div>
+
+
+
+
+
+
+            <div class="row">
+                <div class="col-lg-10">
+                    <div class="form-group">
+                        <div class="col-lg-offset-5">
+                            <label>PLANIFICACION DE TRATAMIENTOS:</label>
+                        </div>
+                        <textarea  name="planificacionTratamiento" rows="5" cols="5" type="text" class="form-control required"
+                        >{{ result.planificacionTratamiento }}</textarea>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-10">
+                    <div class="form-group">
+                        <div class="col-lg-offset-5">
+                            <label>TRATAMIENTOS REALIZADOS:</label>
+                        </div>
+                        <textarea  name="tratamientoRealizado"  rows="5" cols="5" type="text" class="form-control required"
+                        >{{ result.tratamientoRealizado }}</textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-10">
+                    <div class="form-group">
+                        <div class="col-lg-offset-5">
+                            <label>EVOLUCION:</label>
+                        </div>
+                        <textarea  name="evolucion" rows="5" cols="5" type="text" class="form-control required"
+                        >
+                            {{ result.evolucion }}</textarea>
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+
+
+
+
+
+
+        <h1>Examen físico</h1>
+        <fieldset>
+            <h2>Examen físico</h2>
+            <div class="panel  panel-primary"></div>
+            <div class="row">
+                <div class="col-lg-10">
+                    <div class="form-group">
+                        <div class="col-lg-offset-5">
+                            <label>EXAMEN FISICO GENERAL,ATM Y CADENAS GANGLIONARES:</label>
+                        </div>
+                        <textarea name="examenFisico"  rows="5" cols="5" type="text" class="form-control required"
+                        >{{ result.examenFisico }}</textarea>
+                    </div>
+                </div>
+            </div>
+
+        </fieldset>
+
+        <h1>Examen facial </h1>
+        <fieldset>
+
+
+            <h2>Examen facial </h2>
+
+            <div class="row">
+                <div class="col-lg-10">
+                    <div class="form-group">
+                        <div class="col-lg-offset-5">
+                            <label>EXAMEN FACIAL:</label>
+                        </div>
+                        <textarea   name="examenFacial" rows="3" cols="5" type="text" class="form-control required"
+                        >{{ result.examenFacial }}</textarea>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-10">
+                    <div class="form-group">
+                        <div class="col-lg-offset-5">
+                            <label>OVALO FACIAL:</label>
+                        </div>
+                        <textarea  name="ovaloFacial"  rows="3" cols="5" type="text" class="form-control required"
+                        >{{ result.ovaloFacial }}</textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-10">
+                    <div class="form-group">
+                        <div class="col-lg-offset-5">
+                            <label>PERFIL FACIAL:</label>
+                        </div>
+                        <textarea  name="perfilFacial"  rows="3" cols="5" type="text" class="form-control required"
+                        >{{ result.perfilFacial }}</textarea>
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+
+
+        <h1>Examen bucal I</h1>
+        <fieldset>
+
+
+            <h2>Examen bucal</h2>
+            <div class="panel  panel-primary"></div>
+            <div class="row">
+                <div class="col-lg-10">
+                    <div class="form-group">
+                        <div class="col-lg-offset-5">
+                            <label>EXAMEN BUCAL:</label>
+                        </div>
+                        <textarea name="examenBucal"  rows="3" cols="5" type="text" class="form-control required"
+                        >{{ result.examenBucal }}</textarea>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-10">
+                    <div class="form-group">
+                        <div class="col-lg-offset-5">
+                            <label>LABIOS:</label>
+                        </div>
+                        <textarea name="labios" rows="3" cols="5" type="text" class="form-control required"
+                        >{{ result.labios }}</textarea>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-10">
+                    <div class="form-group">
+                        <div class="col-lg-offset-5">
+                            <label>MUCOSA DEL CARRILLO:</label>
+                        </div>
+                        <textarea  name="mucosaCarillo" rows="3" cols="5" type="text" class="form-control required"
+                        >{{ result.mucosaCarillo }}</textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-10">
+                    <div class="form-group">
+                        <div class="col-lg-offset-5">
+                            <label>ENCIAS:</label>
+                        </div>
+                        <textarea  name="encias" rows="3" cols="5" type="text" class="form-control required"
+                        >{{ result.encias }}</textarea>
+                    </div>
+                </div>
+            </div>
+            </fieldset>
+            <h1>Examen bucal II</h1>
+            <fieldset>
+
+
+                <h2>Examen bucal II</h2>
+                <div class="panel  panel-primary"></div>
+            <div class="row">
+                <div class="col-lg-10">
+                    <div class="form-group">
+                        <div class="col-lg-offset-5">
+                            <label>PALADAR DURO Y BLANDO:</label>
+                        </div>
+                        <textarea   name="paladarDuro"  rows="3" cols="5" type="text" class="form-control required"
+                        >{{ result.paladarDuro }}</textarea>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-10">
+                    <div class="form-group">
+                        <div class="col-lg-offset-5">
+                            <label>OROFARINGE:</label>
+                        </div>
+                        <textarea name="orofaringe"   rows="3" cols="5" type="text" class="form-control required"
+                        >{{ result.orofaringe }}</textarea>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-10">
+                    <div class="form-group">
+                        <div class="col-lg-offset-5">
+                            <label>LENGUA:</label>
+                        </div>
+                        <textarea  name="lengua"   rows="3" cols="5" type="text" class="form-control required"
+                        >{{ result.lengua }}</textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-10">
+                    <div class="form-group">
+                        <div class="col-lg-offset-5">
+                            <label>PISO DE LA LENGUA:</label>
+                        </div>
+                        <textarea name="pisoLengua"  rows="3" cols="5" type="text" class="form-control required"
+                        >{{ result.pisoLengua }}</textarea>
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+
+
+
+
+        <h1>Glándulas salibales</h1>
+        <fieldset>
+
+
+            <h2>Glándulas salibales</h2>
+            <div class="panel  panel-primary"></div>
+            <div class="row">
+                <div class="col-lg-10">
+                    <div class="form-group">
+                        <div class="col-lg-offset-5">
+                            <label>GLANDULAS SALIBALES:</label>
+                        </div>
+                        <textarea  name="glandulasSalibales" rows="3" cols="5" type="text" class="form-control required"
+                        >{{ result.glandulasSalibales }}</textarea>
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+
+        <h1>Relaciones de oclusión</h1>
+        <fieldset>
+            <div class="row">
+                <div class="col-lg-10">
+                    <div class="form-group">
+                        <div class="col-lg-offset-5">
+                            <label>RELACIONES DE OCLUSION:</label>
+                        </div>
+                        <textarea name="relacionOclusion"   rows="3" cols="5" type="text" class="form-control required"
+                        >{{ result.relacionOclusion }}</textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-10">
+                    <div class="form-group">
+                        <div class="col-lg-offset-5">
+                            <label>RELACIONES MOLAR:</label>
+                        </div>
+                        <textarea  name="relacionMolar" rows="3" cols="5" type="text" class="form-control required"
+                        >{{ result.relacionMolar }}</textarea>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-10">
+                    <div class="form-group">
+                        <div class="col-lg-offset-5">
+                            <label>RELACIONES CANINO:</label>
+                        </div>
+                        <textarea name="relacionCanino"  rows="3" cols="5" type="text" class="form-control required"
+                        >{{ result.relacionCanino }}</textarea>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-10">
+                    <div class="form-group">
+                        <div class="col-lg-offset-5">
+                            <label>RESALTE:</label>
+                        </div>
+                        <textarea   name="resalte"  rows="3" cols="5" type="text" class="form-control required"
+                        >{{ result.resalte }}</textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-10">
+                    <div class="form-group">
+                        <div class="col-lg-offset-5">
+                            <label>SOBREPASE:</label>
+                        </div>
+                        <textarea  name="sobrepase" rows="3" cols="5" type="text" class="form-control required"
+                        >{{ result.sobrepase }}</textarea>
+                    </div>
+                </div>
+            </div>
+
+
+
+        </fieldset>
+        <h1>Evoluciones registradas</h1>
+        <fieldset>
+            <div class="row">
+                <h2 style="display: inline">Evoluciones registradas </h2>
+
+                <a onclick="showEvolution()" title="Visualizar evoluciones anteriores"  class="btn btn-info btn-circle" style="margin-bottom:5px" href="#"
+                   type="button"><i class="fa fa-eye"></i> </a>
+            </div>
+            <div class="panel  panel-primary"></div>
+            <div class="row">
+                <div class="col-lg-10">
+                    <div class="form-group">
+                        <div class="col-lg-offset-5">
+                            <label>OBSERVACIONES:</label>
+                        </div>
+                        <textarea  name="observaciones" rows="3" cols="5" type="text" class="form-control required"
+                        > {% if query.evolucion %}{{ query.evolucion.observaciones }}
+                            {% endif %}</textarea>
+
+
+                    </div>
+                </div>
+            </div>
+
+
+
+        </fieldset>
+        {% include  'AppBundle:Default:areas.html.twig' %}
+    </form>
+
+    <div id="beforeevolucion" class="hide">
+
+        {{ render( controller( 'AppBundle:AdminReserved:viewEvolutions',{'queryId':query.id})) }}
+
+       <script>
+        var before = function () {
+        if (currentPage > 1 && totalPage > 1) {
+        $('div#' + currentPage).addClass('hide')
+        $('div#' + (currentPage - 1)).removeClass('hide')
+        }
+        if (currentPage == 2) {
+        $('#before').prop('disabled', true);
+        }
+        currentPage--;
+        $('#currentpage').html(currentPage);
+        if (currentPage == 1 && totalPage > 1) {
+
+        $('#next').prop('disabled', false);
+        }
+        }
+        var nextPage = function () {
+
+        if (currentPage < totalPage) {
+
+        $('div#' + currentPage).addClass('hide')
+        $('div#' + (currentPage + 1)).removeClass('hide')
+        if (currentPage > 1) {
+        $('#before').prop('disabled', false);
+        }
+        currentPage++;
+        $('#currentpage').html(currentPage)
+        }
+
+        if (currentPage == totalPage) {
+        $('#next').prop('disabled', true);
+        if (totalPage > 1) {
+        $('#before').prop('disabled', false);
+        }
+        }
+        }
+</script>
+
+    </div>
+    {{ parent() }}
+    <!-- Mainly scripts -->
+    <script src="{{ asset('bundles/app/js/jquery-2.1.1.js') }}"></script>
+    <script src="{{ asset('bundles/app/js/bootstrap.min.js') }}"></script>
+    <script src="{{ asset('bundles/app/js/plugins/metisMenu/jquery.metisMenu.js') }}"></script>
+    <script>
+        finish=false;
+       var showEvolution=function(){
+           var div=$('div#beforeevolucion');
+           if(div.hasClass('hide')){
+               div.removeClass('hide');
+               $("html, body").animate({ scrollTop: $(document).height()/2.5 }, 'slow');
+           }else{
+               div.addClass('hide');
+           }
+       }
+    </script>
+
+    <script src="{{ asset('bundles/app/js/plugins/jasny/jasny-bootstrap.min.js') }}"></script>
+    <script src="{{ asset('bundles/app/js/plugins/chosen/chosen.jquery.js') }}"></script>
+    <script src="{{ asset('bundles/app/js/plugins/touchspin/jquery.bootstrap-touchspin.min.js') }}"></script>
+    <script src="{{ asset('bundles/app/js/plugins/bootstrap-tagsinput/bootstrap-tagsinput.js') }}"></script>
+    <script src="{{ asset('bundles/app/js/plugins/steps/jquery.steps.js') }}"></script>
+    <script src="{{ asset('bundles/app/js/plugins/toogle/bootstrap-toggle.min.js') }}"></script>
+    <script src="{{ asset('bundles/app/js/plugins/iCheck/icheck.min.js') }}"></script>
+
+
+
+    <script src="{{asset('bundles/app/js/plugins/validation/jquery.validationEngine.js')}}"></script>
+
+
+    <script src="{{ asset('bundles/app/js/plugins/validation/jquery.validate.min.js') }}"></script>
+
+    <script src="{{ asset('bundles/app/js/plugins/validation/additionalValidator.js') }}"></script>
+    <script src="{{ asset('bundles/app/js/custom/validationResultQuery.js') }}"></script>
+
+    <script>
+        next=true;
+    </script>
+
+    {% include 'AppBundle:Default:steps_admin.js.twig' %}
+
+    <script src="{{ asset('bundles/app/js/plugins/map/map.js') }}"></script>
+    <script src="{{ asset('bundles/app/js/plugins/map/controller.js') }}"></script>
+    <script src="{{ asset('bundles/app/js/plugins/map/controller_map.js') }}"></script>
+    <script>
+        $(document).ready(function () {
+
+
+            $('.collapse-link').on('click', function () {
+
+                var ibox = $(this).closest('div.ibox');
+                var button = $(this).find('i');
+                var content = ibox.find('div.ibox-content');
+                content.slideToggle(200);
+                button.toggleClass('fa-chevron-up').toggleClass('fa-chevron-down');
+                ibox.toggleClass('').toggleClass('border-bottom');
+                setTimeout(function () {
+                    ibox.resize();
+                    ibox.find('[id^=map-]').resize();
+                }, 50);
+            });
+
+            // Close ibox function
+            $('.close-link').on('click', function () {
+                var content = $(this).closest('div.ibox');
+                content.remove();
+            });
+
+            // Fullscreen ibox function
+            $('.fullscreen-link').on('click', function () {
+                var ibox = $(this).closest('div.ibox');
+                var button = $(this).find('i');
+                $('body').toggleClass('fullscreen-ibox-mode');
+                button.toggleClass('fa-expand').toggleClass('fa-compress');
+                ibox.toggleClass('fullscreen');
+                setTimeout(function () {
+                    $(window).trigger('resize');
+                }, 100);
+            })
+
+
+
+        })
+
+       // alert($('#areas').val());
+    </script>
+{% endblock %}

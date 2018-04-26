@@ -1,0 +1,327 @@
+{% extends 'base.html.twig' %}
+{% block css %}
+    {{ parent() }}
+    <link href="{{ asset('bundles/app/css/plugins/chosen/bootstrap-chosen.css') }}" rel="stylesheet">
+    <link href="{{ asset('bundles/app/css/plugins/datapicker/datepicker3.css') }}" rel="stylesheet">
+    <link href="{{ asset('bundles/app/css/plugins/steps/jfactura.consulta.steps.css') }}" rel="stylesheet">
+    <link href="{{ asset('bundles/app/css/plugins/iCheck/custom.css') }}" rel="stylesheet">
+    <link href="{{ asset('bundles/app/css/plugins/select2/select2.min.css') }}" rel="stylesheet">
+{% endblock %}
+{% block content %}
+    <h3>Actualizar factura de pago</h3>
+    <div class="panel  panel-primary"></div>
+    <form id="form" action="#" class="wizard-big" method="post"
+          action="{{ path('manage_query_admin_check_edit',{id:factura.id}) }}">
+
+
+        <div class="row">
+
+       <div class="col-md-12">
+           <div class="col-md-1">
+               <img src="{{ asset('bundles/app/images/logo.png') }}">
+           </div>
+
+           <div class="col-md-6">
+               <h1 class="text-center">{{ company_name }}</h1>
+               <h3 class="text-center">{{ leader_company }}</h3>
+               <p class="text-center">Actividades de administración de Centros Médicos</p>
+               <p class="text-center">Actividades de asesoramiento empresarial</p>
+               <p><strong>Dir:{{ address_company }} </strong> </p>
+               <p class="text-center"><strong>Web: <a href="http://{{ web_company }}">{{ web_company }}</a></strong> <i class="fa  fa-twitter"></i><span> @{{ twitter }}</span> <i class="fa fa-facebook"></i><span> {{ facebook }}</span></p>
+               <p class="text-center"><strong>{{ city_company }}</strong></p>
+           </div>
+
+           <div class="col-md-3"
+                style="border-color: #000000;border-radius: 12px;border-style: solid;border-width: 1px;">
+               <div style="border-bottom-color: #000000;;border-bottom-style: solid;border-bottom-width: 1px;">
+
+                   <h3 class="text-center">RUC:{{ ruc_company }}</h3>
+               </div>
+               <h2 CLASS="text-center">FACTURA</h2>
+               <p class="text-center">{{ check_number }}</p>
+               <h2 class="text-center" style="color:#a41e22">{{ factura.numeroFactura }}</h2>
+               <p class="text-center">FECHA DE AUT. {{ date_auth }}</p>
+               <p class="text-center">Auth S.R.I.# {{ auth_sri }}</p>
+
+
+           </div>
+
+       </div>
+
+
+
+
+        </div>
+
+
+
+
+
+        <div class="row">
+            <div class="col-md-8 col-lg-offset-4">
+
+
+            </div>
+        </div>
+
+
+
+        <fieldset>
+
+
+            <div class="row">
+                <div class="form-horizontal">
+
+
+                    <div class="col-lg-6">
+                        <div class="form-group">
+
+                            <label class="control-label col-lg-2" for="ci">Sr.(es):</label>
+                            <div class="col-lg-10">
+                                <input value="{{ factura.consulta.usuarioRegistro.getCompleteName() }}" aria-describedby="ci"
+                                       disabled="disabled" type="text" class="form-control">
+
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="col-lg-4">
+                        <div class="form-group">
+
+                            <label class="control-label col-lg-4" for="fecha">fecha:</label>
+                            <div class="col-lg-8">
+                                <input name="fecha" readonly="readonly"
+                                       type="text" class="form-control" value="{{factura.fecha}}">
+
+                            </div>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="form-horizontal">
+
+
+                    <div class="col-lg-6">
+                        <div class="form-group">
+
+                            <label class="control-label col-lg-2" for="ci">Dirección:</label>
+                            <div class="col-lg-10">
+                                <input value="{{ factura.consulta.usuarioRegistro.direccion }}" aria-describedby="ci"
+                                       disabled="disabled" type="text" class="form-control">
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="form-group">
+
+                            <label class="control-label col-lg-4" for="telefono">Telf:</label>
+                            <div class="col-lg-8">
+                                <input value="{{ factura.consulta.usuarioRegistro.telefono }}" aria-describedby="telefono"
+                                       disabled="disabled" type="text" class="form-control">
+
+                            </div>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-horizontal">
+
+
+                    <div class="col-lg-3">
+                        <div class="form-group">
+
+                            <label class="control-label col-lg-2" for="ci">R.U.C:</label>
+                            <div class="col-lg-10">
+                                <input readonly="readonly" value="{{ factura.consulta.usuarioRegistro.cedula }}" aria-describedby="ci"
+                                       type="text" class="form-control">
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="form-group">
+
+                            <label class="control-label col-lg-4" for="telefono">Ciudad:</label>
+                            <div class="col-lg-8">
+                                <select name="ciudad" class="chosen-select">
+
+
+                                    <option value="Guayaquil" {% if factura.ciudad=='Guayaquil'%} selected {% endif %}>Guayaquil</option>
+                                    <option value="Quito" {% if factura.ciudad=='Quito'%} selected {% endif %}> Quito  </option>
+                                    <option value="Quevedo" {% if factura.ciudad=='Quevedo'%} selected {% endif %}>  Quevedo </option>
+                                    <option value="Cuenca" {% if factura.ciudad=='Cuenca'%} selected {% endif %}>  Cuenca </option>
+                                    <option value="Machala" {% if factura.ciudad=='Machala'%} selected {% endif %}> Machala  </option>
+                                    <option value="Esmeralda" {% if factura.ciudad=='Esmeralda'%} selected {% endif %}> Esmeralda  </option>
+                                    <option value="Manabi" {% if factura.ciudad=='Manabi'%} selected {% endif %}> Manabi  </option>
+                                    <option value="Loja" {% if factura.ciudad=='Loja'%} selected {% endif %}> Loja  </option>
+
+                                </select>
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-3">
+                        <div class="form-group">
+
+                            <label class="control-label col-lg-5" for="telefono">Guía de remisión:</label>
+                            <div class="col-lg-7">
+                                <input name="guia" value="{{ factura.guia }}"
+                                       type="text" class="form-control">
+
+                            </div>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-7">
+                    <div class="form-group">
+                        <div class="col-lg-offset-3">
+                            <label>SERVICIOS:</label>
+                        </div>
+                        <select name="servicio[]" class="select2_demo_2 form-control" multiple="multiple">
+                            {% for service in services %}
+                                <option {% if service in factura.servicio %} selected {% endif %}id="option-{{ service.id }}" data-price="{{ service.precio }}" data-service-Name="{{ service.nombre }}" value="{{ service.id }}">{{ service.nombre }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+
+
+                <div class="col-lg-3">
+                    <div class="form-group">
+                        <div class="col-lg-offset-3">
+                            <label>V.TOTAL:</label>
+                        </div>
+                        <input aria-describedby="telefono" name="total"  id="total"
+                               readonly="readonly"  value="{{ factura.getValueTotal}}" type="text"
+                               class="form-control">
+
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-10">
+                    <div class="form-group">
+                        <div class="col-lg-offset-3">
+                            <label>DESCRIPCI&Oacute;N:</label>
+                        </div>
+                        <textarea name="descripcion" id="descripcion"  cols="5" class="form-control required" rows="4">{{ factura.descripcion }}</textarea>
+                    </div>
+                </div>
+            </div>
+  <div  class="col-md-offset-3">   <label class="control-label">Forma de pago:</label></div>
+                <div class="form-group">
+
+
+                    <div class="col-sm-12">
+                        <label class="iradio-inline i-checks">
+                            <div class="iradio_square-green" style="position: relative;">
+                                <input value="1" name="formaPago"   style="position: absolute; opacity: 0;" type="radio" {% if factura.formaPago==1 %} checked="checked"{% endif %}>
+                            </div>
+                            EFECTIVO </label>
+                        <label class="iradio-inline i-checks">
+                            <div class="iradio_square-green" style="position: relative;">
+                                <input value="2" name="formaPago" style="position: absolute; opacity: 0;"  type="radio"  {% if factura.formaPago==2 %} checked="checked"{% endif %}>
+                            </div>
+                            DINERO ELECTR&Oacute;NICO </label>
+                        <label class="iradio-inline i-checks">
+                            <div class="iradio_square-green" style="position: relative;">
+                                <input value="3" name="formaPago"  style="position: absolute; opacity: 0;" type="radio"  {% if factura.formaPago==3 %} checked="checked"{% endif %}>
+                            </div>
+                            TARJETA DE CRÉDITO/DÉBITO</label>
+
+
+                    <label class="iradio-inline i-checks">
+                        <div class="iradio_square-green" style="position: relative;">
+                            <input value="4" name="formaPago" style="position: absolute; opacity: 0;" type="radio"  {% if factura.formaPago==4 %} checked="checked"{% endif %}>
+                        </div>
+                        OTROS</label></div>
+                </div>
+
+
+
+
+
+
+
+        </fieldset>
+
+        <div class="col-lg-offset-7">
+
+
+            <button type="submit" class=" btn btn-primary">Aceptar</button>
+            <a href="{{ path('manage_reserved_admin_list') }}" class=" btn btn-warning">Volver al listado</a>
+        </div>
+    </form>
+    {{ parent() }}
+    <!-- Mainly scripts -->
+    <script src="{{ asset('bundles/app/js/jquery-2.1.1.js') }}"></script>
+    <script src="{{ asset('bundles/app/js/bootstrap.min.js') }}"></script>
+    <script src="{{ asset('bundles/app/js/plugins/jasny/jasny-bootstrap.min.js') }}"></script>
+    <script src="{{ asset('bundles/app/js/plugins/chosen/chosen.jfactura.consulta.js') }}"></script>
+    <script src="{{ asset('bundles/app/js/plugins/touchspin/bootstrap-touchspin.min.js') }}"></script>
+    <script src="{{ asset('bundles/app/js/plugins/bootstrap-tagsinput/bootstrap-tagsinput.js') }}"></script>
+    <script src="{{ asset('bundles/app/js/plugins/chosen/chosen.jquery.js') }}"></script>
+    <script src="{{ asset('bundles/app/js/plugins/toogle/bootstrap-toggle.min.js') }}"></script>
+    <script src="{{ asset('bundles/app/js/plugins/iCheck/icheck.min.js') }}"></script>
+
+    <script src="{{ asset('bundles/app/js/plugins/select2/select2.full.min.js') }}"></script>
+
+
+
+
+    <script>
+
+        $(document).ready(function () {
+            $(".select2_demo_2").select2();
+            $(".select2_demo_2").change(function(){
+                var services= $(".select2_demo_2").val();
+                if(services==null){
+                    services=[];
+                }
+                var price=0;
+                var servicesName=[];
+                for(var i=0;i<services.length;i++){
+                    var option=$('#option-'+ services[i]);
+                    if(option){
+                        price+=parseFloat($(option).data('price'));
+                        servicesName.push($(option).data('serviceName'))
+                    }
+
+                }
+
+                $('#total').val(round((price),2));
+                if(servicesName.length==1){
+                    $('#descripcion').val('El servicio ofrecido fue:  '+servicesName[0])+'.';
+                }
+                else{
+                    $('#descripcion').val('Los servicios  ofrecidos fueron: '+servicesName.join(','))+'.';
+                }
+
+            })
+            $('.chosen-select').chosen({width: "100%"});
+            $('.i-checks').iCheck({
+                checkboxClass: 'icheckbox_square-green',
+                radioClass: 'iradio_square-green',
+            });
+
+        })</script>
+    <script>
+        $(function () {
+        });
+    </script>
+{% endblock %}

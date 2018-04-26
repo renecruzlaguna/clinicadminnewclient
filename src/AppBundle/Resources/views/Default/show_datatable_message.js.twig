@@ -1,0 +1,62 @@
+<script>
+
+    $(document).ready(function(){
+    $('.dataTables-example').DataTable({
+        pageLength: 25,
+        responsive: true,
+        ordering: true,
+        dom: '<"html5buttons"B>lTfgitp',
+        buttons: [],
+        language: {
+            "sProcessing": "Procesando...",
+            "sLengthMenu": "Mostrar _MENU_ registros",
+            "sZeroRecords": "No se encontraron resultados",
+            "sEmptyTable": "Ningún dato disponible en esta tabla",
+            "sInfo": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+            "sInfoEmpty": "Mostrando registros del 0 al 0 de un total de 0 registros",
+            "sInfoFiltered": "(filtrado de un total de _MAX_ registros)",
+            "sInfoPostFix": "",
+            "sSearch": "Buscar:",
+            "sUrl": "",
+            "sInfoThousands": ",",
+            "sLoadingRecords": "Cargando...",
+            "oPaginate": {
+                "sFirst": "Primero",
+                "sLast": "Último",
+                "sNext": "Siguiente",
+                "sPrevious": "Anterior"
+            },
+            "oAria": {
+                "sSortAscending": ": Activar para ordenar la columna de manera ascendente",
+                "sSortDescending": ": Activar para ordenar la columna de manera descendente"
+            }
+        }
+
+    });
+
+
+
+    {% if message is defined and message %}
+    toastr.options = {
+    closeButton: true,
+    progressBar: true,
+    showMethod: 'slideDown',
+    timeOut: 2000
+};
+    toastr.success('',"{{ message }}");
+    {% endif %}
+
+    {% if error is defined and error %}
+    toastr.options = {
+    closeButton: true,
+    progressBar: true,
+    showMethod: 'slideDown',
+    timeOut: 2000
+};
+    toastr.error('',"{{ error }}");
+    {% endif %}
+
+
+
+});
+</script>

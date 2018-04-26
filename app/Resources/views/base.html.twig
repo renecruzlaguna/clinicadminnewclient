@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html>
+
+    <head>
+
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <title>YC DENTAL</title>
+        {% block css %}
+            <link href="{{ asset('bundles/app/css/bootstrap.min.css') }}" rel="stylesheet">
+            <link href="{{ asset('bundles/app/font-awesome/css/font-awesome.css') }}" rel="stylesheet">
+
+            <link href="{{ asset('bundles/app/css/animate.css') }}" rel="stylesheet">
+            <link href="{{ asset('bundles/app/css/style.css') }}" rel="stylesheet">
+            <link href="{{ asset('bundles/app/css/plugins/dataTables/datatables.min.css') }}" rel="stylesheet">
+            <link href="{{ asset('bundles/app/css/plugins/switchery/switchery.css') }}" rel="stylesheet">
+            <link href="{{ asset('bundles/app/css/plugins/loader/HoldOn.min.css') }}" rel="stylesheet">
+            <link href="{{ asset('bundles/app/css/plugins/toogle/bootstrap-toggle.min.css') }}" rel="stylesheet">
+
+            <link href="{{ asset('bundles/app/css/plugins/toastr/toastr.min.css') }}" rel="stylesheet">
+            <link href="{{ asset('bundles/app/css/plugins/validation/validationengine/css/validationEngine.jquery.css') }}"
+                  rel="stylesheet">
+
+            <!-- Local style only for demo purpose -->
+            <style>
+                .directive-list {
+                    list-style: none;
+                }
+
+                .directive-list li {
+                    background: #f3f3f4;
+                    padding: 10px 20px;
+                    margin: 4px;
+                }
+            </style>
+        {% endblock %}
+    </head>
+
+    <body>
+        {% block javascript %}
+            <!-- Mainly scripts -->
+            <script src="{{ asset('bundles/app/js/jquery-2.1.1.js') }}"></script>
+            <script src="{{ asset('bundles/app/js/bootstrap.min.js') }}"></script>
+            <script src="{{ asset('bundles/app/js/plugins/metisMenu/jquery.metisMenu.js') }}"></script>
+            <script src="{{ asset('bundles/app/js/plugins/slimscroll/jquery.slimscroll.min.js') }}"></script>
+
+            <!-- Custom and plugin javascript -->
+            <script src="{{ asset('bundles/app/js/inspinia.js') }}"></script>
+            <script src="{{ asset('bundles/app/js/plugins/pace/pace.min.js') }}"></script>
+
+            <script src="{{ asset('bundles/app/js/plugins/dataTables/datatables.min.js') }}"></script>
+            <script src="{{ asset('bundles/app/js/plugins/toastr/toastr.min.js') }}"></script>
+            <script src="{{ asset('bundles/app/js/plugins/switchery/switchery.js') }}"></script>
+            <script src="{{ asset('bundles/app/js/plugins/loader/HoldOn.min.js') }}"></script>
+            <script src="{{ asset('bundles/app/js/plugins/toogle/bootstrap-toggle.min.js') }}"></script>
+            <script src="{{ asset('bundles/app/js/main.js') }}"></script>
+            <script src="{{ asset('bundles/app/js/buildInterface.js') }}"></script>
+
+        {% endblock %}
+        {% set dayNow=  "now"|date("d") %}
+        {% set monthNow=  "now"|date("m") %}
+        {% set yearNow=  "now"|date("Y") %}
+        {% set initialDate= monthNow~'-'~dayNow~'-'~yearNow  %}
+        <div id="wrapper">
+
+            <nav class="navbar-default navbar-static-side" role="navigation">
+                <div class="sidebar-collapse">
+                    <ul class="nav metismenu" id="side-menu">
+                        <li class="nav-header">
+                            <div class="dropdown profile-element"> <span>
+                                    <a href="/manage"> <img alt="image" height="40%" title="P&aacute;gina inicial" width="40%"
+                                                            class="img-circle"
+                                                            src="{{ asset('bundles/app/images/profile_small.jpg') }}"/></a>
+                                </span>
+                                <a data-toggle="dropdown" class="dropdown-toggle" href="#">
+                                    <span class="clear"> <span class="block m-t-xs"> <strong
+                                                class="font-bold"> {{ app.user.getCompleteName }}</strong>
+                                        </span>   <b class="caret"></b></span> </a>
+                                <ul class="dropdown-menu animated fadeInRight m-t-xs">
+
+
+                                    {% if app.user.rol.id==1 %}
+                                        <li>  <a href="{{ path('default_homepage') }}">Inicio</a></li>
+                                        <li class="divider"></li>
+                                        <li><a href="{{ path('manage_perfil_client_user_edit',{id:app.user.id}) }}">Mi perfil</a></li>
+                                        {% endif %}
+                                        {% if app.user.rol.id==2 %}
+                                        <li> <a href="{{ path('manage') }}">Inicio</a></li>
+
+                                    {% endif %}
+
+                                    {% if app.user.rol.id==3 or (app.user.rol.id==4) %}
+                                        <li> <a href="{{ path('manage') }}">Inicio</a></li>
+                                        <li class="divider"></li>
+                                        <li> <a href="{{ path('manage_perfil_user_edit',{id:app.user.id}) }}  ">Mi perfil</a></li>
+                                        {% endif %}
+
+
+                                    <li class="divider"></li>
+                                    <li><a href="{{ path('_security_logout') }}">Salir</a></li>
+                                </ul>
+
+                            </div>
+                            <div class="logo-element">
+                                Dental
+                            </div>
+                        </li>
+                        {% if app.user.rol.id==1 %}
+                            <li>  <a href="{{ path('default_homepage') }}"><i class="fa fa-home"></i> <span
+                                        class="nav-label">Inicio</span> </a></li>
+
+                        {% endif %}
+                        {% if app.user.rol.id==2 or (app.user.rol.id==4) %}
+                            <li> <a href="{{ path('manage') }}"><i class="fa fa-home"></i> <span
+                                        class="nav-label">Inicio</span></a></li>
+
+                        {% endif %}
+
+                        {% if app.user.rol.id==3 %}
+                            <li> <a href="{{ path('manage') }}"><i class="fa fa-home"></i> <span
+                                        class="nav-label">Inicio</span></a></li>
+
+                        {% endif %}
+                        {% if (app.user.rol.nombre=='ROLE_ADMIN') or  (app.user.rol.nombre=='ROLE_SECRETARIA' ) %}
+
+                            <li class="">
+                                <a href="#"><i class="fa fa fa-key"></i> <span class="nav-label">Administraci&oacute;n</span><span
+                                        class="fa arrow"></span></a>
+                                <ul class="nav nav-second-level collapse" style="height: 0px;">
+                                    <li>
+                                        <a href="{{ path('manage_user_list') }}"><i class="fa fa-user"></i> <span class="nav-label">Gestionar usuario</span>
+                                        </a>
+
+                                    </li>
+                                    <li>
+                                        <a href="{{ path('manage_doctor_user_list') }}"><i class="fa fa-user-md"></i> <span
+                                                class="nav-label">Gestionar médico</span> </a>
+
+                                    </li>
+                                    <li>
+                                        <a href="{{ path('manage_client_user_list') }}"><i class="fa fa-child"></i> <span
+                                                class="nav-label">Gestionar paciente</span> </a>
+
+                                    </li>
+                                </ul>
+                            </li>
+
+
+
+
+
+
+                            <li>
+                                <a href="{{ path('manage_especiality_list') }}"><i class="fa  fa-stethoscope"></i> <span
+                                        class="nav-label">Gestionar especialidad</span> </a>
+
+                            </li> <li>
+                                <a href="{{ path('manage_promotion_admin_add') }}"><i class="fa fa-reply"></i> <span
+                                        class="nav-label">Enviar promoción</span> </a>
+
+                            </li>
+                            <li>
+                                <a href="{{ path('manage_service_list') }}"><i class="fa  fa-medkit"></i> <span
+                                        class="nav-label">Gestionar servicio</span> </a>
+
+                            </li>
+                            <li>
+
+                                <a href="{{ path('manage_reserved_admin_list',{finicio:-1,ffin:-1,estado:-1}) }}"><i class="fa fa-ticket"></i> <span
+                                        class="nav-label">Gestionar reservas de consultas</span> </a>
+
+                            </li>
+                        {% endif %}
+
+
+                        {% if (app.user.rol.nombre=='ROLE_ADMIN') or (app.user.rol.nombre=='ROLE_SECRETARIA' ) %}
+                            <li>
+                                <a href="{{ path('manage_admin_cotization') }}"><i class="fa fa-money"></i> <span class="nav-label">Realizar cotizaci&oacute;n</span>
+                                </a>
+
+                            </li>
+
+                        {% endif %}
+                        {% if app.user.rol.nombre=='ROLE_ADMIN'  %}
+                            <li class="">
+                                <a href="#"><i class="fa fa-newspaper-o"></i> <span class="nav-label">Reportes</span><span
+                                        class="fa arrow"></span></a>
+                                <ul class="nav nav-second-level collapse" style="height: 0px;">
+                                    <li><a href="{{ path('manage_report_list_query_salary') }}">Salario a pagar</a></li>
+                                    <li>
+
+                                    <li><a href="{{ path('manage_report_list_query_total_resumen_show') }}">Listado de total
+                                            recaudado</a></li>
+                                    <li>
+                                        <a href="{{ path('manage_report_list_query_made_doctor_speciality_show') }}">Listado de
+                                            las consultas realizadas </a></li>
+                                    <li>
+                                        <a href="{{ path('manage_report_list_query_cancel_show') }}">Listado de las consultas
+                                            canceladas </a></li>
+                                    <li>
+                                        <a href="{{ path('manage_report_list_query_state_show') }}">Listado de las consultas
+                                            en un rango de tiempo por estado </a></li>
+                                </ul>
+                            </li>
+                            
+                            
+                              <li class="">
+                                <a href="#"><i class="fa fa-line-chart"></i> <span class="nav-label">Reportes Gráficos</span><span
+                                        class="fa arrow"></span></a>
+                                <ul class="nav nav-second-level collapse" style="height: 0px;">
+                                    <li><a href="{{ path('manage_grafic_report_list_query_total') }}">Cantidad de consultas por especialidad</a></li>
+                                    <li>
+
+                                    <li><a href="{{ path('manage_grafic_report_list_service_total') }}">Cantidad de servicios que se consumen semanal</a></li>
+                                    <li>
+                                        <a href="{{ path('manage_grafic_report_list_patient_total') }}">Cantidad de nuevos pacientes por especialidad</a></li>
+                                    <li>
+                                        <a href="{{ path('manage_grafic_report_list_mony_query_total') }}">Cantidad de dinero recaudado por por especialidad</a></li>
+                                   
+                                </ul>
+                            </li>
+
+                        {% endif %}
+
+                        {% if  (app.user.rol.nombre=='ROLE_SECRETARIA' ) %}
+                            <li class="">
+                                <a href="#"><i class="fa fa-newspaper-o"></i> <span class="nav-label">Reportes</span><span
+                                        class="fa arrow"></span></a>
+                                <ul class="nav nav-second-level collapse" style="height: 0px;">
+
+                                    <li><a href="{{ path('manage_report_list_query_total_resumen_show') }}">Listado de total
+                                            recaudado</a></li>
+
+                                </ul>
+                            </li>
+
+                        {% endif %}
+                        {% if app.user.rol.nombre=='ROLE_MEDICO' %}
+
+                            <li>
+                                <a href="{{ path('doctor_planed') }}"><i class="fa fa-suitcase"></i> <span class="nav-label">Gestionar plan de trabajo</span>
+                                </a>
+
+                            </li>
+                            <li>
+                                <a href="{{ path('doctor_query_reserved_list',{finicio:-1,ffin:-1,estado:-1}) }}"><i class="fa fa-stethoscope"></i> <span
+                                        class="nav-label">Gestionar consultas</span> </a>
+
+                            </li>
+
+
+                        {% endif %}
+
+                        {% if app.user.rol.nombre=='ROLE_CLIENTE' %}
+
+                            <li>
+                                <a href="{{ path('client_query_register') }}"><i class="fa fa-ticket"></i> <span
+                                        class="nav-label">Reservar consulta</span> </a>
+
+                            </li>
+                            <li>
+                                <a href="{{ path('client_query_reserved_list') }}"><i class="fa  fa-stethoscope"></i> <span
+                                        class="nav-label">Ver mis reservaciones</span> </a>
+
+                            </li>
+
+                            <li>
+                                <a href="{{ path('client_query_executed_list') }}"><i class="fa  fa-hospital-o"></i> <span
+                                        class="nav-label">Ver consultas a las que he asistido</span> </a>
+
+                            </li>
+                        {% endif %}
+
+
+                    </ul>
+
+                </div>
+            </nav>
+
+            <div id="page-wrapper" class="gray-bg">
+                <div class="row border-bottom">
+                    <nav class="navbar navbar-static-top white-bg" role="navigation" style="margin-bottom: 0">
+                        <div class="navbar-header">
+                            <a class="navbar-minimalize minimalize-styl-2 btn btn-primary " href="#"><i class="fa fa-bars"></i>
+                            </a>
+                        </div>
+
+
+                        <ul class="nav navbar-top-links navbar-right">
+                            <li>
+                                <span class="m-r-sm text-muted welcome-message">Bienvenido {{ app.user.getCompleteName }}
+                                    .</span>
+                            </li>
+                            <li class="dropdown hide">
+                                <a class="dropdown-toggle count-info" data-toggle="dropdown" href="#">
+                                    <i class="fa fa-envelope"></i> <span class="label label-warning">16</span>
+                                </a>
+                                <ul class="dropdown-menu dropdown-messages hide">
+                                    <li>
+                                        <div class="dropdown-messages-box">
+                                            <a href="profile.html" class="pull-left">
+                                                <img alt="image" class="img-circle" src="{{ asset('bundles/app/img/a7.jpg') }}">
+                                            </a>
+                                            <div class="media-body">
+                                                <small class="pull-right">46h ago</small>
+                                                <strong>Mike Loreipsum</strong> started following <strong>Monica Smith</strong>.
+                                                <br>
+                                                <small class="text-muted">3 days ago at 7:58 pm - 10.06.2014</small>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <li class="divider"></li>
+                                    <li>
+                                        <div class="dropdown-messages-box hide">
+                                            <a href="profile.html" class="pull-left">
+                                                <img alt="image" class="img-circle" src="{{ asset('bundles/app/img/a4.jpg') }}">
+                                            </a>
+                                            <div class="media-body ">
+                                                <small class="pull-right text-navy">5h ago</small>
+                                                <strong>Chris Johnatan Overtunk</strong> started following <strong>Monica
+                                                    Smith</strong>. <br>
+                                                <small class="text-muted">Yesterday 1:21 pm - 11.06.2014</small>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <li class="divider"></li>
+                                    <li>
+                                        <div class="dropdown-messages-box hide">
+                                            <a href="profile.html" class="pull-left">
+                                                <img alt="image" class="img-circle"
+                                                     src="{{ asset('bundles/app/img/profile.jpg') }}">
+                                            </a>
+                                            <div class="media-body ">
+                                                <small class="pull-right">23h ago</small>
+                                                <strong>Monica Smith</strong> love <strong>Kim Smith</strong>. <br>
+                                                <small class="text-muted">2 days ago at 2:30 am - 11.06.2014</small>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <li class="divider"></li>
+                                    <li>
+                                        <div class="text-center link-block">
+                                            <a href="mailbox.html">
+                                                <i class="fa fa-envelope"></i> <strong>Read All Messages</strong>
+                                            </a>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </li>
+                            {% if app.user.rol.id==3 %}
+                                <li class="dropdown">
+                                    <a class="dropdown-toggle count-info" data-toggle="dropdown" href="#">
+                                        <i class="fa fa-bell"></i> <span class="label label-primary">4</span>
+                                    </a>
+
+
+                                    {# incluir el listado #}
+                                    {{ render( controller( 'AppBundle:Admin:renderToPage')) }}
+
+                                </li>
+                            {% endif %}
+
+                            <li>
+                                <a href="" onclick="event.preventDefault();
+                                document.getElementById('logout-form').submit();">
+
+                                    <i class="fa fa-sign-out"></i>Salir
+                                </a>
+                            </li>
+                        </ul>
+
+                    </nav>
+                </div>
+                <form id="logout-form" action="{{ path('_security_logout') }}" method="POST" style="display: none;">
+
+                </form>
+                {% block content %}
+
+                {% endblock %}
+
+                <br>
+                <br>
+                <br>
+                <div class="footer">
+                    <div class="pull-right">
+                        Centro Integral, Estético y Maxilofacial
+                    </div>
+                    <div>
+                        <strong>Copyright</strong>&nbsp; YC DENTAL &copy; 2014-2018
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+
+    </body>
+
+</html>

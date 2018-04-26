@@ -1,0 +1,506 @@
+{% extends 'base.html.twig' %}
+{% block css %}
+    {{ parent() }}
+    <link href="{{ asset('bundles/app/css/plugins/chosen/bootstrap-chosen.css') }}" rel="stylesheet">
+    <link href="{{ asset('bundles/app/css/plugins/datapicker/datepicker3.css') }}" rel="stylesheet">
+
+    <link href="{{ asset('bundles/app/css/plugins/clockpicker/clockpicker.css') }}" rel="stylesheet">
+    <style>
+
+        
+    </style>
+{% endblock %}
+{% block content %}
+
+    <h3 class="center-block">Actualizar consulta </h3>
+    <div class="panel  panel-primary"></div>
+
+    <form class="m-t" id="form-query" role="form" action="{{ path('doctor_query_save_update',{id:query.id}) }}" method="POST">
+
+        <div class="row">
+
+            <input id="input-anno" type="hidden" name="anno" value="{{ query.anno }}">
+            <input id="input-mes" type="hidden" name="mes" value="{{ query.mes }}">
+            <input id="input-dia" type="hidden" name="dia" value="{{ query.dia }}">
+            {% if exception is defined %}
+                <div class="form-group has-error">{{ exception }} </div>
+            {% endif %}
+
+
+            <div class="col-lg-6">
+                <div class="form-group">
+                    <label>Nombre del cliente</label>
+                    <select disabled="disabled" data-placeholder="Seleccione un usuario" class="chosen-select"
+                            style="width:350px;" tabindex="4" name="usuarioRegistro">
+                        <option value="-1">Seleccione un cliente</option>
+                        {% for user in users %}
+                            <option value="{{ user.id }}" {% if user.id==query.usuarioRegistro.id %} selected {% endif %}>{{ user.getCompleteName() }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Especialidad</label>
+                    <select disabled="disabled" id="combo-especialidad" data-placeholder="Seleccione una especialidad"
+                            class="chosen-select"
+                            style="width:350px;" tabindex="4" name="especialidad">
+                        <option value="-1">Seleccione una especialidad</option>
+                        {% for spe in speciality %}
+                            <option value="{{ spe.id }}" {% if spe.id==query.especialidad.id %} selected {% endif %}>{{ spe.nombre }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+
+                <div class="form-group" id="content-medico">
+                    <label>Médico</label>
+                    <select disabled="disabled" class="chosen-select" id="combo-medico"
+                            data-placeholder="Seleccione un médico" style="width:350px;" tabindex="4" name="usuario">
+                        {% for doct in doctors %}
+
+                            <option value="-1">Seleccione un médico</option>
+                            <option value="{{ doct.id }}" {% if query.usuario.id==doct.id %} selected {% endif %}>{{ doct.getCompleteName() }}</option>
+                        {% endfor %}
+                    </select>
+
+                </div>
+
+                <div class="form-group" id="data_4">
+                    <label>Mes de la consulta</label>
+                    <div class="input-group date ">
+                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                        <input disabled="disabled" name="monthSelected" id="monthSelected" class="form-control" value="
+
+{{ query.mes }}/{{ query.dia }} /{{ query.anno }}" type="text">
+
+                    </div>
+                </div>
+
+
+                <div class="form-group" id="calendar-container">
+
+                </div>
+                <div class="form-group" id="detail-container">
+
+                </div>
+
+                <div class="form-group hide" id="clock-container">
+                    <h4 class="center-block">Hora de inicio de la consulta: </h4>
+                    <div class="calendar-time">
+                        <div><i class="fa fa-clock-o glyphicon glyphicon-time"></i>&nbsp;
+                            <select style="width: 100px;height: 30px" id="horainicial" onchange="checkMinutes(this)"
+                                    name="horaInicial" class="hourselect"
+                            >
+                                {% for k in 1..24 %}
+
+                                    <option value="{{ k }}">{{ k }}</option>
+                                {% endfor %}
+
+                            </select> :
+                            <select style="width: 100px;height: 30px" id="minutoinicial" name="minutoInicial"
+                                    class="minuteselect"
+                            >
+                                {% for l in range(0, 55, 5) %}
+
+
+
+                                      <option value="{{ l }}">{% if l<10 %}0{{ l }}{% else %}{{ l }}{% endif %}</option>
+
+
+                                {% endfor %}
+                            </select></div>
+                    </div>
+
+                </div>
+
+                <div class="form-group hide" id="clock-container-end">
+                    <h4 class="center-block">Hora final de la consulta: </h4>
+                    <div class="calendar-time">
+                        <div><i class="fa fa-clock-o glyphicon glyphicon-time"></i>&nbsp;
+                            <select style="width: 100px;height: 30px" id="horaFinal" onchange="checkMinutes2(this)"
+                                    name="horaFinal" class="hourselect"
+                            >
+                                {% for k in 1..24 %}
+
+                                    <option value="{{ k }}">{{ k }}</option>
+                                {% endfor %}
+
+                            </select> :
+                            <select style="width: 100px;height: 30px" id="minutoFinal" name="minutoFinal"
+                                    class="minuteselect"
+                            >
+                                {% for l in range(0, 55, 5) %}
+
+
+
+                                     <option value="{{ l }}">{% if l<10 %}0{{ l }}{% else %}{{ l }}{% endif %}</option>
+
+
+                                {% endfor %}
+                            </select></div>
+                    </div>
+
+                </div>
+                <div class="form-group hide" id="container-mensaje">
+                    <h4 class="center-block">Mensaje: </h4>
+                    <textarea disabled="disabled" name="mensaje" rows="3" cols="70"> {{ query.mensaje }}</textarea>
+
+                </div>
+                <div class="form-group">
+
+
+                    <div class="col-lg-offset-6 hide" id="btn-container">
+                        <button  type="submit" class=" btn btn-primary" style="margin-bottom: 120px !important">Aceptar</button>
+
+                        <a href="{{ path('doctor_query_reserved_list') }}" class=" btn btn-warning" style="margin-bottom: 120px !important">Volver al listado</a>
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+    </form>
+
+
+
+    <!-- Mainly scripts -->
+    <script src="{{ asset('bundles/app/js/jquery-2.1.1.js') }}"></script>
+    <script src="{{ asset('bundles/app/js/bootstrap.min.js') }}"></script>
+    <script src="{{ asset('bundles/app/js/plugins/jasny/jasny-bootstrap.min.js') }}"></script>
+    <script src="{{ asset('bundles/app/js/plugins/chosen/chosen.jquery.js') }}"></script>
+
+    <script src="{{ asset('bundles/app/js/plugins/bootstrap-tagsinput/bootstrap-tagsinput.js') }}"></script>
+    <script src="{{ asset('bundles/app/js/plugins/datapicker/bootstrap-datepicker.js') }}"></script>
+    <script src="{{ asset('bundles/app/js/plugins/clockpicker/clockpicker.js') }}"></script>
+
+    <script src="{{asset('bundles/app/js/plugins/validation/jquery.validationEngine.js')}}"></script>
+
+
+    <script src="{{asset('bundles/app/js/plugins/validation/jquery.validate.min.js')}}"></script>
+
+    <script src="{{asset('bundles/app/js/plugins/validation/additionalValidator.js')}}"></script>
+
+    <script>
+
+
+        var generateCalendar = function () {
+            var childrens = $('#calendar-container').children();
+            $('#clock-container').addClass('hide');
+            $('#input-clock').val('');
+            if (childrens.length > 0) {
+                for (var i = 0; i < childrens.length; i++) {
+                    childrens[i].remove()
+
+                }
+            }
+
+            appendContent('/manage/doctor/workplanned/' + $('#combo-medico').val(), 'calendar-container',
+                {
+                    monthSelected: $('#monthSelected').val()
+
+                }, function () {
+                    if (initialDayQuery) {
+                        $('#td-' + $('#input-dia').val()).addClass('select-day');
+
+                        $('#td-' + $('#input-dia').val()).click();
+
+                    }
+
+                })
+        }
+        generateCalendar();
+        var clearCalendar = function () {
+            $('#calendar-container').html('');
+            $('#calendar-container').html('');
+            $('#btn-container').addClass('hide');
+            $('#clock-container').addClass('hide');
+        }
+    </script>
+
+    <script>
+
+        $(document).ready(function () {
+
+
+            initialHourOfQuery ={{ query.horaInicial }}
+                endHourOfQuery ={{ query.horaFinal }}
+                    initialMinuteOfQuery ={{ query.minutoInicial }}
+                        endMinuteOfQuery ={{ query.minutoFinal }}
+                            initialDayQuery ={{ query.dia }}
+
+
+
+                                $('.tagsinput').tagsinput({
+                                    tagClass: 'label label-primary'
+                                });
+            $('.chosen-select').chosen({width: "100%"});
+
+
+        })
+        var checkMinutes = function (el) {
+            var hour = $(el).val();
+            var hoursInitial = parseInt(disabled[0].split(':')[0])
+            var hoursEnd = parseInt(disabled[1].split(':')[0])
+            var minuteInitial = parseInt(disabled[0].split(':')[1])
+            var minuteEnd = parseInt(disabled[1].split(':')[1])
+
+            var minutes = $('#minutoinicial option');
+            for (var i = 0; i < minutes.length; i++) {
+                $(minutes[i]).removeAttr("disabled");
+
+
+                if ((i * 15 < minuteInitial && hour == hoursInitial) || (i * 15 >= minuteEnd && hour == hoursEnd)) {
+                    $(minutes[i]).attr('disabled', 'disabled');
+                    $(minutes[i]).prop('disabled', true);
+                } else {
+                    $(minutes[i]).removeAttr("disabled");
+                }
+            }
+
+            /*desactivando horas 2*/
+            var hoursEndSel = $('#horaFinal option');
+            for (var i = 0; i < hoursEndSel.length; i++) {
+                $(hoursEndSel[i]).removeAttr("disabled");
+
+                if (i < hour || i > hoursEnd) {
+                    $(hoursEndSel[i]).attr('disabled', 'disabled');
+                    $(hoursEndSel[i]).prop('disabled', true);
+                }
+                if(i==hour&&$('#minutoinicial').val()==$('#minutoFinal').val()){
+                    $(hoursEndSel[i]).attr('disabled', 'disabled');
+                    $(hoursEndSel[i]).prop('disabled', true);
+                }
+            }
+            disableSecondMinute();
+
+
+        }
+        var disableSecondMinute = function () {
+            if ($('#horainicial').val() == $('#horaFinal').val()) {
+
+                var minutes = $('#minutoFinal option');
+                for (var i = 0; i < minutes.length; i++) {
+
+                    if ((i * 15 <= $('#minutoinicial').val())) {
+                        $(minutes[i]).attr('disabled', 'disabled');
+                        $(minutes[i]).prop('disabled', true);
+                    } else {
+                        $(minutes[i]).removeAttr("disabled");
+                    }
+                }
+            } else {
+                if ($('#horaFinal').val() != endHourOfQuery) {
+                    var minutes = $('#minutoFinal option');
+                    for (var i = 0; i < minutes.length; i++) {
+
+                        $(minutes[i]).removeAttr("disabled");
+
+                    }
+                } else {
+                    var minutes = $('#minutoFinal option');
+                    for (var i = 0; i < minutes.length; i++) {
+                        if (i * 15 <= endMinuteOfQuery) {
+                            $(minutes[i]).removeAttr("disabled");
+                        } else {
+                            $(minutes[i]).attr('disabled', 'disabled');
+                            $(minutes[i]).prop('disabled', true);
+                        }
+
+
+                    }
+                }
+
+            }
+        }
+
+
+        var checkMinutes2 = function (el) {
+            var hour = $(el).val();
+            var hoursInitial = parseInt(disabled[0].split(':')[0])
+            var hoursEnd = parseInt(disabled[1].split(':')[0])
+            var minuteInitial = parseInt(disabled[0].split(':')[1])
+            var minuteEnd = parseInt(disabled[1].split(':')[1])
+
+            var hourInitialSelect = $('#horainicial option');
+            for (var i = 0; i < hourInitialSelect.length; i++) {
+                $(hourInitialSelect[i]).removeAttr("disabled");
+
+
+                if ((i < hoursInitial || i > hour)) {
+                    $(hourInitialSelect[i]).attr('disabled', 'disabled');
+                    $(hourInitialSelect[i]).prop('disabled', true);
+                }
+                if (hour == hoursEnd && minuteEnd == $('#minutoFinal').val() && i == hour) {
+                    $(hourInitialSelect[i]).attr('disabled', 'disabled');
+                    $(hourInitialSelect[i]).prop('disabled', true);
+                }
+            }
+            disableSecondMinute()
+
+        }
+        var check = function (el) {
+
+            if (initialDayQuery != $(el).attr('td-val')) {
+                return;
+            }
+            var element = $('.select-day');
+            for (var j = 0; j < element.length; j++) {
+                $(element[j]).removeClass('select-day');
+            }
+            $(el).addClass('select-day');
+            var td = $('td.select-day')[0];
+            var dateSelected = $('#monthSelected').val().split('/');
+            $('#clock-container').addClass('hide');
+            $('#btn-container').addClass('hide');
+            $('#container-mensaje').addClass('hide');
+            var config2 = {
+                type: 'GET',
+                url: '/manage/doctor/workplanned/reserve/' + $('#combo-medico').val() + '/' + $(td).attr('td-val') + '/' + dateSelected[0] + '/' + dateSelected[2],
+                data: {},
+                success: function (response) {
+                    if (response.success == true) {
+                        $('#detail-container').html(response.data)
+                    }
+
+                }
+            }
+            $.ajax(config2);
+            var config = {
+                type: 'GET',
+                dataType: 'json',
+                contentType: "application/json",
+
+                url: '/manage/doctor/workplanned/' + $('#combo-medico').val() + '/' + $(td).attr('td-val') + '/' + dateSelected[0] + '/' + dateSelected[2],
+                data: {},
+                success: function (response) {
+
+                    if (response.success == true) {
+                        $('#input-anno').val(dateSelected[2]);
+                        $('#input-mes').val(dateSelected[0]);
+                        $('#input-dia').val($(td).attr('td-val'));
+                        disabled = [];
+                        if (response.data.min)
+                            disabled.push(response.data.min);
+                        if (response.data.max)
+                            disabled.push(response.data.max);
+                        $('#clock-container').removeClass('hide');
+                        $('#clock-container-end').removeClass('hide');
+                        var hoursInitial = parseInt(disabled[0].split(':')[0])
+                        var hoursEnd = parseInt(disabled[1].split(':')[0])
+                        var minuteInitial = parseInt(disabled[0].split(':')[1])
+                        var minuteEnd = parseInt(disabled[1].split(':')[1])
+                        var hours = $('#horainicial option');
+                        var minutes = $('#minutoinicial option');
+
+                        var hoursEndSel = $('#horaFinal option');
+                        var minutesEndSel = $('#minutoFinal option');
+                        for (var i = 0; i < hours.length; i++) {
+                            $(hours[i]).removeAttr("disabled");
+                            $(hours[i]).removeAttr("selected");
+                            if ($(td).attr('td-val') == initialDayQuery && i == initialHourOfQuery) {
+                                $('#horainicial').val(i);
+                                $(hours[i]).attr('selected', '""');
+
+                            }
+                            if ($(td).attr('td-val') != initialDayQuery && i == hoursInitial) {
+                                $(hours[i]).attr('selected', '""');
+                            }
+
+                            if (i < hoursInitial || (i > hoursEnd || (i == hoursEnd && minuteEnd == 0))) {
+                                $(hours[i]).attr('disabled', 'disabled');
+                                $(hours[i]).prop('disabled', true);
+                            } else {
+                                $(hours[i]).removeAttr("disabled");
+                            }
+                        }
+
+
+                        for (var i = 0; i < hoursEndSel.length; i++) {
+
+                            $(hoursEndSel[i]).removeAttr("disabled");
+                            $(hoursEndSel[i]).removeAttr("selected");
+                            if ($(td).attr('td-val') == initialDayQuery && i == endHourOfQuery) {
+                                $('#horaFinal').val(i);
+                                $(hoursEndSel[i]).attr('selected', '""');
+
+                            }
+
+
+                            if (i < hoursInitial || (i > hoursEnd)) {
+                                $(hoursEndSel[i]).attr('disabled', 'disabled');
+                                $(hoursEndSel[i]).prop('disabled', true);
+                            }
+                            if(i==hoursInitial&&initialMinuteOfQuery==endMinuteOfQuery){
+                                $(hoursEndSel[i]).attr('disabled', 'disabled');
+                                $(hoursEndSel[i]).prop('disabled', true);
+                            }
+                        }
+
+                        for (var i = 0; i < minutes.length; i++) {
+                            $(minutes[i]).removeAttr("disabled");
+                            $(minutes[i]).removeAttr("selected");
+                            if ($(td).attr('td-val') == initialDayQuery && (i * 15 == initialMinuteOfQuery)) {
+
+                                $('#minutoinicial').val(i * 15);
+                                $(minutes[i]).attr('selected', '""');
+                            }
+                            if ($(td).attr('td-val') != initialDayQuery && (i * 15 == minuteInitial)) {
+                                $('#minutoinicial').val(i * 15);
+                                $(minutes[i]).attr('selected', '""');
+                            }
+                            if (i * 15 < minuteInitial) {
+                                $(minutes[i]).attr('disabled', 'disabled');
+                                $(minutes[i]).prop('disabled', true);
+                            } else {
+                                $(minutes[i]).removeAttr("disabled");
+                            }
+                        }
+
+                        for (var i = 0; i < minutesEndSel.length; i++) {
+                            $(minutesEndSel[i]).removeAttr("disabled");
+                            $(minutesEndSel[i]).removeAttr("selected");
+                            if ($(td).attr('td-val') == initialDayQuery && (i * 15 == endMinuteOfQuery)) {
+                                initialDayQuery = null;
+                                $('#minutoFinal').val(i * 15);
+                                $(minutesEndSel[i]).attr('selected', '""');
+                            }
+
+
+                            if (i * 15 > endMinuteOfQuery && hoursEnd == endHourOfQuery) {
+
+                                $(minutesEndSel[i]).attr('disabled', 'disabled');
+                                $(minutesEndSel[i]).prop('disabled', true);
+                            } else {
+                                $(minutesEndSel[i]).removeAttr("disabled");
+                            }
+                        }
+
+
+                        $('#btn-container').removeClass('hide');
+                        $('#container-mensaje').removeClass('hide');
+
+
+                    }
+
+                }
+            }
+            $.ajax(config);
+
+        }
+
+
+    </script>
+    <script src="{{ asset('bundles/app/js/custom/validationHourMinute.js') }}"></script>
+    {{ parent() }}
+    <script>
+        idUser={{app.user.id}}
+        id={{ query.id }}
+        $(function () { formQueryValidation(); });
+    </script>
+    <script>
+
+        $('#page-wrapper').addClass('custom-gray');
+
+
+    </script>
+    {% include 'AppBundle:Default:message.js.twig' %}
+{% endblock %}

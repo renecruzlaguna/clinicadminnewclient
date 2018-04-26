@@ -1,0 +1,113 @@
+<script>
+
+    $(document).ready(function(){
+    $('.dataTables-example').DataTable({
+        pageLength: 25,
+        responsive: true,
+        ordering: true,
+        dom: '<"html5buttons"B>lTfgitp',
+        buttons: [],
+        language: {
+            "sProcessing": "Procesando...",
+            "sLengthMenu": "Mostrar _MENU_ registros",
+            "sZeroRecords": "No se encontraron resultados",
+            "sEmptyTable": "Ningún dato disponible en esta tabla",
+            "sInfo": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+            "sInfoEmpty": "Mostrando registros del 0 al 0 de un total de 0 registros",
+            "sInfoFiltered": "(filtrado de un total de _MAX_ registros)",
+            "sInfoPostFix": "",
+            "sSearch": "Buscar:",
+            "sUrl": "",
+            "sInfoThousands": ",",
+            "sLoadingRecords": "Cargando...",
+            "oPaginate": {
+                "sFirst": "Primero",
+                "sLast": "Último",
+                "sNext": "Siguiente",
+                "sPrevious": "Anterior"
+            },
+            "oAria": {
+                "sSortAscending": ": Activar para ordenar la columna de manera ascendente",
+                "sSortDescending": ": Activar para ordenar la columna de manera descendente"
+            }
+        },"fnDrawCallback": function() {
+            var checked = document.getElementsByClassName('toogle');
+            for (var i = 0; i < checked.length; i++) {
+                $(checked[i]).bootstrapToggle({});
+
+
+                $(checked[i]).on('change', function (event) {
+                    console.info(arguments);
+                    var cmp=this;
+
+                    var initial = ($(this).prop('checked')) ? false : true;
+
+                    excecuteAjax('GET', '/manage/user/active/' + $(this).attr('id-user') + '/' + ($(this).prop('checked') ? 1 : 0), {}, function () {
+                        $(cmp).bootstrapToggle('destroy')
+                        $(cmp).prop('checked',initial);
+                        $(cmp).bootstrapToggle()
+                    }, function (resp) {
+                        if (resp.success == false) {
+                            $(cmp).bootstrapToggle('destroy')
+                            $(cmp).prop('checked',initial);
+                            $(cmp).bootstrapToggle()
+
+
+                        }
+
+                    })
+
+
+                })
+
+
+            }
+             $('.demo3').click(function (e) {
+        var url = $(this).data('recordId');
+
+        swal({
+            title: "",
+            text: "¿Está seguro que desea eliminar la información?",
+            type: "warning",
+            showCancelButton: true,
+            cancelButtonColor: "#18a689",
+            confirmButtonColor: "#ed5565",
+            confirmButtonText: "Aceptar",
+            cancelButtonText: "Cancelar",
+            closeOnConfirm: true
+        }, function () {
+
+            waitMeShow();
+            window.location.href=url;
+        });
+    });
+        }
+
+    });
+
+
+
+    {% if message is defined and message %}
+    toastr.options = {
+    closeButton: true,
+    progressBar: true,
+    showMethod: 'slideDown',
+    timeOut: 2000
+};
+    toastr.success('',"{{ message }}");
+    {% endif %}
+
+    {% if error is defined and error %}
+    toastr.options = {
+    closeButton: true,
+    progressBar: true,
+    showMethod: 'slideDown',
+    timeOut: 2000
+};
+    toastr.error('',"{{ error }}");
+    {% endif %}
+
+
+
+});
+</script>

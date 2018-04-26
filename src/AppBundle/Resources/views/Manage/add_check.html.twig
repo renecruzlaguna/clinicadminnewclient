@@ -1,0 +1,462 @@
+{% extends 'base.html.twig' %}
+{% block css %}
+    {{ parent() }}
+    <link href="{{ asset('bundles/app/css/plugins/chosen/bootstrap-chosen.css') }}" rel="stylesheet">
+    <link href="{{ asset('bundles/app/css/plugins/datapicker/datepicker3.css') }}" rel="stylesheet">
+    <link href="{{ asset('bundles/app/css/plugins/steps/jquery.steps.css') }}" rel="stylesheet">
+    <link href="{{ asset('bundles/app/css/plugins/iCheck/custom.css') }}" rel="stylesheet">
+    <link href="{{ asset('bundles/app/css/plugins/select2/select2.min.css') }}" rel="stylesheet">
+
+    <link href="{{asset('bundles/app/css/plugins/touchspin/jquery.bootstrap-touchspin.min.css')}}" rel="stylesheet">
+
+{% endblock %}
+{% block content %}
+    <h3>Registrar factura de pago</h3>
+    <div class="panel  panel-primary"></div>
+    <form id="form" action="#" class="wizard-big" method="post"
+          action="{{ path('manage_query_admin_check_add',{id:query.id}) }}">
+
+
+        <input name="consulta" type="hidden" value="{{ query.id }}">
+        <input name="prices" id="price-input" type="hidden" value="0">
+        <input name="numeroFactura" type="hidden" value="{{number_generate }}">
+        <div class="row">
+
+       <div class="col-md-12">
+           <div class="col-md-1">
+               <img src="{{ asset('bundles/app/images/logo.png') }}">
+           </div>
+
+           <div class="col-md-6">
+               <h1 class="text-center">{{ company_name }}</h1>
+                 <p><strong>Dir:{{ address_company }} </strong> </p>
+               <p class="text-center"><strong>Web: <a href="http://{{ web_company }}">{{ web_company }}</a></strong> <i class="fa  fa-twitter"></i><span> @{{ twitter }}</span> <i class="fa fa-facebook"></i><span> {{ facebook }}</span></p>
+               <p class="text-center"><strong>{{ city_company }}</strong></p>
+           </div>
+
+           <div class="col-md-2 col-lg-offset-1"
+                style="border-color: #000000;border-radius: 12px;border-style: solid;border-width: 1px;">
+                     <img src="{{ app.request.scheme ~'://' ~ app.request.httpHost ~  asset('bundles/app/images/logofactura.png') }}">
+
+
+
+           </div>
+
+       </div>
+
+
+
+
+        </div>
+
+
+
+
+
+        <div class="row">
+            <div class="col-md-8 col-lg-offset-4">
+
+
+            </div>
+        </div>
+
+
+
+        <fieldset>
+
+
+            <div class="row">
+                <div class="form-horizontal">
+
+
+                    <div class="col-lg-6">
+                        <div class="form-group">
+
+                            <label class="control-label col-lg-2" for="ci">Sr.(es):</label>
+                            <div class="col-lg-10">
+                                <input value="{{ query.usuarioRegistro.getCompleteName() }}" aria-describedby="ci"
+                                       disabled="disabled" type="text" class="form-control">
+
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="col-lg-4">
+                        <div class="form-group">
+
+                            <label class="control-label col-lg-4" for="fecha">fecha:</label>
+                            <div class="col-lg-8">
+                                <input name="fecha" readonly="readonly"
+                                       type="text" class="form-control" value="{{ "now"|date("d/m/y") }}">
+
+                            </div>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="form-horizontal">
+
+
+                    <div class="col-lg-6">
+                        <div class="form-group">
+
+                            <label class="control-label col-lg-2" for="ci">Dirección:</label>
+                            <div class="col-lg-10">
+                                <input value="{{ query.usuarioRegistro.direccion }}" aria-describedby="ci"
+                                       disabled="disabled" type="text" class="form-control">
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="form-group">
+
+                            <label class="control-label col-lg-4" for="telefono">Telf:</label>
+                            <div class="col-lg-8">
+                                <input value="{{ query.usuarioRegistro.telefono }}" aria-describedby="telefono"
+                                       disabled="disabled" type="text" class="form-control">
+
+                            </div>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-horizontal">
+
+
+                    <div class="col-lg-3">
+                        <div class="form-group">
+
+                            <label class="control-label col-lg-2" for="ci">R.U.C:</label>
+                            <div class="col-lg-10">
+                                <input readonly="readonly" value="{{ query.usuarioRegistro.cedula }}" aria-describedby="ci"
+                                       type="text" class="form-control">
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="form-group">
+
+                            <label class="control-label col-lg-4" for="telefono">Ciudad:</label>
+                            <div class="col-lg-8">
+                                <select name="ciudad" class="chosen-select">
+
+
+                                    <option value="Guayaquil" selected>Guayaquil</option>
+                                    <option value="Quito"> Quito  </option>
+                                    <option value="Quevedo">  Quevedo </option>
+                                    <option value="Cuenca">  Cuenca </option>
+                                    <option value="Machala"> Machala  </option>
+                                    <option value="Esmeralda"> Esmeralda  </option>
+                                    <option value="Manabi"> Manabi  </option>
+                                    <option value="Loja"> Loja  </option>
+
+                                </select>
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-3">
+                        <div class="form-group">
+
+                            <label class="control-label col-lg-5" for="telefono">Guía de comisión:</label>
+                            <div class="col-lg-7">
+                                <input id="guia" name="guia" value="0" data-error="#errNm3"
+                                       type="text" class="form-control touchspin3">
+
+                            </div>
+                        </div>
+                        <span class="has-error" id="errNm3"></span>
+                    </div>
+
+
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-7">
+                    <div class="form-group">
+                        <div class="col-lg-offset-3">
+                            <label>SERVICIOS:</label>
+                        </div>
+                        <select name="servicio[]" class="select2_demo_2 form-control" multiple="multiple">
+                            {% for service in services %}
+                            <option id="option-{{ service.id }}" data-price="{{ service.precio }}" data-service-Name="{{ service.nombre }}" value="{{ service.id }}">{{ service.nombre }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                </div>
+
+                <div class="col-lg-3">
+                    <div class="form-group">
+                        <div class="col-lg-offset-3">
+                            <label>V.TOTAL:</label>
+                        </div>
+                        <input aria-describedby="telefono" name="total"  id="total"
+                               readonly="readonly"  value="0" type="text"
+                               class="form-control">
+
+                    </div>
+                </div>
+            </div>
+            <div id="text-services" class=" hidden col-lg-offset-1">
+            <h4>Cantidad de servicios ofrecidos:</h4>
+            </div>
+            <div class="row" id="content-services">
+                {% for service in services %}
+                    <div class="form-group hidden col-lg-offset-1 col-lg-2 services" id="div-{{service.id}}">
+                        <div>
+                            <label>{{service.nombre}}:</label>
+                        </div>
+                        <input onchange="recalcName(this)" id="input-{{service.id}}" type="text"  value="1"  class=" service form-control touchspin3" min="1" max="100" name="servicesvalues[]">
+                    </div>
+
+                {% endfor %}
+
+            </div>
+
+            <div class="row">
+                <div class="col-lg-10">
+                    <div class="form-group">
+                        <div class="col-lg-offset-3">
+                            <label>DESCRIPCI&Oacute;N:</label>
+                        </div>
+                        <textarea name="descripcion" id="descripcion" cols="5" class="form-control required" rows="4"></textarea>
+                    </div>
+                </div>
+
+
+            </div>
+  <div  class="col-md-offset-3">   <label class="control-label">Forma de pago:</label></div>
+                <div class="form-group">
+
+
+                    <div class="col-sm-12">
+                        <label class="iradio-inline i-checks">
+                            <div class="iradio_square-green" style="position: relative;">
+                                <input value="1" name="formaPago"   style="position: absolute; opacity: 0;" type="radio" data-error="#errNm2">
+                            </div>
+                            EFECTIVO </label>
+                        <label class="iradio-inline i-checks">
+                            <div class="iradio_square-green" style="position: relative;">
+                                <input value="2" name="formaPago" style="position: absolute; opacity: 0;"  type="radio" data-error="#errNm2">
+                            </div>
+                            DINERO ELECTR&Oacute;NICO </label>
+                        <label class="iradio-inline i-checks">
+                            <div class="iradio_square-green" style="position: relative;">
+                                <input value="3" name="formaPago"  style="position: absolute; opacity: 0;" type="radio" data-error="#errNm2">
+                            </div>
+                            TARJETA DE CRÉDITO/DÉBITO</label>
+
+
+                    <label class="iradio-inline i-checks">
+                        <div class="iradio_square-green" style="position: relative;">
+                            <input value="4" name="formaPago" style="position: absolute; opacity: 0;" type="radio" data-error="#errNm2">
+                        </div>
+                        OTROS</label></div>
+                    <span id="errNm2"></span>
+                </div>
+
+
+
+
+
+
+
+        </fieldset>
+
+        <div class="col-lg-offset-7">
+
+
+            <button type="submit" class=" btn btn-primary">Aceptar</button>
+            <a href="{{ path('manage_reserved_admin_list') }}" class=" btn btn-warning">Volver al listado</a>
+        </div>
+    </form>
+    {{ parent() }}
+    <!-- Mainly scripts -->
+    <script src="{{ asset('bundles/app/js/jquery-2.1.1.js') }}"></script>
+    <script src="{{ asset('bundles/app/js/bootstrap.min.js') }}"></script>
+    <script src="{{ asset('bundles/app/js/plugins/jasny/jasny-bootstrap.min.js') }}"></script>
+    <script src="{{ asset('bundles/app/js/plugins/chosen/chosen.jquery.js') }}"></script>
+    <script src="{{ asset('bundles/app/js/plugins/touchspin/jquery.bootstrap-touchspin.min.js') }}"></script>
+    <script src="{{ asset('bundles/app/js/plugins/bootstrap-tagsinput/bootstrap-tagsinput.js') }}"></script>
+    <script src="{{ asset('bundles/app/js/plugins/steps/jquery.steps.js') }}"></script>
+    <script src="{{ asset('bundles/app/js/plugins/toogle/bootstrap-toggle.min.js') }}"></script>
+    <script src="{{ asset('bundles/app/js/plugins/iCheck/icheck.min.js') }}"></script>
+    <script src="{{ asset('bundles/app/js/plugins/select2/select2.full.min.js') }}"></script>
+
+    <script src="{{asset('bundles/app/js/plugins/validation/jquery.validationEngine.js')}}"></script>
+
+
+    <script src="{{asset('bundles/app/js/plugins/validation/jquery.validate.min.js')}}"></script>
+
+    <script src="{{asset('bundles/app/js/plugins/validation/additionalValidator.js')}}"></script>
+    <script src="{{ asset('bundles/app/js/custom/validationCheck.js') }}"></script>
+    <script>
+
+        $(function () { formCheckValidation(); });
+    </script>
+
+
+
+    <script>
+
+        var recalcName =function(node){
+            var services= $(".select2_demo_2").val();
+            var servicesName=[];
+            var servicesPrice=[];
+            var price=0;
+            for(var i=0;i<services.length;i++){
+
+
+                var option=$('#option-'+ services[i]);
+
+                if(option){
+                    price+=parseFloat($(option).data('price'))*parseInt($('#input-'+ services[i]).val());
+                    servicesName.push($(option).data('serviceName'))
+                }
+
+                servicesPrice.push(  $('#input-'+ services[i]).val())
+
+            }
+            price=price+"";
+            var splitNumber=price.split(".");
+            var sendPart=splitNumber[1]!=null?splitNumber[1]:"0";
+
+            $('#total').val(splitNumber[0]+'.'+pad(sendPart,0,2).substring(0,3));
+            if(servicesName.length==0){
+                $('#total').val(0)
+            }
+
+           else if(servicesName.length==1){
+                $('#descripcion').val('El servicio ofrecido fue:  '+servicesName[0]+' ('+servicesPrice[0]+')'+'.');
+            }
+            else{
+                var serviceDescription=[];
+                for(var i=0;i<services.length;i++){
+
+                    serviceDescription.push(servicesName[i]+' ('+servicesPrice[i]+') ');
+                }
+                $('#descripcion').val('Los servicios  ofrecidos fueron: '+serviceDescription.join(','))+'.';
+            }
+
+        }
+
+        $(document).ready(function () {
+
+            $.validator.setDefaults({ignore: ":hidden:not(select)"})
+            $("#guia").TouchSpin({
+                verticalbuttons: true,
+                buttondown_class: 'btn btn-white',
+                buttonup_class: 'btn btn-white',
+                max:50,
+                min:0,
+                value:0
+            });
+            $(function()
+            {
+                $("#form").submit(function()
+                {
+                    if($('#form').valid()){
+                        $("div.hidden input.service").remove();
+
+
+                        return true; // ensure form still submits
+                    }
+
+                });
+            });
+            $('.chosen-select').chosen({width: "100%"});
+            $(".select2_demo_2").select2();
+            var onChange=function(){
+
+                var services= $(".select2_demo_2").val();
+                if(services==null){
+                    services=[];
+                }
+                var price=0;
+                var servicesName=[];
+                var servicesPrice=[];
+                $('input .services').addClass('hidden');
+                if(services.length==0)
+                    $('#text-services').addClass('hidden');
+
+
+                $('div .services').addClass('hidden');
+                for(var i=0;i<services.length;i++){
+                    $('#text-services').removeClass('hidden');
+                    $('#input-'+ services[i]).TouchSpin({
+                        verticalbuttons: true,
+                        buttondown_class: 'btn btn-white',
+                        buttonup_class: 'btn btn-white',
+                        step: 1,
+                        decimals: 0,
+                        min:1,
+                        max:100
+                    });
+
+                    servicesPrice.push(  $('#input-'+ services[i]).val())
+                    var option=$('#option-'+ services[i]);
+                    if(option){
+                        price+=parseFloat($(option).data('price'))*parseInt($('#input-'+ services[i]).val());
+                        servicesName.push($(option).data('serviceName'))
+                    }
+
+                    $('#div-'+ services[i]).removeClass('hidden');
+
+
+
+                }
+                price=price+"";
+                var splitNumber=price.split(".");
+                var sendPart=splitNumber[1]!=null?splitNumber[1]:"0";
+
+                $('#total').val(splitNumber[0]+'.'+pad(sendPart,0,2).substring(0,3));
+                var descuento=parseFloat($('#guia').val());
+
+                $('#total').val( $('#total').val()-((descuento* $('#total').val())/100));
+                var totalValue= $('#total').val();
+                var splitNumber=totalValue.split(".");
+                var sendPart=splitNumber[1]!=null?splitNumber[1]:"0";
+
+                $('#total').val(splitNumber[0]+'.'+pad(sendPart,0,2).substring(0,3));
+                if(servicesName.length==0){
+                    $('#descripcion').val('');
+                    $('#total').val(0)
+
+                }
+                else if(servicesName.length==1){
+                    $('#descripcion').val('El servicio ofrecido fue:  '+servicesName[0]+' ('+servicesPrice[0]+')'+'.');
+                }
+                else{
+                    var serviceDescription=[];
+                    for(var i=0;i<services.length;i++){
+
+                        serviceDescription.push(servicesName[i]+' ('+servicesPrice[i]+') ');
+                    }
+                    $('#descripcion').val('Los servicios  ofrecidos fueron: '+serviceDescription.join(','))+'.';
+                }
+
+            }
+            $(".select2_demo_2").change(onChange)
+            $("#guia").change(onChange)
+
+            $('.i-checks').iCheck({
+                checkboxClass: 'icheckbox_square-green',
+                radioClass: 'iradio_square-green',
+            });
+
+        })</script>
+
+{% endblock %}

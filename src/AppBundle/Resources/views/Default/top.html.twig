@@ -1,0 +1,30 @@
+<ul class="dropdown-menu dropdown-alerts">
+    <li>
+        <div>
+            <i class="fa fa-envelope fa-fw"></i>&nbsp;&nbsp;&nbsp;Consultas Planificadas: {{ queryPlanifMonth }}
+
+        </div>
+    </li>
+    <li class="divider"></li>
+    <li>
+        <div>
+            <i class="fa fa-envelope fa-fw"></i>&nbsp;&nbsp;&nbsp;Consultas Canceladas: {{ queryCancelMonth }}
+
+        </div>
+    </li>
+    <li class="divider"></li>
+    <li>
+
+        <div>
+            <i class="fa fa-envelope fa-fw"></i>&nbsp;&nbsp;Consultas Terminadas: {{ queryEndMonth }}
+
+        </div>
+
+    </li>
+
+    <li class="divider"></li>
+    <div>
+        <i class="fa fa-money fa-fw"></i>&nbsp;&nbsp;Total Recaudado: ${{ queryRecMonth |number_format(2, '.') }}
+
+    </div>
+</ul>

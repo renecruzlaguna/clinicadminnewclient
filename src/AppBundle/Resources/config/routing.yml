@@ -1,0 +1,309 @@
+default_homepage:
+    path:     /
+    defaults: { _controller: AppBundle:Default:index }
+manage:
+    path:     /manage
+    defaults: { _controller: AppBundle:Admin:index }
+manage_send_email:
+    path:     /email/send/{secret}
+    defaults: { _controller: AppBundle:Email:send }
+manage_user_list:
+    path:     /manage/user
+    defaults: { _controller: AppBundle:Admin:listUser }
+manage_user_active:
+    path:     /manage/user/active/{id}/{estado}
+    defaults: { _controller: AppBundle:Admin:ActiveUser }
+manage_user_add:
+    path:     /manage/user/add
+    defaults: { _controller: AppBundle:Admin:addUser }
+manage_user_remove:
+    path:     /manage/user/remove/{id}
+    defaults: { _controller: AppBundle:Admin:removeUser }
+manage_client_galery_add:
+    path:     /manage/client/galery/add/{id}
+    defaults: { _controller: AppBundle:AdminClient:addImage }
+manage_user_edit:
+    path:     /manage/user/edit/{id}
+    defaults: { _controller: AppBundle:Admin:editUser }
+manage_client_view_reserve:
+    path:     /manage/cliente/view/reserve/{id}
+    defaults: { _controller: AppBundle:AdminClient:viewReserve }
+
+manage_client_view_galery:
+    path:     /manage/cliente/view/galery/{id}
+    defaults: { _controller: AppBundle:AdminClient:viewGalery }
+manage_client_delete_galery:
+    path:     /manage/client/images/delete
+    defaults: { _controller: AppBundle:AdminClient:removeImages }
+manage_especiality_list:
+    path:     /manage/especiality
+    defaults: { _controller: AppBundle:AdminEspeciality:listEspeciality }
+manage_speciality_add:
+    path:     /manage/speciality/add
+    defaults: { _controller: AppBundle:AdminEspeciality:addSpeciality }
+manage_speciality_remove:
+    path:     /manage/speciality/remove/{id}
+    defaults: { _controller: AppBundle:AdminEspeciality:removeSpeciality }
+manage_speciality_edit:
+    path:     /manage/speciality/edit/{id}
+    defaults: { _controller: AppBundle:AdminEspeciality:editSpeciality }
+manage_service_admin_verify:
+    path:  /manage/service/admin/verify
+    defaults: { _controller: AppBundle:AdminService:verifyExist }
+manage_service_add:
+    path:     /manage/service/add
+    defaults: { _controller: AppBundle:AdminService:addService }
+manage_service_remove:
+    path:     /manage/service/remove/{id}
+    defaults: { _controller: AppBundle:AdminService:removeService }
+manage_service_edit:
+    path:     /manage/service/edit/{id}
+    defaults: { _controller: AppBundle:AdminService:editService }
+manage_service_list:
+    path:     /manage/service
+    defaults: { _controller: AppBundle:AdminService:listService }
+_security_check:
+    path: /manage/login_check
+_security_logout:
+    path: /manage/logout
+app_login:
+    pattern:  /manage/login
+    defaults: { _controller: AppBundle:Default:login }
+app_register:
+    pattern:  /register
+    defaults: { _controller: AppBundle:Default:register }
+doctor_planed:
+    path:  /manage/planned
+    defaults: { _controller: AppBundle:WorkPlaned:index }
+
+doctor_planed_secretary:
+    path:  /manage/planned/{idDoctor}
+    defaults: { _controller: AppBundle:WorkPlaned:indexSecretary }
+doctor_reserve:
+    path:  /manage/planned
+    defaults: { _controller: AppBundle:WorkPlaned:index }
+client_query_register:
+    path:  /manage/reserve/register
+    defaults: { _controller: AppBundle:Client:index }
+client_query_cancel:
+    path:  /manage/reserve/cancel/{id}
+    defaults: { _controller: AppBundle:Client:cancelQuery }
+doctor_by_speciality:
+    path:  /manage/doctor/speciality/{id}
+    defaults: { _controller: AppBundle:Client:getDoctorBySpeciality }
+doctor_work_planed:
+    path:  /manage/doctor/workplanned/{id}
+    defaults: { _controller: AppBundle:Client:getCalendarOfDoctor }
+doctor_work_planed_hour_interval:
+    path:  /manage/doctor/workplanned/{id}/{day}/{month}/{year}
+    defaults: { _controller: AppBundle:Client:getDoctorRangeHour }
+doctor_work_planed_hour_query:
+    path:  /manage/doctor/workplanned/reserve/{id}/{day}/{month}/{year}
+    defaults: { _controller: AppBundle:Client:getAllQueryOfDoctor }
+client_query_save:
+    path:  /manage/reserve/save
+    defaults: { _controller: AppBundle:Client:saveReserve }
+client_query_reserved_list:
+    path:  /manage/reserved/list
+    defaults: { _controller: AppBundle:Client:listMyQuery }
+client_query_executed_list:
+    path:  /manage/reserve/executed/list
+    defaults: { _controller: AppBundle:Client:listMyQueryExecuted }
+cliente_query_save_update:
+    path:  /manage/reserve/client/save/update/{id}
+    defaults: { _controller: AppBundle:Client:saveUpdateReserve }
+cliente_query_update:
+    path:  /manage/reserve/client/update/{id}
+    defaults: { _controller: AppBundle:Client:updateQuery }
+doctor_query_reserved_list:
+    path:  /manage/doctor/reserved/list/{finicio}/{ffin}/{estado}
+    defaults: { _controller: AppBundle:DoctorReserved:listMyQuery,finicio:-1,ffin:-1,estado:-1 }
+doctor_query_save_update:
+    path:  /manage/reserve/doctor/save/update/{id}
+    defaults: { _controller: AppBundle:DoctorReserved:saveUpdateQuery }
+doctor_query_update:
+    path:  /manage/reserve/doctor/update/{id}
+    defaults: { _controller: AppBundle:DoctorReserved:updateQuery }
+
+client_query_remove:
+    path:  /manage/reserve/client/remove/{id}
+    defaults: { _controller: AppBundle:Client:removeReserveClient }
+
+
+manage_client_user_list:
+    path:     /manage/client
+    defaults: { _controller: AppBundle:AdminClient:listClient }
+manage_client_user_add:
+    path:     /manage/client/add
+    defaults: { _controller: AppBundle:AdminClient:addClient }
+manage_client_user_remove:
+    path:     /manage/client/remove/{id}
+    defaults: { _controller: AppBundle:AdminClient:removeClient }
+manage_client_user_edit:
+    path:     /manage/client/edit/{id}
+    defaults: { _controller: AppBundle:AdminClient:editClient }
+
+manage_doctor_user_list:
+    path:     /manage/doctor
+    defaults: { _controller: AppBundle:AdminDoctor:listDoctor }
+manage_doctor_user_add:
+    path:     /manage/doctor/add
+    defaults: { _controller: AppBundle:AdminDoctor:addDoctor }
+manage_doctor_user_remove:
+    path:     /manage/doctor/remove/{id}
+    defaults: { _controller: AppBundle:AdminDoctor:removeDoctor }
+manage_doctor_user_edit:
+    path:     /manage/doctor/edit/{id}
+    defaults: { _controller: AppBundle:AdminDoctor:editDoctor }
+manage_cliente_query_save:
+    path:  /manage/reserve/admin/save
+    defaults: { _controller: AppBundle:AdminReserved:saveReserveAdmin }
+manage_query_admin_add:
+    path:  /manage/reserve/admin/add
+    defaults: { _controller: AppBundle:AdminReserved:registerQueryClient }
+manage_promotion_admin_add:
+    path:  /manage/promotion/admin
+    defaults: { _controller: AppBundle:Admin:sendPromotion }
+manage_cliente_query_save_update:
+    path:  /manage/reserve/admin/save/update/{id}
+    defaults: { _controller: AppBundle:AdminReserved:saveUpdateReserveAdmin }
+manage_query_admin_update:
+    path:  /manage/reserve/admin/update/{id}
+    defaults: { _controller: AppBundle:AdminReserved:updateQueryClient }
+manage_reserved_admin_list:
+    path:  /manage/reserved/admin/show/{finicio}/{ffin}/{estado}
+    defaults: { _controller: AppBundle:AdminReserved:listReserved,finicio:-1,ffin:-1,estado:-1 }
+manage_user_admin_verify:
+    path:  /manage/user/admin/verify
+    defaults: { _controller: AppBundle:Admin:verifyExistUser }
+manage_specility_admin_verify:
+    path:  /manage/specility/admin/verify
+    defaults: { _controller: AppBundle:AdminEspeciality:verifyExist }
+manage_admin_cotization:
+    path:  /manage/specility/admin/cotization
+    defaults: { _controller: AppBundle:Admin:cotization }
+manage_reserved_admin_remove:
+    path:  /manage/reserved/admin/remove/{id}
+    defaults: { _controller: AppBundle:AdminReserved:removeReserve }
+manage_reserved_admin_status:
+    path:  /manage/reserved/admin/status/{id}/{status}
+    defaults: { _controller: AppBundle:AdminReserved:updateReserveStatus }
+manage_report_list_query_made_doctor_speciality_show:
+    path:  /manage/report/made/reserve/doctor
+    defaults: { _controller: AppBundle:AdminReport:listQueryMadeReportShow }
+manage_report_list_query_made_doctor_speciality_filter:
+    path:  /manage/report/made/reserve/doctor/{speciality}/{doctor}
+    defaults: { _controller: AppBundle:AdminReport:filterQueryMadeReport }
+manage_report_list_query_cancel_show:
+    path:  /manage/report/cancel/reserve
+    defaults: { _controller: AppBundle:AdminReport:listQueryCancelByPatientReportShow }
+manage_report_list_query_cancel_filter:
+    path:  /manage/report/cancel/reserve/{patient}
+    defaults: { _controller: AppBundle:AdminReport:filterQueryCancelByPatientReport }
+
+manage_report_list_query_state_show:
+    path:  /manage/report/state/reserve
+    defaults: { _controller: AppBundle:AdminReport:listQueryStateReportShow }
+manage_report_list_query_state_filter:
+    path:  /manage/report/state/reserve/{state}/{initialDate}/{endDate}
+    defaults: { _controller: AppBundle:AdminReport:filterQueryStateReport }
+
+manage_report_list_query_total_resumen_show:
+    path:  /manage/report/total/reserve
+    defaults: { _controller: AppBundle:AdminReport:listQueryTotalReportShow }
+manage_report_list_query_salary:
+    path:  /manage/report/total/reserve/salary
+    defaults: { _controller: AppBundle:AdminReport:listQueryTotalReportSalaryShow }
+manage_report_list_query_total_resumen_salary_filter:
+    path:  /manage/report/total/reserve/salary/{speciality}/{doctor}/{initialDate}/{endDate}
+    defaults: { _controller: AppBundle:AdminReport:filterQueryTotalReportSalary }
+manage_report_list_query_total_resumen_filter:
+    path:  /manage/report/total/reserve/{speciality}/{doctor}/{initialDate}/{endDate}
+    defaults: { _controller: AppBundle:AdminReport:filterQueryTotalReport }
+
+
+
+
+manage_perfil_user_edit:
+    path:     /manage/perfil/user/edit/{id}
+    defaults: { _controller: AppBundle:Perfil:editUser }
+
+manage_perfil_client_user_edit:
+    path:     /manage/perfil/client/edit/{id}
+    defaults: { _controller: AppBundle:Perfil:editClient }
+
+
+manage_query_result_doctor_add:
+    path:     /manage/reserveresult/doctor/add/{id}
+    defaults: { _controller: AppBundle:DoctorReserved:addResultQuery }
+manage_query_result_doctor_edit:
+    path:     /manage/reserveresult/doctor/edit/{id}/{queryId}
+    defaults: { _controller: AppBundle:DoctorReserved:editResultQuery }
+manage_query_result_doctor_delete:
+    path:     /manage/reserveresult/doctor/delete/{id}
+    defaults: { _controller: AppBundle:DoctorReserved:removeResultQuery }
+manage_query_admin_check_add:
+    path:     /manage/reserve/admin/check/add/{id}
+    defaults: { _controller: AppBundle:AdminReserved:addCheckQuery }
+manage_query_admin_check_edit:
+    path:     /manage/reserve/admin/check/edit/{id}
+    defaults: { _controller: AppBundle:AdminReserved:editCheckQuery }
+manage_check_admin_remove:
+    path:     /manage/reserve/admin/check/delete/{id}
+    defaults: { _controller: AppBundle:AdminReserved:removeCheckQuery }
+manage_check_admin_pdf_generate:
+    path:     /manage/reserve/admin/check/pdf/{id}
+    defaults: { _controller: AppBundle:AdminReserved:createPDFCheck }
+manage_check_admin_pdf_get:
+    path:     /manage/reserve/admin/get/pdf/{fileName}
+    defaults: { _controller: AppBundle:AdminReserved:getPdf }
+manage_check_client_pdf_generate:
+    path:     /manage/reserve/client/check/pdf/{id}
+    defaults: { _controller: AppBundle:Client:createPDFCheck }
+manage_check_client_send_check:
+    path:     /manage/reserve/client/send/email/{id}
+    defaults: { _controller: AppBundle:AdminReserved:sendEmailWithPdf }
+manage_check_free_hour:
+    path:     /manage/reserve/check/free/{id}/{initialHour}/{endHour}/{initialMinute}/{endMinute}/{idUser}/{day}/{month}/{year}
+    defaults: { _controller: AppBundle:DoctorReserved:checkFreeRange }
+manage_graphic_line:
+    path:     /manage/graphic/line
+    defaults: { _controller: AppBundle:Admin:generateDataForGraphic }
+manage_query_result_admin_view:
+    path:     /manage/reserveresult/admin/view/{id}/{queryId}
+    defaults: { _controller: AppBundle:Admin:viewResultQuery }
+manage_query_evolution_doctor_view:
+    path:     /manage/reserveevolution/doctor/view/{queryId}
+    defaults: { _controller: AppBundle:DoctorReserved:viewEvolutions }
+manage_query_evolution_admin_view:
+    path:     /manage/reserveevolution/admin/view/{queryId}
+    defaults: { _controller: AppBundle:AdminReserved:viewEvolutions }
+    
+ #GRAFIC REPORT
+manage_grafic_report_list_query_total:
+    path:  /manage/report/grafic/total/reserve
+    defaults: { _controller: AppBundle:AdminGraficReport:listTotalQueryMadeReportShow }
+manage_grafic_report_list_query_total_grafic:
+    path:    /manage/report/grafic/total/reserve/action
+    defaults: { _controller: AppBundle:AdminGraficReport:generateDataForGraphicTotalQueryMadeReport }
+    
+manage_grafic_report_list_service_total:
+    path:  /manage/report/grafic/total/service
+    defaults: { _controller: AppBundle:AdminGraficReport:listTotalServiceMadeReportShow }
+manage_grafic_report_list_service_total_grafic:
+    path:    /manage/report/grafic/total/service/action
+    defaults: { _controller: AppBundle:AdminGraficReport:generateDataForGraphicTotalServiceMadeReport }
+
+manage_grafic_report_list_patient_total:
+    path:  /manage/report/grafic/total/patient
+    defaults: { _controller: AppBundle:AdminGraficReport:listTotalQueryPatientReportShow }
+manage_grafic_report_list_patient_total_grafic:
+    path:    /manage/report/grafic/total/patient/action
+    defaults: { _controller: AppBundle:AdminGraficReport:generateDataForGraphicTotalQueryPatientReport }
+    
+manage_grafic_report_list_mony_query_total:
+    path:  /manage/report/grafic/total/mony
+    defaults: { _controller: AppBundle:AdminGraficReport:listTotalMonyQueryMadeReportShow }
+manage_grafic_report_list_mony_query_total_grafic:
+    path:    /manage/report/grafic/total/mony/action
+    defaults: { _controller: AppBundle:AdminGraficReport:generateDataForGraphicTotalMonyQueryMadeReport }

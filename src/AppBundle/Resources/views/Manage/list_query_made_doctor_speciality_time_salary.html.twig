@@ -1,0 +1,160 @@
+{% extends 'base.html.twig' %}
+{% block css %}
+    {{ parent() }}
+    <link href="{{ asset('bundles/app/css/plugins/chosen/bootstrap-chosen.css') }}" rel="stylesheet">
+    <link href="{{ asset('bundles/app/css/plugins/datapicker/datepicker3.css') }}" rel="stylesheet">
+
+{% endblock %}
+{% block content %}
+    <script src="{{ asset('bundles/app/js/plugins/chosen/chosen.jquery.js') }}"></script>
+
+    <div class="ibox float-e-margins">
+        <div class="ibox-title">
+
+
+            <h5>Salario a pagar a un doctor a partir de las consultas realizadas</h5>
+            <div class="ibox-tools">
+                <a class="collapse-link">
+                    <i class="fa fa-chevron-up"></i>
+                </a>
+            </div>
+        </div>
+
+        <div class="ibox-content inspinia-timeline" style="display: block;">
+
+            <div class="timeline-item">
+
+                <form class="m-t" role="form" action="#" method="POST">
+
+                    <div class="row">
+
+
+                        <div class="col-lg-3">
+                            <div class="form-group">
+
+                                <select id="combo-especialidad" data-placeholder="Seleccione una especialidad"
+                                        class="chosen-select"
+                                        style="width:350px;" tabindex="4" name="especialidad">
+                                    <option value="-1" selected>Seleccione una especialidad</option>
+                                    {% for spe in especialities %}
+                                        <option value="{{ spe.id }}">{{ spe.nombre }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="form-group" id="data_5">
+
+                                <div class="input-daterange input-group" id="datepicker">
+                                    <input  id="start" type="text" class="input-sm form-control"
+                                           name="start" value=""/>
+                                    <span class="input-group-addon">a</span>
+                                    <input  id="end" type="text" class="input-sm form-control"
+                                           name="end" value=""/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3">
+
+
+                            <div class="form-group hide" id="content-medico">
+
+
+                            </div>
+
+                        </div>
+
+                        <div class="col-lg-2">
+                            <button type="button" onclick="executeFilter()" class=" btn btn-primary"> <i class="fa fa-filter"></i>&nbsp;Filtrar</button>
+                        </div>
+                    </div>
+
+                </form>
+
+            </div>
+
+
+
+
+        </div>
+    </div>
+    <div id="content-table" class="table-responsive">
+
+        {# incluir el listado #}
+        {{ render( controller( 'AppBundle:AdminReport:filterQueryTotalReportSalary',{'speciality':-1,'doctor':-1,'initialDate':-1,'endDate':-1})) }}
+    </div>
+{% endblock %}
+
+{% block javascript %}
+
+    {{ parent() }}
+    <script src="{{ asset('bundles/app/js/plugins/bootstrap-tagsinput/bootstrap-tagsinput.js') }}"></script>
+    <script src="{{ asset('bundles/app/js/plugins/datapicker/bootstrap-datepicker.js') }}"></script>
+
+    <script src="{{ asset('bundles/app/js/plugins/chosen/chosen.jquery.js') }}"></script>
+
+    <script>
+        var executeFilter = function () {
+            var valSpeciality = $('#combo-especialidad').val();
+            var valDoctor = $('#combo-medico').val();
+            if (valDoctor == -1 || valDoctor == "" || valDoctor == undefined) {
+                valDoctor = -1;
+            }
+            if (valSpeciality == -1 || valSpeciality == "" || valSpeciality == undefined) {
+                valSpeciality = -1;
+            }
+            var valStart = $('#start').val();
+            if (valStart == "" || valStart == undefined) {
+                valStart = -1;
+            }
+            var valEnd = $('#end').val();
+            if (valEnd == "" || valEnd == undefined) {
+                valEnd = -1;
+            }
+            $('#content-table').html('');
+            waitMeShow();
+            appendContent(' /manage/report/total/reserve/salary/' + valSpeciality + '/' + valDoctor + '/' + valStart + '/' + valEnd, 'content-table', {}, function () {
+                waitMeHide();
+            });
+
+        }
+        $(document).ready(function () {
+            $('.chosen-select').chosen({width: "100%"});
+            $('#data_5 .input-daterange').datepicker({
+                keyboardNavigation: false,
+                forceParse: false,
+                autoclose: true,
+                format: 'mm-dd-yyyy'
+            });
+            $('#combo-especialidad').on('change', function () {
+
+                if ($('#combo-especialidad').val() != -1) {
+
+                    if ($('#combo-medico')) {
+                        var children = $('#content-medico').children();
+
+                        for (var i = 0; i < children.length; i++) {
+                            $(children[i]).remove();
+                        }
+
+                    }
+
+                    $('#content-medico').append('<select class="chosen-select" id="combo-medico" data-placeholder="Seleccione un médico"  style="width:350px;" tabindex="4" name="usuario">' +
+                        '<option value="-1">Seleccione un médico</option>' +
+                        '</select>');
+                    buildCombo('id', 'nombrecompleto', '/manage/doctor/speciality/' + $('#combo-especialidad').val(), 'combo-medico', function () {
+
+                        $('#content-medico').removeClass('hide');
+                        $('#combo-medico').chosen({width: "100%"});
+
+                    })
+                } else {
+                    $('#content-medico').addClass('hide');
+                    $('#combo-medico').val(-1);
+                }
+            })
+        })
+
+
+    </script>
+{% endblock %}

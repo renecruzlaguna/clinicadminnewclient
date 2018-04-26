@@ -1,0 +1,213 @@
+﻿<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+
+    {% block css %}
+        <style>
+            {% include 'AppBundle:Default:boostrap.css.twig' %}
+            table {
+                border-collapse: collapse;
+
+            }
+            .tr{
+                background: url("{{ app.request.scheme ~'://' ~ app.request.httpHost ~  asset('bundles/app/images/fondo.png') }}");
+                background-repeat: no-repeat;
+                background-position: 40%;
+            }
+
+            table, th, td {
+                border: 1px solid black;
+            }
+
+            td p{padding-left: 5px;}
+        </style>
+
+    {% endblock %}
+</head>
+<body>
+{% block content %}
+    <div>
+        <div  style="width: 60%;float: left;left:10%;top:0;position: absolute">
+            <img src="{{ app.request.scheme ~'://' ~ app.request.httpHost ~  asset('bundles/app/images/logo.png') }}">
+        </div>
+
+        <div style="width: 60%;float: left;left:20%;top:0;position: absolute">
+            <h1 class="text-center">{{ company_name }}</h1>
+            <p><strong>Dir:{{ address_company }} </strong></p>
+            <p class="text-center"><strong>Web: <a href="http://{{ web_company }}">{{ web_company }}</a></strong> <img
+                        src="{{ app.request.scheme ~'://' ~ app.request.httpHost ~  asset('bundles/app/images/twitter.png') }}">
+                <i class="fa  fa-twitter"></i> <a href="https://twitter.com/dental_day"> @{{ twitter }}</a> <img
+                        src="{{ app.request.scheme ~'://' ~ app.request.httpHost ~  asset('bundles/app/images/facebook.png') }}"><a
+                        href="https://www.facebook.com/profile.php?id=100013242092206">{{ facebook }}</a></p>
+            <p class="text-center"><strong>{{ city_company }}</strong></p>
+        </div>
+
+        <div
+                style="top:0;position: absolute; border-collapse: collapse;width: 19%;right:10%;float: right;border-color: #000000;border-radius: 12px;border-style: solid;border-width: 1px;">
+            <img src="{{ app.request.scheme ~'://' ~ app.request.httpHost ~  asset('bundles/app/images/logofactura.png') }}">
+
+        </div>
+
+    </div>
+
+
+    <table style="top:220px;position: absolute;width: 80%;left: 10%;float: left" >
+
+        <tr >
+            <td colspan="2">
+                <p><span>Sr.(es):</span> {{ factura.consulta.usuarioRegistro.getCompleteName() }}</p>
+            </td>
+            <td >
+
+                <p><span>fecha:</span> {{factura.fecha}}</p>
+            </td>
+        </tr>
+        <tr>  <td colspan="2">
+                <p><span>Direcci&oacute;n:</span>{{ factura.consulta.usuarioRegistro.direccion }}</p>
+            </td>
+            <td >
+
+                <p><span>Telf:</span> {{ factura.consulta.usuarioRegistro.telefono }}</p>
+            </td></tr>
+        <tr>
+            <td>
+                <p><span>R.U.C:</span>{{ factura.consulta.usuarioRegistro.cedula }}</p>
+            </td>
+            <td >
+
+                <p><span>Ciudad:</span> {{ factura.ciudad }}</p>
+            </td>
+            <td>
+
+                <p><span>Gu&iacute;a de comisi&oacute;n:</span> {{ factura.guia }}%</p>
+            </td>
+
+
+        </tr>
+        <tr >
+            <td colspan="2" style="text-align: center">DESCRIPCI&Oacute;N</td>
+            <td style="text-align: center" >V.TOTAL</td></tr>
+
+            <tr  >
+                <td colspan="2" class="tr"  style="height: 200px;!important"><p>{{ factura.descripcion }}</p></td>
+            <td ><p style="text-align: center" >${{ factura.getValueTotal()|number_format(2, '.')}}</p></td>
+        </tr>
+
+    </table>
+
+<table style="top:620px;position: absolute;width: 40%;left: 10%;float: left" >
+    <tr>
+    <td colspan="4" style="text-align: left">FORMA DE PAGO</td>
+    </tr>
+    <tbody>
+    <tr><td>EFECTIVO</td><td style="text-align: center">{% if factura.formaPago==1 %} X{% else %} &nbsp;&nbsp;&nbsp;{% endif %}</td><td>TARJETA CRÉDITO/DÉBITO</td><td style="text-align: center">{% if factura.formaPago==2 %} X {% else %} &nbsp;&nbsp;&nbsp;{% endif %}</td></tr>
+    <tr><td>DINERO ELECTR&Oacute;NICO</td><td style="text-align: center">{% if factura.formaPago==3 %} X{% else %} &nbsp;&nbsp;&nbsp;{% endif %}</td><td>OTROS</td><td style="text-align: center">{% if factura.formaPago==4 %}X{% else %} &nbsp;&nbsp;&nbsp;{% endif %}</td></tr>
+
+
+    </tbody>
+</table>
+    <div style="top:650px;position: absolute;width: 15%;left: 72%;float: left"><hr><p class="text-center"><strong>Recib&iacute;Conforme</strong></p></div>
+
+
+
+
+
+
+
+
+
+
+
+    <div>
+        <div  style="width: 60%;float: left;left:10%;top:800px;position: absolute">
+            <img src="{{ app.request.scheme ~'://' ~ app.request.httpHost ~  asset('bundles/app/images/logo.png') }}">
+        </div>
+
+        <div style="width: 60%;float: left;left:20%;top:800px;position: absolute">
+            <h1 class="text-center">{{ company_name }}</h1>
+            <p><strong>Dir:{{ address_company }} </strong></p>
+            <p class="text-center"><strong>Web: <a href="http://{{ web_company }}">{{ web_company }}</a></strong> <img
+                        src="{{ app.request.scheme ~'://' ~ app.request.httpHost ~  asset('bundles/app/images/twitter.png') }}">
+                <i class="fa  fa-twitter"></i> <a href="https://twitter.com/dental_day"> @{{ twitter }}</a> <img
+                        src="{{ app.request.scheme ~'://' ~ app.request.httpHost ~  asset('bundles/app/images/facebook.png') }}"><a
+                        href="https://www.facebook.com/profile.php?id=100013242092206">{{ facebook }}</a></p>
+            <p class="text-center"><strong>{{ city_company }}</strong></p>
+        </div>
+
+        <div
+                style="top:800px;position: absolute; border-collapse: collapse;width: 19%;right:10%;float: right;border-color: #000000;border-radius: 12px;border-style: solid;border-width: 1px;">
+            <img src="{{ app.request.scheme ~'://' ~ app.request.httpHost ~  asset('bundles/app/images/logofactura.png') }}">
+
+        </div>
+
+    </div>
+
+
+    <table style="top:1020px;position: absolute;width: 80%;left: 10%;float: left" >
+
+        <tr >
+            <td colspan="2">
+                <p><span>Sr.(es):</span> {{ factura.consulta.usuarioRegistro.getCompleteName() }}</p>
+            </td>
+            <td >
+
+                <p><span>fecha:</span> {{factura.fecha}}</p>
+            </td>
+        </tr>
+        <tr>  <td colspan="2">
+                <p><span>Direcci&oacute;n:</span>{{ factura.consulta.usuarioRegistro.direccion }}</p>
+            </td>
+            <td >
+
+                <p><span>Telf:</span> {{ factura.consulta.usuarioRegistro.telefono }}</p>
+            </td></tr>
+        <tr>
+            <td>
+                <p><span>R.U.C:</span>{{ factura.consulta.usuarioRegistro.cedula }}</p>
+            </td>
+            <td >
+
+                <p><span>Ciudad:</span> {{ factura.ciudad }}</p>
+            </td>
+            <td>
+
+                <p><span>Gu&iacute;a de comisi&oacute;n:</span> {{ factura.guia }}%</p>
+            </td>
+
+
+        </tr>
+        <tr >
+            <td colspan="2" style="text-align: center">DESCRIPCI&Oacute;N</td>
+            <td style="text-align: center" >V.TOTAL</td></tr>
+
+        <tr  >
+            <td colspan="2" class="tr"  style="height: 200px;!important"><p>{{ factura.descripcion }}</p></td>
+            <td ><p style="text-align: center" >${{ factura.getValueTotal()|number_format(2, '.')}}</p></td>
+        </tr>
+
+    </table>
+
+    <table style="top:1420px;position: absolute;width: 40%;left: 10%;float: left" >
+        <tr>
+            <td colspan="4" style="text-align: left">FORMA DE PAGO</td>
+        </tr>
+        <tbody>
+        <tr><td>EFECTIVO</td><td style="text-align: center">{% if factura.formaPago==1 %} X{% else %} &nbsp;&nbsp;&nbsp;{% endif %}</td><td>TARJETA CRÉDITO/DÉBITO</td><td style="text-align: center">{% if factura.formaPago==2 %} X {% else %} &nbsp;&nbsp;&nbsp;{% endif %}</td></tr>
+        <tr><td>DINERO ELECTR&Oacute;NICO</td><td style="text-align: center">{% if factura.formaPago==3 %} X{% else %} &nbsp;&nbsp;&nbsp;{% endif %}</td><td>OTROS</td><td style="text-align: center">{% if factura.formaPago==4 %}X{% else %} &nbsp;&nbsp;&nbsp;{% endif %}</td></tr>
+
+
+        </tbody>
+    </table>
+    <div style="top:1450px;position: absolute;width: 15%;left: 72%;float: left"><hr><p class="text-center"><strong>Recib&iacute;Conforme</strong></p></div>
+
+
+
+
+
+
+
+
+{% endblock %}
+</body>
+</html>

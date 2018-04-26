@@ -1,0 +1,303 @@
+{% extends 'base.html.twig' %}
+{% block content %}
+    {{ parent() }}
+    {% include 'AppBundle:Default:show_datatable_message.js.twig' %}
+    {% if app.user.rol.id==3 %}
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        <h5>Dinero recaudado por especialidades en esta semana
+                        </h5>
+                    </div>
+                    <div class="ibox-content">
+                        <div>
+                            <canvas id="lineChart" height="140"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-6">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        <h5>Consultas terminadas esta semana</h5>
+                        <div class="ibox-tools">
+                            <a class="collapse-link">
+                                <i class="fa fa-chevron-up"></i>
+                            </a>
+                            <a class="close-link">
+                                <i class="fa fa-times"></i>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="ibox-content"   {% if queryEnd %}style="overflow-x:hidden;overflow-y: scroll;height: 300px" {% endif %}>
+                        {% if queryEnd %}
+                            <table class="table table-hover no-margins">
+                                <thead>
+                                <tr>
+                                    <th>Paciente</th>
+                                    <th>Doctor</th>
+                                    <th>Especialidad</th>
+                                    <th>Fecha</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for query in queryEnd %}
+
+                                    <tr>
+                                        <td>{{ query.usuarioRegistro.getCompleteName }}</td>
+                                        <td>{{ query.usuario.getCompleteName }}</td>
+                                        <td>{{ query.especialidad.nombre }}</td>
+                                        <td><i class="fa fa-clock-o"></i>{{ query.getDataToTemplate() }}</td>
+                                    </tr>
+                                {% endfor %}
+
+
+                                </tbody>
+                            </table>
+                        {% else %}
+                            No existen consultas terminadas esta semana
+                        {% endif %}
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        <h5>Consultas planificadas esta semana</h5>
+                        <div class="ibox-tools">
+                            <a class="collapse-link">
+                                <i class="fa fa-chevron-up"></i>
+                            </a>
+                            <a class="close-link">
+                                <i class="fa fa-times"></i>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="ibox-content"  {% if queryStart %}style="overflow-x:hidden;overflow-y: scroll;height: 300px" {% endif %}>
+                        {% if queryStart %}
+                            <table class="table table-hover no-margins" >
+                                <thead>
+                                <tr>
+                                    <th>Paciente</th>
+                                    <th>Doctor</th>
+                                    <th>Especialidad</th>
+                                    <th>Fecha</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+
+
+                                {% for query in queryStart %}
+
+                                    <tr>
+                                        <td>{{ query.usuarioRegistro.getCompleteName }}</td>
+                                        <td>{{ query.usuario.getCompleteName }}</td>
+                                        <td>{{ query.especialidad.nombre }}</td>
+                                        <td><i class="fa fa-clock-o"></i>{{ query.getDataToTemplate() }}</td>
+                                    </tr>
+                                {% endfor %}
+
+
+
+                                </tbody>
+                            </table>
+                        {% else %}
+                            No existen consultas planificadas para esta semana
+                        {% endif %}
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-6">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        <h5>Consultas planificadas para hoy</h5>
+                        <div class="ibox-tools">
+                            <a class="collapse-link">
+                                <i class="fa fa-chevron-up"></i>
+                            </a>
+                            <a class="close-link">
+                                <i class="fa fa-times"></i>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="ibox-content"  {% if queryToday %}style="overflow-x:hidden;overflow-y: scroll;height: 300px" {% endif %}>
+                        {% if queryToday %}
+                            <table class="table table-hover no-margins" >
+                                <thead>
+                                <tr>
+                                    <th>Paciente</th>
+                                    <th>Doctor</th>
+                                    <th>Especialidad</th>
+                                    <th>Fecha</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+
+
+                                {% for query in queryToday %}
+
+                                    <tr>
+                                        <td>{{ query.usuarioRegistro.getCompleteName }}</td>
+                                        <td>{{ query.usuario.getCompleteName }}</td>
+                                        <td>{{ query.especialidad.nombre }}</td>
+                                        <td><i class="fa fa-clock-o"></i>{{ query.getDataToTemplate() }}</td>
+                                    </tr>
+                                {% endfor %}
+
+
+
+                                </tbody>
+                            </table>
+                        {% else %}
+                            No existen consultas planificadas para hoy
+                        {% endif %}
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <br><br><br>
+
+    {% endif %}
+    {%  if app.user.rol.id==2  %}
+        <div class="row">
+
+            <div class="col-lg-6">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        <h5>Consultas asignadas</h5>
+                        <div class="ibox-tools">
+                            <a class="collapse-link">
+                                <i class="fa fa-chevron-up"></i>
+                            </a>
+                            <a class="close-link">
+                                <i class="fa fa-times"></i>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="ibox-content"  {% if queryAsigned %}style="overflow-x:hidden;overflow-y: scroll;height: 300px" {% endif %}>
+                        {% if queryAsigned %}
+                            <table class="table table-hover no-margins" >
+                                <thead>
+                                <tr>
+                                    <th>Paciente</th>
+
+                                    <th>Fecha</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+
+
+                                {% for query in queryAsigned %}
+
+                                    <tr>
+                                        <td>{{ query.usuarioRegistro.getCompleteName }}</td>
+
+                                        <td><i class="fa fa-clock-o"></i>{{ query.getDataToTemplate() }}</td>
+                                    </tr>
+                                {% endfor %}
+
+
+
+                                </tbody>
+                            </table>
+                        {% else %}
+                            No existen consultas asignadas
+                        {% endif %}
+
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="col-lg-6">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        <h5>Consultas planificadas para hoy</h5>
+                        <div class="ibox-tools">
+                            <a class="collapse-link">
+                                <i class="fa fa-chevron-up"></i>
+                            </a>
+                            <a class="close-link">
+                                <i class="fa fa-times"></i>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="ibox-content"  {% if queryTodayDoctor %}style="overflow-x:hidden;overflow-y: scroll;height: 300px" {% endif %}>
+                        {% if queryTodayDoctor %}
+                            <table class="table table-hover no-margins" >
+                                <thead>
+                                <tr>
+                                    <th>Paciente</th>
+
+                                    <th>Fecha</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+
+
+                                {% for query in queryTodayDoctor %}
+
+                                    <tr>
+                                        <td>{{ query.usuarioRegistro.getCompleteName }}</td>
+
+                                        <td><i class="fa fa-clock-o"></i>{{ query.getDataToTemplate() }}</td>
+                                    </tr>
+                                {% endfor %}
+
+
+
+                                </tbody>
+                            </table>
+                        {% else %}
+                            No existen consultas planificadas para hoy
+                        {% endif %}
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    {% endif %}
+
+
+
+{% endblock %}
+
+{% block javascript %}
+    {{ parent() }}
+    {% if app.user.rol.id==3 %}
+        <script src="{{ asset('bundles/app/js/plugins/chartJs/Chart.min.js') }}"></script>
+        <script>
+
+            $(document).ready(function () {
+
+
+                excecuteAjaxHtml('GET', '/manage/graphic/line', {}, null, function (response) {
+                    if (response.success == true) {
+
+                        var ctx = document.getElementById("lineChart").getContext("2d");
+                        new Chart(ctx, {
+                            type: 'line',
+                            data: response.data,
+                            options: {responsive: true}
+                        });
+                    }
+
+                })
+
+
+            })
+
+        </script>
+    {% endif %}
+
+{% endblock %}

@@ -1,0 +1,51 @@
+{% extends 'base.html.twig' %}
+{% block content %}
+    <div>
+
+
+<h3>Listado de consultas realizadas</h3>
+        <div class="panel  panel-primary"></div>
+
+
+
+    </div>
+    <div class="table-responsive">
+    <table class="table table-striped table-bordered table-hover dataTables-example" >
+    <thead>
+    <tr>
+        <th>Especialidad </th>
+        <th>Nombre del Doctor</th>
+        <th>Fecha de la consulta</th>
+        <th>Hora inicial</th>
+        <th>Hora final</th>
+        <th>Precio</th>
+
+    </tr>
+    </thead>
+    <tbody>
+    {% for esp in especialities %}
+        <tr>
+
+           <td>{{ esp.especialidad.nombre }}</td>
+           <td>{{ esp.usuario.getCompleteName() }}</td>
+           <td>{{ esp.dia }}/{{ esp.mes }}/{{ esp.anno }}</td>
+           <td>{{ esp.horaInicialC }}:{{ esp.minutoInicialC }}</td>
+           <td>{{ esp.horaFinalC }}:{{ esp.minutoFinalC }}</td>
+           {% if esp.factura %}
+               <td>${{ esp.factura.getValueTotal() }}</td>
+           {% else %}
+               <td>Pendiente de factura</td>
+           {% endif %}
+
+
+
+
+
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+    {{ parent() }}
+    {% include 'AppBundle:Default:show_datatable_message.js.twig' %}
+{% endblock %}

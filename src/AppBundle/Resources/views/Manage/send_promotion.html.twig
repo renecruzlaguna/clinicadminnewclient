@@ -1,0 +1,127 @@
+{% extends 'base.html.twig' %}
+{% block css %}
+    {{ parent() }}
+    <link href="{{ asset('bundles/app/css/plugins/chosen/bootstrap-chosen.css') }}" rel="stylesheet">
+    <link href="{{ asset('bundles/app/css/plugins/datapicker/datepicker3.css') }}" rel="stylesheet">
+    <link href="{{ asset('bundles/app/css/plugins/steps/jquery.steps.css') }}" rel="stylesheet">
+    <link href="{{ asset('bundles/app/css/plugins/iCheck/custom.css') }}" rel="stylesheet">
+    <link href="{{ asset('bundles/app/css/plugins/select2/select2.min.css') }}" rel="stylesheet">
+
+    <link href="{{asset('bundles/app/css/plugins/touchspin/jquery.bootstrap-touchspin.min.css')}}" rel="stylesheet">
+    <link href="{{asset('bundles/app/css/plugins/summernote/summernote.css')}}" rel="stylesheet">
+    <link href="{{asset('bundles/app/css/plugins/summernote/summernote-bs3.css')}}" rel="stylesheet">
+
+{% endblock %}
+{% block content %}
+    <h3>Enviar promoción</h3>
+    <div class="panel  panel-primary"></div>
+    <form class="form-horizontal col-sm-8" id="form" method="post" action="">
+
+
+        <div class="mail-box-header">
+
+            <h2>
+          Redactar correo
+            </h2>
+        </div>
+    <div class="mail-box">
+
+
+        <div class="mail-body">
+
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">Para:</label>
+
+                    <div class="col-sm-8"> 
+                        <select name="clientes[]" class="select2_demo_2 form-control" multiple="multiple">
+                            {% for client in clients %}
+                                <option  value="{{ client.correo }}">{{ client.getCompleteName() }}</option>
+                            {% endfor %}
+                        </select></div>
+                </div>
+                <div class="form-group"><label class="col-sm-2 control-label">Asunto:</label>
+
+                    <div class="col-sm-8"><input type="text" name="topic" class="form-control" value="Sin asunto"></div>
+                </div>
+
+
+        </div>
+
+        <div class="mail-text h-200 ">
+            <textarea style="resize:none" data-error="#errNm3" name="body" class="form-control summernote" id="summernote"></textarea>
+
+
+            <span class="has-error" id="errNm3"></span>
+            </div>
+            <div class="mail-body text-right tooltip-demo">
+                <input type="submit" class="btn btn-sm btn-primary" value="Enviar"> </input>
+
+            </div>
+
+            <div class="clearfix"></div>
+        </div>
+
+
+
+
+
+
+
+
+
+    </form>
+    <div class="clear"></div>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    {{ parent() }}
+    
+{% endblock %}
+
+{% block javascript %}
+
+    {{ parent() }}
+
+   
+     <script src="{{ asset('bundles/app/js/plugins/chosen/chosen.jquery.js') }}"></script>
+    <script src="{{ asset('bundles/app/js/plugins/touchspin/jquery.bootstrap-touchspin.min.js') }}"></script>
+    <script src="{{ asset('bundles/app/js/plugins/bootstrap-tagsinput/bootstrap-tagsinput.js') }}"></script>
+    <script src="{{ asset('bundles/app/js/plugins/steps/jquery.steps.js') }}"></script>
+    <script src="{{ asset('bundles/app/js/plugins/toogle/bootstrap-toggle.min.js') }}"></script>
+    <script src="{{ asset('bundles/app/js/plugins/iCheck/icheck.min.js') }}"></script>
+    <script src="{{ asset('bundles/app/js/plugins/select2/select2.full.min.js') }}"></script>
+    <script src="{{ asset('bundles/app/js/plugins/summernote/summernote.min.js') }}"></script>
+
+    <script src="{{asset('bundles/app/js/plugins/validation/jquery.validationEngine.js')}}"></script>
+
+
+    <script src="{{asset('bundles/app/js/plugins/validation/jquery.validate.min.js')}}"></script>
+
+    <script src="{{asset('bundles/app/js/plugins/validation/additionalValidator.js')}}"></script>
+    <script src="{{ asset('bundles/app/js/custom/validationProm.js') }}"></script>
+    <script>
+        $(document).ready(function(){
+           
+            $('.chosen-select').chosen({width: "100%"});
+            $(".select2_demo_2").select2();
+            $('.summernote').summernote({height: 150,toolbar: [
+                    ['style', ['style', ['p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6']]],
+                    ['style', ['bold', 'italic', 'underline', 'clear', 'undo']],
+                    ['para', ['ul', 'ol']],
+                    ["insert", [ "picture"]],
+                    ["view", ['fullscreen']]],disableResizeEditor: true});
+
+            $.validator.setDefaults({ignore: ":hidden:not(#summernote),.note-editable.panel-body"})
+            setTimeout(function() { $('div .note-resizebar').remove()}, 500);
+            
+        });
+
+    </script>
+    <script>
+
+        $(function () { formPromValidation(); });
+    </script>
+        })
+{% endblock javascript %}

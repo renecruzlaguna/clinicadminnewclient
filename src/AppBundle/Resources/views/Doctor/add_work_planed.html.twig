@@ -1,0 +1,379 @@
+{% extends 'base.html.twig' %}
+{% block css %}
+    {{ parent() }}
+    <link href="{{ asset('bundles/app/css/plugins/chosen/bootstrap-chosen.css') }}" rel="stylesheet">
+    <link href="{{ asset('bundles/app/css/plugins/datapicker/datepicker3.css') }}" rel="stylesheet">
+
+{% endblock %}
+{% block content %}
+    <div>
+
+
+        <h3>Realizar plan de trabajo de consultas</h3>
+        <div class="panel  panel-primary"></div>
+        <form action="{{ path('doctor_planed') }}" method="post" id="formplanned">
+            <input name="daysSelected" id="daysSelected" type="hidden"
+                   value="{% if daysSelected %}{{ daysSelected |join(',') }}{% endif %}">
+            <div class="row">
+                <div class="col-lg-5">
+                    <div class="form-group" id="data_4">
+
+                        <div class="input-group date">
+                            <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                            <input readonly="readonly" name="monthSelected" class="form-control" value="
+{% if monthAux %}
+{{ monthAux }}
+{% else %}
+{{ "now"|date("m/d/Y") }}
+{% endif %}
+
+" type="text">
+
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-2">
+                    <div class="form-group">
+                        <button type="submit" name="generar" class=" btn btn-success" value="1"><i
+                                    class="fa fa-repeat"></i>&nbsp;&nbsp;Generar Calendario
+                        </button>
+                    </div>
+                </div>
+                <div  id="markall" class="col-lg-2">
+                    <div class="form-group">
+                        <button onclick="markAllDays()" type="button" id="markbtn" class="btn btn-primary" value="marcar"><i
+                                    class="fa fa-repeat"></i>&nbsp;&nbsp;Marcar todos
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <table class="table table-bordered">
+
+                <thead>
+                <div class="panel  panel-success">
+                    <th>Dom</th>
+                </div>
+                <th class="panel  panel-success">Lun</th>
+                <th class="panel  panel-success">Mar</th>
+                <th class="panel  panel-success">Mie</th>
+                <th class="panel  panel-success">Jue</th>
+                <th class="panel  panel-success">Vie</th>
+                <th class="panel  panel-success">Sab</th>
+
+                </thead>
+                {% set cont =1 %}
+                {% set dayNow=  "now"|date("d") %}
+                {% set monthNow=  "now"|date("m") %}
+                {% set yearNow=  "now"|date("Y") %}
+                {% for i in 0.. totalWeek-1 %}
+                    <tr>
+                        {% for j in 0..6 %}
+                            {% if (j==day and  cont <= totalDays) or (cont > 1 and cont <= totalDays) %}
+                                {% set include=false %}
+                                {% if daysSelected and cont in daysSelected %}
+                                    {% set include=true %}
+                                {% endif %}
+                                <td id="td-{{ cont }}" td-val="{{ cont }}"
+                                    class="selectable  {% if include %} btn-primary{% endif %}"
+                                        {% if( (cont>=dayNow and monthCompare ==monthNow) or  (monthCompare !=monthNow or yearNow!=yearCompare) ) %}
+                                    style="cursor: pointer"
+                                    onclick="check(this,false) {% endif %}">{{ cont }}
+                                    <div onclick="{% if( (cont>dayNow and monthCompare ==monthNow and yearCompare==yearNow) or  (monthCompare !=monthNow or yearNow!=yearCompare)) %} removeEvent(event) {% endif %}">
+                                        <div class="calendar-time">
+                                            <div><i class="fa fa-clock-o glyphicon glyphicon-time"></i>&nbsp;
+                                                <select {% if cont<=dayNow and monthCompare ==monthNow and  yearNow==yearCompare %} disabled="" {% endif %}
+                                                        td-val="{{ cont }}" name="horainicial[]" class="hourselect"
+                                                        id="select-hour-{{ cont }}"
+                                                        onchange="disableOptions(this)">
+                                                    {% for k in 0..24 %}
+                                                        {% if not include %}
+                                                            {% set hourCompare=8 %}
+
+                                                            {% set hourMax=23 %}
+                                                        {% else %}
+                                                            {% set hourCompare=initialHourRange[cont-1] %}
+                                                            {% set hourMax=endHourRange[cont-1] %}
+                                                        {% endif %}
+                                                        <option value="{{ k }}" {% if    k== hourCompare %} selected="selected" {% endif %}
+                                                                {% if  k< hourCompare or k>hourMax %} disabled=""{% endif %}>{{ k }}</option>
+                                                    {% endfor %}
+
+                                                </select> :
+                                                <select {% if cont<=dayNow and monthCompare ==monthNow and  yearNow==yearCompare %} disabled {% endif %}
+                                                        td-val="{{ cont }}" name="minutoinicial[]" class="minuteselect"
+                                                        id="select-minutes-{{ cont }}"
+                                                        onchange="disableMinutes(this)">
+                                                    {% for l in range(0, 45, 15) %}
+                                                        {% if not include %}
+                                                            {% set minuteCompare=0 %}
+
+
+                                                        {% else %}
+                                                            {% set minuteCompare=initialMinuteRange[cont-1] %}
+
+
+                                                        {% endif %}
+                                                        <option value="{{ l }}"
+                                                                {% if l==minuteCompare %}selected="selected" {% endif %}>{% if l==0 %}00{% else %}{{ l }}{% endif %}</option>
+
+
+                                                    {% endfor %}
+                                                </select></div>
+                                        </div>
+                                        <div class="calendar-time">
+                                            <div><i class="fa fa-clock-o glyphicon glyphicon-time"></i>&nbsp;
+                                                <select {% if cont<=dayNow and monthCompare ==monthNow and  yearNow==yearCompare %} disabled {% endif %}
+                                                        td-val="{{ cont }}" name="horafinal[]" class="hourselect"
+                                                        id="select-hour-{{ cont }}-2"
+                                                        onchange="disableOptionsHour(this)">
+                                                    {% for k in 0..24 %}
+                                                        {% if not include %}
+                                                            {% set hourCompare=17 %}
+                                                            {% set hourCompareIni=14 %}
+                                                        {% else %}
+                                                            {% set hourCompare=endHourRange[cont-1] %}
+                                                            {% set hourCompareIni=initialHourRange[cont-1] %}
+                                                        {% endif %}
+                                                        <option value="{{ k }}" {% if    k==hourCompare %} selected="selected" {% endif %}
+                                                                {% if   k< hourCompareIni %} disabled=""{% endif %}>{{ k }}</option>
+                                                    {% endfor %}
+                                                </select> :
+                                                <select {% if cont<=dayNow and monthCompare ==monthNow and  yearNow==yearCompare %} disabled {% endif %}
+                                                        td-val="{{ cont }}" name="minutofinal[]" class="minuteselect"
+                                                        id="select-minutes-{{ cont }}-2"
+                                                        onchange="disableLastMinute(this)">
+                                                    {% for l in range(0, 45, 15) %}
+                                                        {% if not include %}
+                                                            {% set minuteCompare=0 %}
+
+
+                                                        {% else %}
+                                                            {% set minuteCompare=endMinuteRange[cont-1] %}
+                                                            {% set hourCompare=initialHourRange[cont-1] %}
+                                                            {% set hourMax=endHourRange[cont-1] %}
+                                                            {% set initialMinute=initialMinuteRange[cont-1] %}
+
+
+                                                        {% endif %}
+                                                        <option value="{{ l }}"
+                                                                {% if include and hourCompare==hourMax and l<=initialMinute %}disabled=""
+                                                                {% endif %}{% if l==minuteCompare %}selected="selected" {% endif %}>{% if l==0 %}00{% else %}{{ l }}{% endif %}</option>
+
+
+                                                    {% endfor %}
+
+                                                </select></div>
+                                        </div>
+                                    </div>
+                                    &nbsp;&nbsp;{% if include %}
+                                    <i id="a-td-{{ cont }}" class="fa fa-check p-w-3"></i>
+                                    {% endif %}&nbsp;</td>
+
+
+                                {% set cont= cont+1 %}
+                            {% else %}
+                                <td id="td-{{ cont }}">&nbsp;&nbsp;&nbsp;</td>
+                            {% endif %}
+
+
+                        {% endfor %}
+                    </tr>
+                {% endfor %}
+            </table>
+
+
+            <div class="form-group">
+                <button type="submit" name="save" class=" btn btn-primary pull-right" value="1"><i
+                            class="fa fa-save"></i>&nbsp;&nbsp;Guardar plan
+                </button>
+            </div>
+
+
+        </form>
+    </div>
+
+
+    {{ parent() }}
+    <script>
+        var markAllDays=function(){
+
+            if($('#markbtn').val()=='marcar'){
+
+                $('td.selectable:not(td.btn-primary)').trigger('click')
+                $('#markbtn').val('desmarcar')
+                $('#markbtn').html('<i class="fa fa-square-o"></i>&nbsp;&nbsp;Desmarcar todos')
+            }else{
+
+                $('td.btn-primary').trigger('click')
+                $('#markbtn').val('marcar')
+                $('#markbtn').html('<i class="fa fa-check-square-o"></i>&nbsp;&nbsp;Marcar todos')
+            }
+        }
+        var disableLastMinute = function (el) {
+            var valueTd = $(el).attr('td-val');
+            check(document.getElementById('td-' + valueTd), true)
+        }
+        var disableOptions = function (el) {
+            var valueTd = $(el).attr('td-val');
+            check(document.getElementById('td-' + valueTd), true)
+            var idToUpdate = el.id + '-2';
+            var options = $('#' + idToUpdate + ' option');
+            var value = $(el).val();
+            var idminuteParent = el.id.replace('hour', 'minutes');
+
+            disableMinutes(document.getElementById(idminuteParent));
+
+            for (var i = 0; i < options.length; i++) {
+                if (i < value) {
+                    $(options[i]).attr('disabled', 'disabled');
+                    $(options[i]).prop('disabled', true);
+                } else {
+                    $(options[i]).removeAttr("disabled");
+                }
+            }
+
+
+        }
+        /*cuando selecciona la segunda opcion de horas*/
+        var disableOptionsHour = function (el) {
+            var valueTd = $(el).attr('td-val');
+            check(document.getElementById('td-' + valueTd), true)
+            var idToUpdate = el.id;
+            idToUpdate = idToUpdate.split('-');
+
+            idToUpdate = idToUpdate[0] + '-' + idToUpdate[1] + '-' + idToUpdate[2];
+
+            var options = $('#' + idToUpdate + ' option');
+            var value = $(el).val();
+            for (var i = 0; i < options.length; i++) {
+                if (i <= value) {
+                    $(options[i]).removeAttr("disabled");
+                } else {
+                    $(options[i]).attr('disabled', 'disabled');
+                    $(options[i]).prop('disabled', true);
+
+                }
+            }
+
+
+        }
+        var disableMinutes = function (el) {
+            var valueTd = $(el).attr('td-val');
+            check(document.getElementById('td-' + valueTd), true)
+            var idOrigin = el.id;
+            var idHourParent = idOrigin.replace('minutes', 'hour');
+            var idHourSecond = idHourParent + '-2';
+            var idToUpdate = idOrigin + '-2';
+            /*si las horas son iguales se aplican lo de los segundos*/
+
+
+            var options = $('#' + idToUpdate + ' option');
+            var value = $(el).val();
+            for (var i = 0; i < options.length; i++) {
+                $(options[i]).removeAttr("disabled");
+                if (i * 15 <= value && ($('#' + idHourParent).val() == $('#' + idHourSecond).val())) {
+                    $(options[i]).attr('disabled', 'disabled');
+                    $(options[i]).prop('disabled', true);
+                }
+            }
+
+
+        }
+        var removeEvent = function (event) {
+            event.stopPropagation();
+        }
+
+        var daySelect = [];
+        if ($('#daysSelected').val() != "") {
+            daySelect = $('#daysSelected').val().split(',');
+        }
+        var check = function (el, otherCall) {
+            var value = $(el).attr('td-val');
+            var idInitialHour = 'select-hour-' + value
+            var idInitialMinutes = 'select-minutes-' + value
+            var idEndHour = 'select-hour-' + value + '-2'
+            var idEndMinutes = 'select-minutes-' + value + '-2'
+            idInitialHour = ($('#' + idInitialHour).val())
+            idInitialMinutes = ($('#' + idInitialMinutes).val())
+            idEndHour = ($('#' + idEndHour).val())
+            idEndMinutes = $('#' + idEndMinutes).val()
+            if (idEndMinutes == null) {
+                idEndMinutes = '0'
+            }
+
+            if ($(el).hasClass('btn-primary')) {
+
+
+                if (((parseInt(idInitialHour + '' + idInitialMinutes) >= parseInt(idEndHour + '' + idEndMinutes)) && otherCall == true) || otherCall == false) {
+
+                    $(el).removeClass('btn-primary')
+
+                    $('#a-' + el.id).remove();
+                    daySelect.splice(daySelect.indexOf(value), 1);
+
+                    var days = daySelect.join(',');
+                    $('#daysSelected').val(days);
+                }
+
+            } else {
+
+
+                if (parseInt(idInitialHour + '' + idInitialMinutes) < parseInt(idEndHour + '' + idEndMinutes) && !otherCall) {
+
+
+                    $(el).addClass('btn-primary');
+
+                    daySelect.push(value);
+                    var days = daySelect.join(',');
+                    $('#daysSelected').val(days);
+
+                    $(el).append('<i id="a-' + el.id + '" class="fa fa-check p-w-3"></i>')
+                }
+
+            }
+        }
+
+
+    </script>
+    <!-- Mainly scripts -->
+    <script src="{{ asset('bundles/app/js/jquery-2.1.1.js') }}"></script>
+    <script src="{{ asset('bundles/app/js/bootstrap.min.js') }}"></script>
+    <script src="{{ asset('bundles/app/js/plugins/jasny/jasny-bootstrap.min.js') }}"></script>
+    <script src="{{ asset('bundles/app/js/plugins/chosen/chosen.jquery.js') }}"></script>
+
+    <script src="{{ asset('bundles/app/js/plugins/bootstrap-tagsinput/bootstrap-tagsinput.js') }}"></script>
+    <script src="{{ asset('bundles/app/js/plugins/datapicker/bootstrap-datepicker.js') }}"></script>
+    <script>
+        $(document).ready(function () {
+            if($('td.selectable:not(td.btn-primary)').length>0){
+
+                $('#markbtn').val('marcar')
+                $('#markbtn').html('<i class="fa  fa-check-square-o"></i>&nbsp;&nbsp;Marcar todos')
+            }else{
+                $('#markbtn').val('desmarcar')
+                $('#markbtn').html('<i class="fa fa-square-o"></i>&nbsp;&nbsp;Desmarcar todos')
+            }
+            $('#formplanned').submit(function () {
+                $('select').removeAttr('disabled');
+            });
+
+            var yearC ={{ "now"|date("Y") }}
+            var monthC ={{ "now"|date("m") }}
+                monthC = monthC - 1;
+
+            $('#data_4 .input-group.date').datepicker({
+                minViewMode: 1,
+                keyboardNavigation: false,
+                forceParse: false,
+                autoclose: true,
+                todayHighlight: true,
+                startDate: new Date(yearC, monthC, '01'), //set it here
+                endDate: new Date(yearC + 1, monthC, '31')
+            });
+
+        })
+
+
+    </script>
+    {{ parent() }}
+{% endblock %}

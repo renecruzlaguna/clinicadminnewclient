@@ -1,0 +1,118 @@
+{% extends 'base.html.twig' %}
+{% block css %}
+    {{ parent() }}
+    <link href="{{ asset('bundles/app/css/plugins/chosen/bootstrap-chosen.css') }}" rel="stylesheet">
+
+{% endblock %}
+{% block content %}
+    <!-- Mainly scripts -->
+    <script src="{{ asset('bundles/app/js/jquery-2.1.1.js') }}"></script>
+    <script src="{{ asset('bundles/app/js/bootstrap.min.js') }}"></script>
+    <script src="{{ asset('bundles/app/js/plugins/jasny/jasny-bootstrap.min.js') }}"></script>
+    <script src="{{ asset('bundles/app/js/plugins/chosen/chosen.jquery.js') }}"></script>
+    <script src="{{ asset('bundles/app/js/plugins/map/map.js') }}"></script>
+    <h2>Adicionar registro dental</h2>
+    <form class="m-t" role="form" action="{{ path('manage_cliente_query_save') }}" method="POST">
+
+
+
+
+            <div class="col-lg-12">
+                <div class="form-group">
+
+                    <select  data-placeholder="Seleccione un paciente" class="chosen-select"
+                              tabindex="4" name="usuarioRegistro">
+                        <option value="-1" selected>Seleccione un paciente</option>
+                        {% for user in patients %}
+                            <option value="{{ user.id }}">{{ user.getCompleteName() }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                </div>
+
+    </form>
+    <hr>
+    <h4>Rellene el registro dental del paciente con la información correspondiente</h4>
+    <div class="row">
+        <div class="col-md-9">
+            <img src="{{ asset('bundles/app/images/ok.jpg') }}" class="map" border="0" usemap="#Map">
+            <map name="Map" id="Map">
+                <area alt=""  id="area-1" title=""
+                      href="#" shape="poly" coords="53,62,59,69,73,69,81,62,67,54"/>
+                <area alt="" title=""  id="area-2" href="#" shape="poly" coords="73,71,76,77,76,80,81,88,87,76,85,64" />
+                <area alt="" title=""  id="area-3"  href="#" shape="poly" coords="58,82,51,90,66,97,79,89,72,83,64,86,68,85,70,85,59,85" />
+                <area alt="" title="" href="#"  id="area-4" shape="poly" coords="51,62,58,72,56,82,49,87,46,76" />
+                <area alt="" title="" href="#" shape="poly" id="area-5" coords="62,70,73,69,76,77,76,82,72,85,68,87,62,87,58,82,57,75" />
+                <area alt="" title="" href="#" shape="poly" id="area-6" coords="59,68,75,83,66,72" />
+                <area alt="" title="" href="#" shape="poly" id="area-7" coords="74,67,58,85,64,75" />
+
+            </map>
+        </div>
+
+        <div class="col-md-3" style="top:0px;float: right;">
+
+
+                    <h3>Leyenda</h3>
+
+
+
+                        Marque la opción que desee pintar sobre los dientes
+                    </p>
+
+
+                    <p>
+
+                        <button type="button" btn-selected="0" onclick="onSelect(this)" type-action="1"
+                                class="btn btn-outline btn-danger dim"></button>
+                        &nbsp;&nbsp;Caries
+                        <br>
+                        <button type="button" btn-selected="0" onclick="onSelect(this)" type-action="2"
+                                class="btn btn-outline btn-success dim"></button>
+                        &nbsp;&nbsp;Resina
+                        <br>
+                        <button type="button" btn-selected="0" onclick="onSelect(this)" type-action="3"
+                                class="btn btn-outline btn-amalgama dim"></button>
+                        &nbsp;&nbsp;Amalgama
+
+                        <br>
+                        <button type-action="4" btn-selected="0" onclick="onSelect(this)"
+                                class="btn btn-sellante btn-circle btn-outline dim" type="button"><i
+                                    class="fa fa-circle"></i>
+                        </button>
+                        &nbsp;&nbsp;Sellante
+                        <br>
+                        <button type-action="5" btn-selected="0" onclick="onSelect(this)"
+                                class="btn btn-sellante-indicado  btn-circle btn-outline dim" type="button"><i
+                                    class="fa fa-circle"></i>
+                        </button>
+                        &nbsp;&nbsp;Sellante indicado
+
+                        <br>
+                        <button btn-selected="0" onclick="onSelect(this)" type-action="6"
+                                class="btn btn-extraer btn-circle btn-outline dim" type="button"><i
+                                    class="fa fa-circle"></i>
+                        </button>
+                        &nbsp;&nbsp;Extracción Indicada
+                        <br>
+                        <button type="button" btn-selected="0" onclick="onSelect(this)" type-action="0"
+                                class="btn btn-outline btn-default dim"></button>  &nbsp;&nbsp;Quitar selección
+                        <br>
+                    </p>
+
+                </div>
+            </div>
+
+
+
+
+
+
+    <script src="{{ asset('bundles/app/js/plugins/map/controller.js') }}"></script>
+    <script src="{{ asset('bundles/app/js/plugins/map/controller_map.js') }}"></script>
+
+    <script>
+        $(document).ready(function() {
+            $('.chosen-select').chosen({width: "100%"});
+        })
+    </script>
+{% endblock %}

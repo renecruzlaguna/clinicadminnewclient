@@ -1,0 +1,88 @@
+
+{% set card=1 %}
+
+    <div>
+
+
+<h3>Listado de evoluciones anteriores del paciente: {{query.usuarioRegistro.getCompleteName() }} </h3>
+        <div class="panel  panel-primary"></div>
+
+
+    </div>
+
+    <div class="row">
+        {% if evolutions %}
+
+            {% set visible=1 %}
+
+               <div id="{{ card }}" class="custom-div" >
+            {% for ev in evolutions %}
+
+                {% if visible is divisible by(4) %}
+
+                  <div id="{{ card }}" class="custom-div {% if card >1 %}  hide {% endif %}" >
+                {% endif %}
+                <div class="col-lg-10">
+                    <div class="ibox ">
+                        <div class="ibox-title">
+                            <h5>Fecha de la consulta: {{ ev.consulta.getDataDate() }} | Médico: {{ ev.consulta.usuario.getCompleteName() }}   </h5>
+                            <div class="ibox-tools">
+                                <a class="collapse-link">
+                                    <i class="fa fa-chevron-up"></i>
+                                </a>
+                                <a class="fullscreen-link">
+                                    <i class="fa fa-expand"></i>
+                                </a>
+
+                            </div>
+                        </div>
+                        <div class="ibox-content">
+                            <p >
+
+
+                                {{ ev.observaciones }}
+
+
+                            </p>
+
+                        </div>
+                    </div>
+                </div>
+                {% if (loop.index+1)== card*4 or  loop.last%}
+                    {% set card=card+1 %}
+
+                  </div>
+                {% endif %}
+                {% set visible=visible+1 %}
+            {% endfor %}
+
+
+
+
+
+
+    </div>
+
+
+<div class="row">
+<div class="form-group">
+        <div class="col-lg-offset-7" >
+ <button id="before" class="btn btn-primary" disabled="disabled" style="margin-bottom: 30px"  onclick="before()" >Anterior</button>
+                                <button id="currentpage" class="btn btn-primary" style="margin-bottom: 30px">1</button>
+
+                                <button id="next" {% if card-1 ==1 %} disabled="disabled" {% endif %} class="btn btn-primary" style="margin-bottom: 30px" onclick="nextPage()">Siguiente</button>
+
+                                            </div>
+
+
+
+</div>
+{% else %}
+    <h1 style="margin-left: 30%">No existen evoluciones para mostrar</h1>
+    {% endif %}
+    <script type="application/javascript">
+
+            var totalPage = '{{ card-1 }}';
+            var currentPage = 1;
+
+    </script>

@@ -1,0 +1,292 @@
+{% extends 'base.html.twig' %}
+{% block css %}
+    {{ parent() }}
+    <link href="{{ asset('bundles/app/css/plugins/chosen/bootstrap-chosen.css') }}" rel="stylesheet">
+    <link href="{{ asset('bundles/app/css/plugins/touchspin/jquery.bootstrap-touchspin.min.css') }}" rel="stylesheet">
+{% endblock %}
+{% block content %}
+
+    <h3 class="center-block">Actualizar médico </h3>
+    <div class="panel  panel-primary"></div>
+    {% set idUser= id %}
+    <form class="m-t" role="form" id="form-user" action="{{ path('manage_doctor_user_edit',{id:idUser}) }}"
+          method="POST">
+
+        <div class="row">
+            {% if exception is defined %}
+                <div class="form-group has-error">{{ exception }} </div>
+            {% endif %}
+            <div class="col-lg-12">
+                <div class="col-lg-4">
+
+                    {% if errors and errors.nombre is defined %}
+                    <div class="form-group has-error">
+                            <span class="help-block">
+                                        <strong>{{ errors['nombre'] }}</strong>
+                                    </span>
+                        {% else %}
+                        <div class="form-group">
+                            {% endif %}
+                            <label>Nombre</label>
+                            <input type="text" {% if data and data.nombre %}
+                                value="{{ data.nombre }}"
+                            {% endif %} class="form-control" name="nombre" placeholder="Nombre" required="">
+                        </div>
+                        {% if errors and errors.apellido is defined %}
+                        <div class="form-group has-error">
+                            <span class="help-block">
+                                        <strong>{{ errors['apellido'] }}</strong>
+                                    </span>
+                            {% else %}
+                            <div class="form-group">
+                                {% endif %}
+                                <label>Apellidos</label>
+                                <input type="text" {% if data and data.apellido %}
+                                    value="{{ data.apellido }}"
+                                {% endif %} class="form-control" name="apellido" placeholder="Apellidos"
+                                       required="">
+                            </div>
+                            {% if errors and errors.salario is defined %}
+                            <div class="form-group has-error">
+                            <span class="help-block">
+                                        <strong>{{ errors['salario'] }}</strong>
+                                    </span>
+                                {% else %}
+                                <div class="form-group">
+                                    {% endif %}
+                                    <label>Salario</label>
+                                    <input type="text" {% if data and data.salario>=0 %}
+                                        value="{{ data.salario }}"
+                                    {% endif %} class="form-control touchspin3" name="salario" placeholder="Salario"
+                                           required="">
+                                </div>
+
+                                {% if errors and errors.especialidad is defined %}
+                                <div class="form-group has-error">
+                            <span class="help-block">
+                                        <strong>{{ errors['especialidad'] }}</strong>
+                                    </span>
+                                    {% else %}
+                                    <div class="form-group" id="container-especialidad">
+                                        {% endif %}
+                                        <label>Especialidad</label>
+                                        <select id="combo-especialidad" data-placeholder="Seleccione una especialidad"
+                                                class="disabled chosen-select"
+                                                style="width:350px;" tabindex="4" name="especialidad">
+                                            <option value="-1" selected>Seleccione una especialidad</option>
+                                            {% for spe in speciality %}
+                                                {% if data.especialidad and data.especialidad.id==spe.id %}
+                                                    <option selected="selected"
+                                                            value="{{ spe.id }}">{{ spe.nombre }}</option>
+                                                {% else %}
+                                                    <option value="{{ spe.id }}">{{ spe.nombre }}</option>
+                                                {% endif %}
+
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+
+
+                                <div class="col-lg-4">
+                                    {% if errors and errors.cedula is defined %}
+                                    <div class="form-group has-error">
+                            <span class="help-block">
+                                        <strong>{{ errors['cedula'] }}</strong>
+                                    </span>
+                                        {% else %}
+                                        <div class="form-group">
+                                            {% endif %}
+                                            <label>Cédula</label>
+                                            <input alt="Cédula" type="text" class="form-control"
+                                                    {% if data and data.cedula %}
+                                                        value="{{ data.cedula }}"
+                                                    {% endif %}
+                                                   name="cedula" data-mask="9999999999" placeholder="Cédula">
+                                        </div>
+
+
+                                        {% if errors and errors.telefono is defined %}
+                                        <div class="form-group has-error">
+                            <span class="help-block">
+                                        <strong>{{ errors['telefono'] }}</strong>
+                                    </span>
+                                            {% else %}
+                                            <div class="form-group">
+                                                {% endif %}
+                                                <label>Teléfono</label>
+                                                <input type="text" {% if data and data.telefono %}
+                                                    value="{{ data.telefono }}"
+                                                {% endif %} class="form-control" name="telefono"
+                                                       data-mask="99-9999-9999" placeholder="Teléfono"
+                                                       required="">
+                                            </div>
+
+                                            {% if errors and errors.telefonoConvencional is defined %}
+                                            <div class="form-group has-error">
+                            <span class="help-block">
+                                        <strong>{{ errors['telefonoConvencional'] }}</strong>
+                                    </span>
+                                                {% else %}
+                                                <div class="form-group">
+                                                    {% endif %}
+                                                    <label>Teléfono convencional</label>
+                                                    <input type="text" {% if data and data.telefonoConvencional %}
+                                                        value="{{ data.telefonoConvencional }}"
+                                                    {% endif %} class="form-control" name="telefonoConvencional"
+                                                           data-mask="99-9999999" placeholder="Teléfono convencional"
+                                                    >
+                                                </div>
+
+
+                                                {% if errors and errors.direccion is defined %}
+                                                <div class="form-group has-error">
+                            <span class="help-block">
+                                        <strong>{{ errors['direccion'] }}</strong>
+                                    </span>
+                                                    {% else %}
+                                                    <div class="form-group">
+                                                        {% endif %}
+                                                        <label>Dirección</label>
+                                                        <input type="text" {% if data and data.direccion %}
+                                                            value="{{ data.direccion }}"
+                                                        {% endif %} class="form-control" name="direccion"
+                                                               placeholder="Dirección"
+                                                        >
+                                                    </div>
+
+                                                </div>
+
+
+                                                <div class="col-lg-4">
+
+
+                                                    {% if errors and errors.nombreUsuario is defined %}
+                                                    <div class="form-group has-error">
+                            <span class="help-block">
+                                        <strong>{{ errors['nombreUsuario'] }}</strong>
+                                    </span>
+                                                        {% else %}
+                                                        <div class="form-group">
+                                                            {% endif %}
+                                                            <label>Nombre de usuario</label>
+                                                            <input id="nombreUsuario"
+                                                                   type="text" {% if data and data.nombreUsuario is defined %}
+                                                                value="{{ data.nombreUsuario }}"
+                                                            {% endif %} class="form-control" name="nombreUsuario"
+                                                                   placeholder="Nombre de usuario"
+                                                                   required="">
+                                                        </div>
+                                                        {% if errors and errors.password is defined %}
+                                                        <div class="form-group has-error">
+                            <span class="help-block">
+                                        <strong>{{ errors['password'] }}</strong>
+                                    </span>
+                                                            {% else %}
+                                                            <div class="form-group">
+                                                                {% endif %}
+                                                                <label>Contraseña</label>
+                                                                <input type="password" {% if data and data.password %}
+                                                                    value=""
+                                                                {% endif %} class="form-control" name="password"
+                                                                       placeholder="Contraseña"
+                                                                       required="">
+                                                            </div>
+
+
+                                                            {% if errors and errors.correo is defined %}
+                                                            <div class="form-group has-error">
+                            <span class="help-block">
+                                        <strong>{{ errors['correo'] }}</strong>
+                                    </span>
+                                                                {% else %}
+                                                                <div class="form-group">
+                                                                    {% endif %}
+                                                                    <label>Correo</label>
+                                                                    <input type="email" {% if data and data.correo %}
+                                                                        value="{{ data.correo }}"
+                                                                    {% endif %} class="form-control" name="correo"
+                                                                           placeholder="Correo" required="">
+                                                                </div>
+
+                                                                {% if errors and errors.porciento is defined %}
+                                                                <div class="form-group has-error">
+                            <span class="help-block">
+                                        <strong>{{ errors['porciento'] }}</strong>
+                                    </span>
+                                                                    {% else %}
+                                                                    <div class="form-group">
+                                                                        {% endif %}
+                                                                        <label>Porciento a pagar</label>
+                                                                        <input class="touchspin3"  type="text" {% if data and  data.porciento >=0 %}
+                                                                            value="{{ data.porciento }}"
+                                                                        {% endif %} class="form-control" name="porciento"
+                                                                               placeholder="Porciento" required="">
+                                                                    </div>
+
+                                                            </div>
+
+                                                            <div class="form-group">
+
+
+                                                                <div class="col-lg-offset-9" style="margin-top: 240px;position: relative !important;">
+
+
+                                                                    <button type="submit" class=" btn btn-primary">
+                                                                        Aceptar
+                                                                    </button>
+                                                                    <a href="{{ path('manage_doctor_user_list') }}"
+                                                                       class=" btn btn-warning">Volver al listado</a>
+                                                                </div>
+                                                            </div>
+
+
+    </form>
+    </div>
+
+
+    <!-- Mainly scripts -->
+    <script src="{{ asset('bundles/app/js/jquery-2.1.1.js') }}"></script>
+    <script src="{{ asset('bundles/app/js/bootstrap.min.js') }}"></script>
+    <script src="{{ asset('bundles/app/js/plugins/jasny/jasny-bootstrap.min.js') }}"></script>
+    <script src="{{ asset('bundles/app/js/plugins/chosen/chosen.jquery.js') }}"></script>
+    <script src="{{ asset('bundles/app/js/plugins/touchspin/jquery.bootstrap-touchspin.min.js') }}"></script>
+
+    <script src="{{ asset('bundles/app/js/plugins/bootstrap-tagsinput/bootstrap-tagsinput.js') }}"></script>
+
+
+
+    <script src="{{ asset('bundles/app/js/plugins/validation/jquery.validationEngine.js') }}"></script>
+
+
+    <script src="{{ asset('bundles/app/js/plugins/validation/jquery.validate.min.js') }}"></script>
+
+    <script src="{{ asset('bundles/app/js/plugins/validation/additionalValidator.js') }}"></script>
+    <script src="{{ asset('bundles/app/js/custom/validationUser.js') }}"></script>
+    <script>
+        id_user ={{ idUser }};
+        $.validator.setDefaults({ignore: ":hidden:not(select)"})
+        $(function () {
+            formUserValidation(3,false);
+        });
+    </script>
+    <script>
+
+        $(document).ready(function () {
+            $('.chosen-select').chosen({width: "100%"});
+            $('.tagsinput').tagsinput({
+                tagClass: 'label label-primary'
+            });
+            $(".touchspin3").TouchSpin({
+                verticalbuttons: true,
+                buttondown_class: 'btn btn-white',
+                buttonup_class: 'btn btn-white',
+                step: 0.5,
+                decimals: 2,
+                min: 0,
+                max: 100000000
+            });
+
+        })</script>
+    {{ parent() }}
+{% endblock %}

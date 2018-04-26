@@ -1,0 +1,67 @@
+{% extends 'base.html.twig' %}
+{% block css %}
+    {{ parent() }}
+    <link href="{{ asset('bundles/app/css/plugins/sweetalert/sweetalert.css') }}" rel="stylesheet">
+
+
+
+{% endblock %}
+{% block content %}
+    <div>
+        <h3>Listado de registro dentales de clientes </h3>  <a href="{{ path('doctor_show_template') }}" title="adicionar registro dental"
+                                          class="btn btn-primary btn-circle pull-right" type="button"><i
+                    class="fa fa-plus"></i>
+        </a>
+    </div>
+
+    <div class="table-responsive">
+    <table class="table table-striped table-bordered table-hover dataTables-example">
+        <thead>
+        <tr>
+
+            <th>Nombres</th>
+            <th>Apellidos</th>
+            <th>Edad</th>
+            <th>Fecha de creación del registro</th>
+            <th width="200px">Acciones</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for reg in users %}
+            <tr>
+
+                <td>{{ reg.paciente.nombre }}</td>
+                <td>{{ reg.paciente.apellido }}</td>
+
+                <td>{{ reg.paciente.edad }}</td>
+                <td>{{ reg.fechaCreacion |date('d/m/Y')}}</td>
+                <td>
+
+
+                        <a  title="Actualizar consulta" class="btn btn-info btn-circle" href="{{ path('cliente_query_update',{id:reg.id}) }}"
+                            type="button"><i class="fa fa-check"></i>
+                        </a>
+
+                        <a class="btn btn-danger btn-circle" href="{{ path('client_query_remove',{id:reg.id}) }}" type="button"><i class="fa fa-minus"></i>
+                        </a>
+
+                </td>
+
+
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    {{ parent() }}
+
+
+{% endblock %}
+         {% block javascript %}
+
+    {{ parent() }}
+
+    <script src="{{ asset('bundles/app/js/plugins/sweetalert/sweetalert.min.js') }}"></script>
+     {% include 'AppBundle:Default:remove_confirm.js.twig' %}
+
+{% endblock javascript %}

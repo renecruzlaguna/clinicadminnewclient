@@ -1,0 +1,83 @@
+
+{% if daysSelected ==null and (app.user.rol.id==1 or app.user.rol.id==3)%}
+
+    <script>
+
+
+        {% if daysSelected ==null%}
+        toastr.options = {
+            closeButton: true,
+            progressBar: true,
+            showMethod: 'slideDown',
+            timeOut: 2000
+        };
+        toastr.warning('', 'No existen consultas planificadas para la fecha seleccionada.');
+        {% endif %}
+
+    </script>
+
+{% else %}
+        <h4 class="center-block">Día de la consulta: </h4>
+        <table class="table table-bordered">
+
+            <thead>
+            <th>Dom</th>
+            <th>Lun</th>
+            <th>Mar</th>
+            <th>Mie</th>
+            <th>Jue</th>
+            <th>Vie</th>
+            <th>Sab</th>
+
+            </thead>
+            {% set cont =1 %}
+            {% for i in 0.. totalWeek-1 %}
+                <tr>
+                    {% for j in 0..6 %}
+                        {% if (j==day and  cont <= totalDays)or (cont > 1 and cont <= totalDays) %}
+                            {% set include=false %}
+                            {% if daysSelected and (cont in daysSelected ) %}
+                                {% set include=true %}
+                            {% endif %}
+
+                            <td td-val="{{ cont }}" class="  {% if include %} btn-primary{% endif %}"
+                                {% if include %}style="padding:2px;!important ;cursor: pointer;" id="td-{{ cont }}"
+                                onclick="check(this)" {% else %} style="padding:2px;"{% endif %}>&nbsp;&nbsp;{{ cont }}
+
+                                &nbsp;&nbsp;{% if include %}
+                                <i id="a-td-{{ cont }}" class="fa fa-check p-w-3"></i>
+                                <div style="margin-top: 10px">
+                                    {% for key,value in countQuery %}
+                                        {% if key==cont %}
+                                            <i class="fa fa-users">&nbsp;&nbsp;{{ value }}</i>  &nbsp;
+                                        {% endif %}
+
+                                    {% endfor %}
+                                </div>
+                                <div style="margin-top: 10px">
+                                    {% for key,value in clocks %}
+                                        {% if key==cont %}
+                                            <i class="fa fa-clock-o"> {{ value.min }}-{{ value.max }}</i>&nbsp;&nbsp; &nbsp;
+                                        {% endif %}
+
+                                    {% endfor %}
+
+                                    {% endif %}
+                                </div>
+                                &nbsp;</td>
+
+
+                            {% set cont= cont+1 %}
+                        {% else %}
+                            <td>&nbsp;&nbsp;&nbsp;</td>
+                        {% endif %}
+
+
+                    {% endfor %}
+                </tr>
+            {% endfor %}
+        </table>
+
+{% endif %}
+
+

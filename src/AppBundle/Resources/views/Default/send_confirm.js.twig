@@ -1,0 +1,32 @@
+<script>
+
+    $(document).ready(function () {
+
+
+
+    $('.send').click(function (e) {
+        var url = $(this).data('recordId');
+        var send = $(this).data('send');
+        var text='¿Está seguro que desea enviar el correo con la factura electrónica al cliente?.';
+        if(send){
+            text+='Ya la factura le fue enviada en una ocasión.'
+        }
+
+        swal({
+            title: "",
+            text: text,
+            type: "warning",
+            showCancelButton: true,
+            cancelButtonColor: "#18a689",
+            confirmButtonColor: "#ed5565",
+            confirmButtonText: "Aceptar",
+            cancelButtonText: "Cancelar",
+            closeOnConfirm: true
+        }, function () {
+
+            waitMeShow();
+            window.location.href=url;
+        });
+    });
+})
+</script>

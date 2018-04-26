@@ -1,0 +1,47 @@
+$('#form-query').on('submit', function (e) {
+    var speciality=$('#combo_especialidad').val();
+    var doctor=-1;
+    if($('#combo-medico')){
+        doctor=$('#combo-medico').val();
+    }
+    var total=$('tr .select-day').length==1;
+
+    var initialHourF=$('#horainicial').val()
+    var initialMinuteF=$('#minutoinicial').val();
+
+    var endHourF=$('#horaFinal').val()
+    var endMinuteF=$('#minutoFinal').val();
+
+    if(speciality!=-1&&doctor!=-1&&total&&initialHourF!=undefined&&initialMinuteF!=undefined&&endHourF!=undefined&&endMinuteF!=undefined){
+
+        if (!$('#form-query').hasClass('checking')&&$('#form-query').valid()) {
+            if(id==""||id==undefined){
+                id=-1;
+            }
+            e.preventDefault();
+
+            var url='/manage/reserve/check/free/'+id+'/'+ $('#horainicial').val()+
+                '/'+endHourF+'/'+ $('#minutoinicial').val()+'/'+endMinuteF+'/'+doctor+
+                '/'+$('#input-dia').val()+'/'+$('#input-mes').val()+'/'+$('#input-anno').val();
+            excecuteAjax('GET',url, null, function (response) {
+
+            }, function (response) {
+                if (response.success == true) {
+                    $('#form-query').addClass('checking');
+                    waitMeShow();
+
+                    $('#form-query').submit();
+                }
+
+            },'Verificando disponibilidad del horario.')
+        }
+
+    }else{
+        e.preventDefault();
+    }
+
+
+
+
+
+})

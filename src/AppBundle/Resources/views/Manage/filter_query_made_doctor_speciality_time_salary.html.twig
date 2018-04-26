@@ -1,0 +1,65 @@
+<table class="table table-striped table-bordered table-hover dataTables-example">
+    <thead>
+    <tr>
+        <th>Nombre del cliente</th>
+        <th>Correo</th>
+        <th>Nombre del médico</th>
+        <th>Nombre de la especialidad</th>
+
+        <th>Fecha de la consulta</th>
+        <th>Hora inicial</th>
+        <th>Hora final</th>
+        <th>Estado de la reserva</th>
+
+        <th>Total en factura</th>
+
+
+
+    </tr>
+    </thead>
+    <tbody>
+    {% set total=0 %}
+    {% for esp in especialities %}
+        <tr>
+           {% if esp is iterable %}
+
+               <td><strong>-------------</strong></td>
+               <td><strong>-------------</strong></td>
+               <td><strong>{{ esp['nombremedico'] }}</strong></td>
+               <td><strong>Total recaudado: ${{ esp['total'] }}</strong></td>
+               <td><strong>Porciento a pagar:{{  esp['porciento'] }}</strong></td>
+               <td><strong>Salario a pagar: ${{  esp['salario'] }}</strong></td>
+               <td><strong>Salario total a pagar: ${{  esp['pagar'] }}</strong></td>
+               <td><strong>-------------</strong></td>
+               <td><strong>-------------</strong></td>
+
+
+
+
+               {% else %}
+                   <td>{{ esp.usuarioRegistro.getCompleteName() }}</td>
+                   <td>{{ esp.usuarioRegistro.correo }}</td>
+                   <td>{{ esp.usuario.getCompleteName() }}</td>
+                   <td>{{ esp.usuario.especialidad.nombre }}</td>
+
+                   <td>{{ esp.dia }}/{{ esp.mes }}/{{ esp.anno }}</td>
+                   <td>{{ esp.horaInicialC }}:{{ esp.minutoInicialC }}</td>
+                   <td>{{ esp.horaFinalC }}:{{ esp.minutoFinalC }}</td>
+
+                   <td>{{ esp.estado.nombre }}</td>
+
+                   <td>${{ esp.factura.getValueTotal }}</td>
+           {% endif %}
+
+
+
+
+      </tr>
+
+
+    {% endfor %}
+    </tbody>
+</table>
+
+
+{% include 'AppBundle:Default:show_datatable_message_notorder.js.twig' %}

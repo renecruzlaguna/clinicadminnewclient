@@ -1,0 +1,93 @@
+﻿<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+
+    {% block css %}
+        <style>
+            {% include 'AppBundle:Default:boostrap.css.twig' %}
+            table {
+                border-collapse: collapse;
+
+            }
+            .tr{
+                background: url("{{ app.request.scheme ~'://' ~ app.request.httpHost ~  asset('bundles/app/images/fondo.png') }}");
+                background-repeat: no-repeat;
+                background-position: 40%;
+            }
+
+            table, th, td {
+                border: 1px solid black;
+            }
+            td p{padding-left: 5px;}
+            body {
+                background-image: url("{{ app.request.scheme ~'://' ~ app.request.httpHost ~  asset('bundles/app/images/backgroundpdf.jpg') }}");
+                background-position: center bottom;
+                background-repeat: no-repeat;
+
+
+            }
+        </style>
+
+    {% endblock %}
+</head>
+<body>
+{% block content %}
+    <div>
+        <div  style="width: 60%;float: left;left:10%;top:0;position: absolute">
+            <img src="{{ app.request.scheme ~'://' ~ app.request.httpHost ~  asset('bundles/app/images/logo.png') }}">
+        </div>
+
+        <div style="width: 75%;float: left;left:20%;top:0;position: absolute">
+            <h1 class="text-center">{{ company_name }}</h1>
+            <p><strong>Dir:{{ address_company }} </strong></p>
+            <p class="text-center"><strong>Web: <a href="http://{{ web_company }}">{{ web_company }}</a></strong> <img
+                        src="{{ app.request.scheme ~'://' ~ app.request.httpHost ~  asset('bundles/app/images/twitter.png') }}">
+                <i class="fa  fa-twitter"></i> <a href="https://twitter.com/dental_day"> @{{ twitter }}</a> <img
+                        src="{{ app.request.scheme ~'://' ~ app.request.httpHost ~  asset('bundles/app/images/facebook.png') }}"><a
+                        href="https://www.facebook.com/profile.php?id=100013242092206">{{ facebook }}</a></p>
+            <p class="text-center"><strong>{{ city_company }}</strong></p>
+        </div>
+
+        <div
+                style="top:0;position: absolute; border-collapse: collapse;width: 17%;right:7%;float: right;border-color: #000000;border-radius: 12px;border-style: solid;border-width: 1px;">
+            <img src="{{ app.request.scheme ~'://' ~ app.request.httpHost ~  asset('bundles/app/images/logofactura.png') }}">
+            <p style="text-align: center;font-weight: bold"><span>Fecha:</span> {{date}}</p>
+        </div>
+
+    </div>
+
+
+    <table style="top:240px;position: absolute;width: 83%;left: 10%;float: left" >
+
+
+        <tr >
+            <td  style="text-align: center;font-weight: bold">Servicio(s) cotizado(s)</td>
+            <td  style="text-align: center;font-weight: bold">Cantidad</td>
+            <td  style="text-align: center;font-weight: bold">Precio por servicio</td>
+            <td  style="text-align: center;font-weight: bold">Precio total servicio</td>
+
+        </tr>
+        {% set index=0 %}
+        {% for serv in allservices %}
+            {% if serv.id in services %}
+                <tr>
+                    <td>{{ serv.nombre }}</td>
+                    <td>{{ countServices[index] }}</td>
+                    <td>${{ serv.precio|number_format(2, '.') }}</td>
+                    <td>${{ (serv.precio*countServices[index])|number_format(2, '.') }}</td>
+                </tr>
+                {% set index=index+1 %}
+        {% endif %}
+        {% endfor %}
+<tr><td colspan="3"> <p style="font-weight: bold"><span>Descuento:</span> {{ rest }}%</p>
+
+
+    </td><td> <p style="font-weight: bold"><span>Total:</span> ${{ total|number_format(2, '.') }}</p></td></tr>
+        <tr><td colspan="4" > <p align="right" style="font-weight: bold;left: 65%"> Esta cotización es válida solo por 20 días</p></td></tr>
+    </table>
+
+
+{% endblock %}
+</body>
+</html>

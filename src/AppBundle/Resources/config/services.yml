@@ -1,0 +1,56 @@
+parameters:
+ ldap_config:
+       server: 10.0.0.3
+       dn: OU=UCI Domain Users, DC=uci, DC=cu
+       query: mail=username@*
+      # search_password: uF2SODWAHiW0eJboFFQEAvVzJ
+       search_password: "*Tusisuenas2017*"
+       search_user: yacasado@uci.cu
+
+services:
+ login_listener:
+         class: AppBundle\Listeners\SessionLoginListener
+         arguments: []
+         tags:
+             - { name: kernel.event_listener, event: security.interactive_login, method: onInteractiveLogin }
+ manager.json:
+        class: AppBundle\Libs\Normalizer\ManagerNormalizer
+        arguments: ["@service_container"]
+ manager.email:
+         class: AppBundle\Libs\Helper\SendCustomEmail
+         arguments: ["@service_container"]
+ manager.validator:
+        class: AppBundle\Libs\Validator\ManagerValidator
+        arguments: ["@service_container"]
+ normalizer.estado:
+        class: AppBundle\Libs\EntityNormalizer\EstadoNormalizer
+ normalizer.rol:
+        class: AppBundle\Libs\EntityNormalizer\RolNormalizer
+ normalizer.categoria:
+        class: AppBundle\Libs\EntityNormalizer\CategoriaNormalizer
+ normalizer.subcategoria:
+        class: AppBundle\Libs\EntityNormalizer\SubCategoriaNormalizer
+ normalizer.tipotransporte:
+        class: AppBundle\Libs\EntityNormalizer\TipoTransporteNormalizer
+ normalizer.tipovisita:
+        class: AppBundle\Libs\EntityNormalizer\TipoVisitaNormalizer
+ normalizer.tipo:
+        class: AppBundle\Libs\EntityNormalizer\TipoNormalizer
+ normalizer.usuario:
+        class: AppBundle\Libs\EntityNormalizer\UsuarioNormalizer
+ normalizer.visita:
+        class: AppBundle\Libs\EntityNormalizer\VisitaNormalizer
+ normalizer.mensaje:
+        class: AppBundle\Libs\EntityNormalizer\MensajeNormalizer
+ importfileimage:
+        class: AppBundle\Libs\Import\ImportFile
+        arguments: [%kernel.root_dir%]
+ app.ldap:
+         class: AppBundle\Libs\Ldap\Ldap
+         arguments: ["%ldap_config%"]
+ app.dates:
+          class: AppBundle\Libs\Helper\Dates
+ my.security.login_handler:
+          class: AppBundle\Listeners\LoginListener
+          arguments: [@router]
+   

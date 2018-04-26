@@ -1,0 +1,125 @@
+<script>
+
+    make=false;
+
+    var assigValueSelect=function(){
+    var value='';
+    for(var index in objSend){
+    value=value+index+':'+objSend[index] +';';
+
+}
+$('#areas').val(value);
+
+}
+
+    $(document).ready(function () {
+
+    var step=$("#wizard").steps({});
+
+
+    $("#form").steps({
+    enableFinishButton:false,
+    bodyTag: "fieldset",
+    transitionEffect: "fade",
+    labels: {
+    current: "Paso actual:",
+    pagination: "Paginación",
+    finish: "Finalizar",
+    next: "Siguiente",
+    previous: "Anterior",
+    loading: "Cargando ...",
+
+
+},
+    startIndex:next?10:0,
+    onInit: function(event, currentIndex) {
+
+},
+    onStepChanging: function (event, currentIndex, newIndex)
+{
+    var form = $(this);
+    if(newIndex==11&&next&&!make&&form.valid()){
+        if(!$('div#beforeevolucion').hasClass('hide')){
+    $('div#beforeevolucion').addClass('hide')
+}
+
+    waitMeShow('Pintando mapa dental.Espere por favor')
+    setTimeout(function(){
+    loadData();
+    waitMeHide();
+    make=true;
+}, 2000);
+
+}
+    // Always allow going backward even if the current step contains invalid fields!
+    if (currentIndex > newIndex)
+{
+
+    return true;
+}
+
+
+
+    var form = $(this);
+
+    // Clean up if user went backward before
+    if (currentIndex < newIndex)
+{
+    // To remove error styles
+    $(".body:eq(" + newIndex + ") label.error", form).remove();
+    $(".body:eq(" + newIndex + ") .error", form).removeClass("error");
+}
+
+    // Disable validation on fields that are disabled or hidden.
+    form.validate().settings.ignore = ":disabled,:hidden";
+
+    // Start validation; Prevent going forward if false
+    return form.valid();
+},
+
+    onFinishing: function (event, currentIndex)
+{
+
+    var form = $(this);
+
+    // Disable validation on fields that are disabled.
+    // At this point it's recommended to do an overall check (mean ignoring only disabled fields)
+    form.validate().settings.ignore = ":disabled";
+
+    // Start validation; Prevent form submission if false
+    return form.valid();
+},
+    onFinished: function (event, currentIndex)
+{
+    var form = $(this);
+    assigValueSelect();
+    // Submit form input
+    form.submit();
+}
+
+
+})
+    $('.i-checks').iCheck({
+    checkboxClass: 'icheckbox_square-green',
+    radioClass: 'iradio_square-green',
+});
+    $('#tto').on('ifChecked', function(event){
+    $('#tiempo').removeAttr("disabled");
+    $('#ttosend').val(1)
+
+});
+    $('#tto').on('ifUnchecked', function(event){
+    $('#tiempo').attr('disabled', 'disabled');
+    $('#tiempo').prop('disabled', true);
+    $('#tiempo').val('');
+    $('#ttosend').val(0)
+});
+
+})
+    $(function () {
+    formResultQueryValidation();
+});
+
+</script>
+
+

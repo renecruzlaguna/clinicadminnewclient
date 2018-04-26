@@ -1,0 +1,5 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="symfony" type="PhpRemoteDebugRunConfigurationType" factoryName="PHP Remote Debug" server_name="symfony" session_id="dbgp">
+    <method />
+  </configuration>
+</component>

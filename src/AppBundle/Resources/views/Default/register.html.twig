@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>YC DENTAL Registro</title>
+
+    <link href="{{ asset('bundles/app/css/bootstrap.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('bundles/app/font-awesome/css/font-awesome.css') }}" rel="stylesheet">
+    <link href="{{ asset('bundles/app/css/plugins/iCheck/custom.css') }}" rel="stylesheet">
+    <link href="{{ asset('bundles/app/css/animate.css') }}" rel="stylesheet">
+    <link href="{{ asset('bundles/app/css/style.css') }}" rel="stylesheet">
+    <script src='https://www.google.com/recaptcha/api.js?hl=es'></script>
+
+    <link href="{{ asset('bundles/app/css/plugins/bootstrap-tagsinput/bootstrap-tagsinput.css') }}" rel="stylesheet">
+    <style>
+
+        .custom-gray {
+            background-image: url({{ asset('bundles/app/images/login.jpg') }}) !important;
+            background-repeat: no-repeat;
+
+        }
+
+        .btn-success:hover,
+        .btn-success:focus,
+        .btn-success.focus,
+        .btn-success:active,
+        .btn-success.active,
+        .open > .dropdown-toggle.btn-success {
+            color: #fff;
+            background-color: #043276;
+            border-color: #043276;
+        }
+
+        .btn-success {
+            background-color: #05347a;
+            border-color: #1c84c6;
+            color: #FFFFFF;
+        }
+    </style>
+
+
+</head>
+
+
+<body class="gray-bg">
+
+<div class="middle-box text-center loginscreen   animated fadeInDown">
+    <div>
+        <div>
+
+            <img src="{{ asset('bundles/app/images/logo_inicio.png') }}">
+
+        </div>
+        <h3>Registrarse en YC DENTAL</h3>
+
+        <form class="m-t" role="form" action="{{ path('app_register') }}" method="POST">
+
+            <div class="row">
+                {% if exception is defined %}
+                    <div class="form-group has-error">{{ exception }} </div>
+                {% endif %}
+                <div class="col-lg-12">
+                    <div class="col-lg-6">
+
+                        {% if errors and errors.nombre is defined %}
+                        <div class="form-group has-error">
+                            <span class="help-block">
+                                        <strong>{{ errors['nombre'] }}</strong>
+                                    </span>
+                            {% else %}
+                            <div class="form-group">
+                                {% endif %}
+                                <input type="text" {% if data and data.nombre is defined %}
+                                    value="{{ data['nombre'] }}"
+                                {% endif %} class="form-control" name="nombre" placeholder="Nombre" required="">
+                            </div>
+                            {% if errors and errors.apellido is defined %}
+                            <div class="form-group has-error">
+                            <span class="help-block">
+                                        <strong>{{ errors['apellido'] }}</strong>
+                                    </span>
+                                {% else %}
+                                <div class="form-group">
+                                    {% endif %}
+                                    <input type="text" {% if data and data.apellido is defined %}
+                                        value="{{ data['apellido'] }}"
+                                    {% endif %} class="form-control" name="apellido" placeholder="Apellidos"
+                                           required="">
+                                </div>
+                                {% if errors and errors.correo is defined %}
+                                <div class="form-group has-error">
+                            <span class="help-block">
+                                        <strong>{{ errors['correo'] }}</strong>
+                                    </span>
+                                    {% else %}
+                                    <div class="form-group">
+                                        {% endif %}
+                                        <input type="email" {% if data and data.correo is defined %}
+                                            value="{{ data['correo'] }}"
+                                        {% endif %} class="form-control" name="correo" placeholder="Correo" required="">
+                                    </div>
+                                    {% if errors and errors.cedula is defined %}
+                                    <div class="form-group has-error">
+                            <span class="help-block">
+                                        <strong>{{ errors['cedula'] }}</strong>
+                                    </span>
+                                        {% else %}
+                                        <div class="form-group">
+                                            {% endif %}
+                                            <input type="text" class="form-control"
+                                                    {% if data and data.cedula is defined %}
+                                                        value="{{ data['cedula'] }}"
+                                                    {% endif %}
+                                                   name="cedula" data-mask="9999999999" placeholder="Cédula">
+                                        </div>
+
+
+                                    </div>
+
+
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            <input type="text"
+                                                   class="form-control" {% if data and data.direccion is defined %}
+                                                value="{{ data['direccion'] }}"
+                                            {% endif %} name="direccion" placeholder="Dirección" required="">
+                                        </div>
+
+
+                                        {% if errors and errors.nombreUsuario is defined %}
+                                        <div class="form-group has-error">
+                            <span class="help-block">
+                                        <strong>{{ errors['nombreUsuario'] }}</strong>
+                                    </span>
+                                            {% else %}
+                                            <div class="form-group">
+                                                {% endif %}
+
+                                                <input type="text" {% if data and data.nombreUsuario is defined %}
+                                                    value="{{ data['nombreUsuario'] }}"
+                                                {% endif %} class="form-control" name="nombreUsuario"
+                                                       placeholder="Nombre de usuario"
+                                                       required="">
+                                            </div>
+                                            {% if errors and errors.password is defined %}
+                                            <div class="form-group has-error">
+                            <span class="help-block">
+                                        <strong>{{ errors['password'] }}</strong>
+                                    </span>
+                                                {% else %}
+                                                <div class="form-group">
+                                                    {% endif %}
+                                                    <input type="password" {% if data and data.password is defined %}
+                                                        value="{{ data['password'] }}"
+                                                    {% endif %} class="form-control" name="password"
+                                                           placeholder="Contraseña"
+                                                           required="">
+                                                </div>
+                                                {% if errors and errors.telefono is defined %}
+                                                <div class="form-group has-error">
+                            <span class="help-block">
+                                        <strong>{{ errors['telefono'] }}</strong>
+                                    </span>
+                                                    {% else %}
+                                                    <div class="form-group">
+                                                        {% endif %}
+                                                        <input type="text" {% if data and data.telefono is defined %}
+                                                            value="{{ data['telefono'] }}"
+                                                        {% endif %} class="form-control" name="telefono"
+                                                               data-mask="99-9999-9999" placeholder="Teléfono"
+                                                               required="">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-6">
+                                            {% if errors and errors.captcha is defined %}
+                                                <div class="form-group has-error">
+                            <span class="help-block">
+                                        <strong>Captcha incorrecto</strong>
+                                    </span>
+                                                </div>
+                                            {% endif %}
+                                            <div class="g-recaptcha" data-theme="light"
+                                                 data-sitekey="6Ld3-EIUAAAAAHZSKKhAaK1aIH30Grb7xWuxUE0A"
+                                                 style="transform:scale(0.90);-webkit-transform:scale(0.90);transform-origin:0 0;-webkit-transform-origin:0 0;"></div>
+
+                                        </div>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary block full-width m-b">Registrarse
+                                    </button>
+
+                                    <p class="text-muted text-center">
+                                        <big style="font-weight: bold">¿Ya tienes una cuenta?</big>
+                                    </p>
+                                    <a class="btn btn-success btn-block"
+                                       href="{{ path('app_login') }}">Acceder</a>
+        </form>
+
+    </div>
+</div>
+
+<!-- Mainly scripts -->
+<script src="{{ asset('bundles/app/js/jquery-2.1.1.js') }}"></script>
+<script src="{{ asset('bundles/app/js/bootstrap.min.js') }}"></script>
+<script src="{{ asset('bundles/app/js/plugins/jasny/jasny-bootstrap.min.js') }}"></script>
+
+<script src="{{ asset('bundles/app/js/plugins/bootstrap-tagsinput/bootstrap-tagsinput.js') }}"></script>
+<script>
+    $(document).ready(function () {
+
+        $('.tagsinput').tagsinput({
+            tagClass: 'label label-primary'
+        });
+    })</script>
+<script>
+
+    $('body').addClass('custom-gray');
+
+
+</script>
+</body>
+
+</html>

@@ -1,0 +1,149 @@
+{% extends 'base.html.twig' %}
+{% block css %}
+    {{ parent() }}
+    <link href="{{ asset('bundles/app/css/plugins/sweetalert/sweetalert.css') }}" rel="stylesheet">
+
+    <link href="{{ asset('bundles/app/css/plugins/chosen/bootstrap-chosen.css') }}" rel="stylesheet">
+    <link href="{{ asset('bundles/app/css/plugins/datapicker/datepicker3.css') }}" rel="stylesheet">
+
+{% endblock %}
+{% block content %}
+
+    <div class="media">
+        <h3 class="media-heading pull-left">Listado de reservaciones realizadas por el cliente {{ client.getCompleteName() }}</h3>
+        <a  class="media-object pull-right btn btn-warning" href="{{ path('manage_client_user_list') }}">Volver al listado</a>
+
+
+    </div>
+
+<br>
+
+
+
+
+
+
+
+    <table class="table table-striped table-bordered table-hover dataTables-example" >
+    <thead>
+    <tr>
+
+        <th>Correo </th>
+        <th>Teléfono</th>
+        <th>Cédula</th>
+        <th>Nombre del médico</th>
+
+
+        <th>Fecha de la consulta</th>
+        <th>Hora inicial</th>
+        <th>Hora final</th>
+        <th width="170px">Forma de reservaci&oacute;n</th>
+        <th width="150px">Estado de la reserva</th>
+
+
+
+    </tr>
+    </thead>
+    <tbody>
+    {% for esp in especialities %}
+        <tr>
+
+
+
+            <td>{{ esp.usuarioRegistro.correo }}</td>
+            <td>{{ esp.usuario.telefono}}</td>
+            <td>{{ esp.usuarioRegistro.cedula}}</td>
+            <td>{{ esp.usuario.getCompleteName() }}</td>
+
+
+           <td>{{ esp.dia }}/{{ esp.mes }}/{{ esp.anno }}</td>
+           <td>{{ esp.horaInicialC }}:{{ esp.minutoInicialC }}</td>
+           <td>{{ esp.horaFinalC }}:{{ esp.minutoFinalC }}</td>
+            <td>{% if esp.tipoConsulta==2 %} Cliente {% else %} Sistema Interno {% endif %}</td>
+
+            <td>{{ esp.estado.nombre}}</td>
+
+
+
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+    {{ parent() }}
+
+{% endblock %}
+
+         {% block javascript %}
+
+    {{ parent() }}
+             <script src="{{ asset('bundles/app/js/plugins/datapicker/bootstrap-datepicker.js') }}"></script>
+
+    <script src="{{ asset('bundles/app/js/plugins/sweetalert/sweetalert.min.js') }}"></script>
+     {% include 'AppBundle:Default:remove_confirm.js.twig' %}
+     {% include 'AppBundle:Default:send_confirm.js.twig' %}
+             <script>
+
+                 $(document).ready(function(){
+                     $('.dataTables-example').DataTable({
+                         pageLength: 25,
+                         responsive: true,
+                         ordering:false,
+                         dom: '<"html5buttons"B>lTfgitp',
+                         buttons: [
+
+                         ],
+                         language:{
+                             "sProcessing":     "Procesando...",
+                             "sLengthMenu":     "Mostrar _MENU_ registros",
+                             "sZeroRecords":    "No se encontraron resultados",
+                             "sEmptyTable":     "Ningún dato disponible en esta tabla",
+                             "sInfo":           "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+                             "sInfoEmpty":      "Mostrando registros del 0 al 0 de un total de 0 registros",
+                             "sInfoFiltered":   "(filtrado de un total de _MAX_ registros)",
+                             "sInfoPostFix":    "",
+                             "sSearch":         "Buscar:",
+                             "sUrl":            "",
+                             "sInfoThousands":  ",",
+                             "sLoadingRecords": "Cargando...",
+                             "oPaginate": {
+                                 "sFirst":    "Primero",
+                                 "sLast":     "Último",
+                                 "sNext":     "Siguiente",
+                                 "sPrevious": "Anterior"
+                             },
+                             "oAria": {
+                                 "sSortAscending":  ": Activar para ordenar la columna de manera ascendente",
+                                 "sSortDescending": ": Activar para ordenar la columna de manera descendente"
+                             }
+                         }
+
+                     });
+
+                     {% if message is defined and message%}
+                     toastr.options = {
+                         closeButton: true,
+                         progressBar: true,
+                         showMethod: 'slideDown',
+                         timeOut: 2000
+                     };
+                     toastr.success('',"{{ message }}");
+                     {% endif %}
+
+                     {% if error is defined and error %}
+                     toastr.options = {
+                         closeButton: true,
+                         progressBar: true,
+                         showMethod: 'slideDown',
+                         timeOut: 2000
+                     };
+                     toastr.error('',"{{ error }}");
+                     {% endif %}
+
+
+
+                 });
+             </script>
+
+
+         {% endblock %}

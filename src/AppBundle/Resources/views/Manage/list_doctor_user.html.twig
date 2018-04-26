@@ -1,0 +1,91 @@
+{% extends 'base.html.twig' %}
+{% block css %}
+    {{ parent() }}
+    <link href="{{ asset('bundles/app/css/plugins/sweetalert/sweetalert.css') }}" rel="stylesheet">
+
+
+
+{% endblock %}
+{% block content %}
+   <div>
+       <h3>Listado de médicos  </h3>  <a href="{{ path('manage_doctor_user_add') }}" title="adicionar médico" class="btn btn-primary btn-circle pull-right" type="button"><i class="fa fa-plus"></i>
+       </a>
+   </div>
+
+    <div class="table-responsive">
+    <table class="table table-striped table-bordered table-hover dataTables-example" >
+    <thead>
+    <tr>
+        <th>Nombre de usuario</th>
+        <th>Correo</th>
+        <th>Nombres</th>
+        <th>Apellidos</th>
+        <th>Cédula</th>
+         <th width="100px">Teléfono</th>
+
+         <th>Especialidad</th>
+        <th>Salario</th>
+         <th width="200px">Acciones</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for user in users %}
+        <tr>
+           <td>{{ user.nombreUsuario }}</td>
+           <td>{{ user.correo }}</td>
+           <td>{{ user.nombre }}</td>
+           <td>{{ user.apellido }}</td>
+           <td>{{ user.cedula }}</td>
+           <td><span class="fa fa-mobile"> </span>&nbsp;{{ user.telefono }}<br>
+                {% if user.telefonoConvencional %}
+               <span class="fa fa-phone"> </span>&nbsp;{{ user.telefonoConvencional }}
+                {% endif %}
+
+                </td>
+           <td>{{ user.especialidad.nombre }}</td>
+           <td>${{ user.salario }}</td>
+           <td>
+             {% if user.id != app.user.id %}
+                 {% set idUser= user.id%}
+
+               <a  title="Actualizar médico"  class="btn btn-info btn-circle"  href="{{ path('manage_doctor_user_edit',{id:idUser}) }}"type="button"><i class="fa fa-check"></i>
+               </a>
+
+                 <a title="Eliminar médico"  data-record-id="{{path('manage_doctor_user_remove',{id:idUser})}}" title="Eliminar médico" class="btn btn-danger btn-circle demo3"  title="eliminar" href="#" ><i class="fa fa-minus"></i>
+                 </a>
+
+
+                 <input  id-user="{{ user.id }}" error="0" data-width="90" data-height="25" data-style="ios"
+                         data-off="<i class='fa fa-play'></i> Activar"
+                         data-on="<i class='fa fa-pause'></i> Desactivar" data-size="mini" class="toogle"
+                         type="checkbox" {% if user.activo==1 %} checked {% endif %}>
+               {% endif %}
+
+                {% if  (app.user.rol.nombre=='ROLE_SECRETARIA' ) %}
+
+
+                        <a  title="Gestionar plan de trabajo" type="button" class="btn btn-info btn-circle"  href="{{ path('doctor_planed_secretary',{idDoctor:idUser}) }}"><i class="fa fa-suitcase"></i> <span class="nav-label"></span>
+                        </a>
+
+
+                {% endif %}
+           </td>
+
+
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+    {{ parent() }}
+
+{% endblock %}
+         {% block javascript %}
+
+    {{ parent() }}
+{% include 'AppBundle:Default:show_datatable_message_render.js.twig' %}
+    <script src="{{ asset('bundles/app/js/plugins/sweetalert/sweetalert.min.js') }}"></script>
+     {% include 'AppBundle:Default:remove_confirm.js.twig' %}
+
+    <script src="{{asset('bundles/app/js/custom/manageUsers.js')}}"></script>
+{% endblock javascript %}

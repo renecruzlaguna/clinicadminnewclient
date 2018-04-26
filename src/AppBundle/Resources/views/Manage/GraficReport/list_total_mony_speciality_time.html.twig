@@ -1,0 +1,189 @@
+{% extends 'base.html.twig' %}
+{% block css %}
+    {{ parent() }}
+    <link href="{{ asset('bundles/app/css/plugins/chosen/bootstrap-chosen.css') }}" rel="stylesheet">
+    <link href="{{ asset('bundles/app/css/plugins/datapicker/datepicker3.css') }}" rel="stylesheet">
+
+{% endblock %}
+{% block content %}
+    <script src="{{ asset('bundles/app/js/plugins/chosen/chosen.jquery.js') }}"></script>
+    <script src="{{ asset('bundles/app/js/plugins/chartJs/Chart.min.js') }}"></script>
+    <div class="ibox float-e-margins">
+        <div class="ibox-title">
+
+
+            <h5>Cantidad de dinero recaudado por especialidad en un rango de fecha</h5>
+            <div class="ibox-tools">
+                <a class="collapse-link">
+                    <i class="fa fa-chevron-up"></i>
+                </a>
+            </div>
+        </div>
+
+        <div class="ibox-content inspinia-timeline" style="display: block;">
+
+            <div class="timeline-item">
+
+                <form class="m-t" role="form" action="#" method="POST">
+
+                    <div class="row">
+
+
+                        <div class="col-lg-3">
+                            <div class="form-group">
+                                <label>Seleccione una o varias especialidades</label>
+                                <select id="combo-especialidad" multiple="multiple" data-placeholder=" "
+                                        class="chosen-select"
+                                        style="width:350px;" tabindex="4" name="especialidad">
+                                    {% for spe in especialities %}
+                                        <option value="{{ spe.id }}">{{ spe.nombre }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-4">
+                            <div class="form-group" id="data_5">
+                                <label>Seleccione el rango de fecha</label>
+                                <div class="input-daterange input-group" id="datepicker">
+                                    <input  id="start" type="text" class="input-sm form-control"
+                                            name="start" value=""/>
+                                    <span class="input-group-addon">a</span>
+                                    <input  id="end" type="text" class="input-sm form-control"
+                                            name="end" value=""/>
+                                </div>
+                            </div>
+                        </div>
+
+
+
+
+                        <div class="col-lg-2" style="margin-top: 20px">
+                            <button type="button" onclick="executeFilter()" class=" btn btn-primary"> <i class="fa fa-line-chart"></i>&nbsp;Graficar</button>
+                        </div>
+                    </div>
+
+                </form>
+
+            </div>
+
+
+
+
+        </div>
+    </div>
+    <div class="flot-chart">
+        <div class="flot-chart-content" id="flot-line-chart-multi"></div>
+    </div>
+{% endblock %}
+
+{% block javascript %}
+
+    {{ parent() }}
+    <script src="{{ asset('bundles/app/js/plugins/bootstrap-tagsinput/bootstrap-tagsinput.js') }}"></script>
+    <script src="{{ asset('bundles/app/js/plugins/datapicker/bootstrap-datepicker.js') }}"></script>
+
+    <script src="{{ asset('bundles/app/js/plugins/chosen/chosen.jquery.js') }}"></script>
+
+    <script src="{{ asset('bundles/app/js/plugins/flot/jquery.flot.js') }}"></script>
+    <script src="{{ asset('bundles/app/js/plugins/flot/jquery.flot.tooltip.min.js') }}"></script>
+    <script src="{{ asset('bundles/app/js/plugins/flot/jquery.flot.resize.js') }}"></script>
+    <script src="{{ asset('bundles/app/js/plugins/flot/flot/jquery.flot.pie.js') }}"></script>
+    <script src="{{ asset('bundles/app/js/plugins/flot/jquery.flot.time.js') }}"></script>
+    <script>
+                                function doPlot(position, data) {
+                                    function dolarFormatter(v, axis) {
+                                        return v.toFixed(axis.tickDecimals) + "$";
+                                    }
+                                    $.plot($("#flot-line-chart-multi"), data, {
+                                        xaxes: [{
+                                                mode: 'time'
+                                            }],
+                                        yaxes: [{
+                                                min: 0
+                                            }, {
+                                                // align if we are to the right
+                                                alignTicksWithAxis: position == "right" ? 1 : null,
+                                                position: position
+                                            }],
+                                        legend: {
+                                            position: 'ne',
+                                            noColumns: data.length
+                                        },
+                                        colors: ["#1ab394"],
+                                        grid: {
+                                            color: "#999999",
+                                            hoverable: true,
+                                            clickable: true,
+                                            backgroundColor: {colors: ["#D1D1D1", "#7A7A7A"]},
+                                            tickColor: "#D4D4D4",
+                                            borderWidth: 0,
+                                            hoverable: true //IMPORTANT! this is needed for tooltip to work,
+
+                                        },
+                                        tooltip: true,
+                                        tooltipOpts: {
+                                            content: "%s para %x fue de $%y",
+                                            xDateFormat: "%m-%d-%Y",
+
+                                            onHover: function (flotItem, $tooltipEl) {
+                                                // console.log(flotItem, $tooltipEl);
+                                            }
+                                        },
+                                        monthNames: ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dec"],
+                                        dayNames: ["Dom", "Lun", "Mar", "Mie", "Jue", "Vie", "Sab"]
+
+                                    });
+                                }
+                                var executeFilter = function () {
+                                    var valSpeciality = $('#combo-especialidad').val();
+
+                                    if (valSpeciality == -1 || valSpeciality == "" || valSpeciality == undefined) {
+                                        valSpeciality = -1;
+                                    }
+
+                                    var valStart = $('#start').val();
+                                    if (valStart == "" || valStart == undefined) {
+                                        valStart = -1;
+                                    }
+                                    var valEnd = $('#end').val();
+                                    if (valEnd == "" || valEnd == undefined) {
+                                        valEnd = -1;
+                                    }
+
+                                    waitMeShow();
+                                    excecuteAjaxHtml('GET', '/manage/report/grafic/total/mony/action', {
+                                        speciality: valSpeciality,
+                                        initialDate: valStart,
+                                        endDate: valEnd
+                                    }, null, function (response) {
+
+                                        waitMeHide();
+                                        if (response.success == true) {
+                                            doPlot("right", response.data);
+                                        }
+
+                                    })
+                                    /*
+                                     $('#content-table').html('');
+                                     waitMeShow();
+                                     appendContent(' /manage/report/total/reserve/salary/' + valSpeciality + '/' + valDoctor + '/' + valStart + '/' + valEnd, 'content-table', {}, function () {
+                                     waitMeHide();
+                                     });
+                                     */
+
+                                }
+                                $(document).ready(function () {
+                                    $('.chosen-select').chosen({width: "100%"});
+                                    $('#data_5 .input-daterange').datepicker({
+                                        keyboardNavigation: false,
+                                        forceParse: false,
+                                        autoclose: true,
+                                        format: 'mm-dd-yyyy'
+                                    });
+                                    executeFilter();
+                                })
+
+
+    </script>
+{% endblock %}

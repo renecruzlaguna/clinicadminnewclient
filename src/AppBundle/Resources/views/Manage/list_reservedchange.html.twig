@@ -1,0 +1,348 @@
+{% extends 'base.html.twig' %}
+{% block css %}
+    {{ parent() }}
+    <link href="{{ asset('bundles/app/css/plugins/sweetalert/sweetalert.css') }}" rel="stylesheet">
+
+    <link href="{{ asset('bundles/app/css/plugins/chosen/bootstrap-chosen.css') }}" rel="stylesheet">
+    <link href="{{ asset('bundles/app/css/plugins/datapicker/datepicker3.css') }}" rel="stylesheet">
+
+<style>
+
+    .tooltip{
+        width: 400px!important;
+        max-width: 600px!important;
+    }
+</style>
+{% endblock %}
+{% block content %}
+    <div>
+
+
+<h3>Listado de reservaciones realizadas</h3> <a href="{{ path('manage_query_admin_add') }}" title="adicionar reserva de consulta" class="btn btn-primary btn-circle pull-right" type="button"><i class="fa fa-plus"></i></a>
+
+
+    </div>
+
+
+    <table class="table table-striped table-bordered table-hover dataTables-example" >
+    <thead>
+    <tr>
+        <th>Nombre del cliente </th>
+        <th>Correo </th>
+        <th>Teléfono</th>
+        <th>Nombre del médico</th>
+
+
+        <th>Fecha de la consulta</th>
+        <th>Hora inicial</th>
+        <th>Hora final</th>
+        <th width="120px">Estado de la reserva</th>
+
+
+         <th width="170px">Acciones</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for esp in especialities %}
+        <tr>
+
+
+           <td>{{ esp.usuarioRegistro.getCompleteName() }}</td>
+            <td>{{ esp.usuarioRegistro.correo }}</td>
+            <td>{{ esp.usuario.telefono}}</td>
+            <td>{{ esp.usuario.getCompleteName() }}</td>
+
+
+           <td>{{ esp.dia }}/{{ esp.mes }}/{{ esp.anno }}</td>
+           <td>{{ esp.horaInicialC }}:{{ esp.minutoInicialC }}</td>
+           <td>{{ esp.horaFinalC }}:{{ esp.minutoFinalC }}</td>
+
+            <td>
+                <button type="button" class="btn btn-default" data-toggle="tooltip" data-placement="right" data-html="true" title='<div class="row" data-toggle="popover" data-trigger="hover" data-content=""> <div> <div class="radio"> <input name="radio1" value="1" type="radio"> <label for="radio1"> Solicitada </label> </div> <div class="radio"> <input name="radio2" value="2" type="radio"> <label for="radio2"> Aceptada </label> </div> </div> </div> <div class="row" data-toggle="popover" data-trigger="hover" data-content=""> <div class="col-sm-6"> <div class="radio radio-danger"> <input name="radio3" value="3" type="radio"> <label for="radio3"> Cancelada </label> </div> <div class="radio radio-danger"> <input name="radio4" value="4" type="radio"> <label for="radio4"> Terminada </label> </div> </div> </div> '>Tooltip on right</button>
+                <select id="combo{{ esp.id }}" style="width: 100px;height: 30px">
+
+                    {% for status in statusList%}
+                        <option value="{{status.id }}" {% if esp.estado.id==status.id %}selected="selected" {% endif %}>{{ status.nombre }}</option>
+                    {% endfor %}
+
+                </select>
+                {% if esp.estado.id!=4 %}
+
+                    <a id="{{ esp.id }}" title="Cambiar estado" initialStatus="{{ esp.estado.id }}" class="btn btn-info btn-circle" onclick="executeChangeStatus(this)">
+                        <i class="fa fa-toggle-on"></i>
+                    </a>
+
+                {% endif %}
+
+            </td>
+
+
+           <td>
+
+                 {% if esp.estado.id!=4 %}
+               <a  title="Actualizar consulta" class="btn btn-info btn-circle" href="{{ path('manage_query_admin_update',{id:esp.id}) }}"
+                  type="button"><i class="fa fa-check"></i>
+               </a>
+                 {% endif %}
+                  {% if esp.estado.id!=2 and esp.estado.id!=4 %}
+               <a   data-record-id="{{path('manage_reserved_admin_remove',{id:esp.id})}}" title="Eliminar consulta" class="btn btn-danger btn-circle demo3"  title="eliminar" href="#" ><i class="fa fa-minus"></i>
+               </a>
+                  {% endif %}
+                  {% if esp.estado.id==4 and esp.factura is null  %}
+                    <a  title="Crear factura de pago" class="btn btn-info btn-circle" href="{{ path('manage_query_admin_check_add',{id:esp.id}) }}"
+                  type="button"><i class="fa fa-money"></i>
+               </a>
+                  {% endif %}
+
+
+                  {% if esp.estado.id==4 and esp.factura is not null  %}
+                    <a  title="Editar factura de pago" class="btn btn-info btn-circle" href="{{ path('manage_query_admin_check_edit',{id:esp.factura.id}) }}"
+                  type="button"><i class="fa fa-edit"></i>
+               </a>
+               <a   data-record-id="{{path('manage_check_admin_remove',{id:esp.factura.id})}}"  class="btn btn-danger btn-circle demo3"  title="Eliminar factura" href="#" ><i class="fa fa-minus"></i>
+               </a>
+                <a  title="Visualizar factura digital" class="btn btn-info btn-circle" id="{{ esp.factura.id }}" href="#" onclick="viewPdf(this)"
+                  type="button"><i class="fa fa-file-pdf-o"></i>
+               </a>
+               {% if not esp.factura.fichero  %}
+                <a data-record-send="{{ esp.factura.enviado }}" title="Enviar correo con factura de pago" id="{{ esp.factura.id }}-send"  data-record-id="{{path('manage_check_client_send_check',{id:esp.factura.id})}}" class="btn btn-success btn-circle send hidden" href="#" ><i class="fa fa-send"></i>
+                 </a>
+                {% else %}
+                <a data-record-send="{{ esp.factura.enviado }}" title="Enviar correo con factura de pago" id="{{ esp.factura.id }}-send"  data-record-id="{{path('manage_check_client_send_check',{id:esp.factura.id})}}" class="btn btn-success btn-circle send" href="#" ><i class="fa fa-send"></i>
+                 </a>
+                {% endif %}
+                  {% endif %}
+{% if esp.estado.id==4 %}
+
+                        {% if esp.usuarioRegistro.historia and (app.user.rol.nombre=='ROLE_ADMIN') %}
+
+                    <a title="Visualizar historia clínica"  class="btn btn-info btn-circle" href="{{ path('manage_query_result_admin_view',{id:esp.usuarioRegistro.historia.id,queryId:esp.id}) }}"
+                      type="button"><i class="fa fa-eye"></i>
+                   </a>
+                   {% endif %}
+
+                   {% endif %}
+
+
+           </td>
+
+
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+    {{ parent() }}
+
+{% endblock %}
+
+         {% block javascript %}
+
+    {{ parent() }}
+             <script src="{{ asset('bundles/app/js/plugins/datapicker/bootstrap-datepicker.js') }}"></script>
+{% include 'AppBundle:Default:show_datatable_message.js.twig' %}
+    <script src="{{ asset('bundles/app/js/plugins/sweetalert/sweetalert.min.js') }}"></script>
+     {% include 'AppBundle:Default:remove_confirm.js.twig' %}
+     {% include 'AppBundle:Default:send_confirm.js.twig' %}
+
+             <script src="{{ asset('bundles/app/js/plugins/chosen/chosen.jquery.js') }}"></script>
+
+
+   <script>
+       $(function () {
+           $('[data-toggle="tooltip"]').tooltip({
+               html:'<span>ok</span>'
+           })
+       })
+   var viewPdf = function(el) {
+    waitMeShow('Generando factura digital. Espere por favor');
+    var id = $(el).attr('id');
+    var send = id + '-send';
+    if ($('#' + send) && !$('#' + send).hasClass('hidden')) {
+        $('#' + send).addClass('hidden');
+    }
+    $.ajax({
+        type: 'GET',
+        url: "/manage/reserve/admin/check/pdf/" + id,
+
+        success: function(response, status, xhr) {
+            var fileName = "";
+            var disposition = xhr.getResponseHeader('Content-Disposition');
+
+            if (disposition) {
+                var filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
+                var matches = filenameRegex.exec(disposition);
+                if (matches !== null && matches[1])
+                    fileName = matches[1].replace(/['"]/g, '');
+                var lastIndex = fileName.lastIndexOf('/');
+                fileName = fileName.substr(lastIndex + 1, fileName.length);
+                if (fileName) {
+                    $('#' + send).removeClass('hidden');
+                    setTimeout(function() {
+                        toastr.options = {
+                            closeButton: true,
+                            progressBar: true,
+                            showMethod: 'slideDown',
+                            timeOut: 2000
+                        };
+                        toastr.success('', 'Operación realizada satisfactoriamente');
+                        window.location.href = '/manage/reserve/admin/get/pdf/' + fileName;
+                    }, 2000);
+
+                } else {
+                    waitMeHide();
+
+                    toastr.options = {
+                        closeButton: true,
+                        progressBar: true,
+                        showMethod: 'slideDown',
+                        timeOut: 2000
+                    };
+                    toastr.error('', 'Ocurrió un error en el servidor');
+
+                }
+            }
+
+        },
+        error: function(response) {
+            waitMeHide();
+
+            toastr.options = {
+                closeButton: true,
+                progressBar: true,
+                showMethod: 'slideDown',
+                timeOut: 2000
+            };
+            toastr.error('', 'Ocurrió un error en el servidor');
+
+
+        }
+    }).done(function() {
+        setTimeout(function() {
+            waitMeHide();
+        }, 2000);
+
+    })
+}
+       var executeChangeStatus=function(el){
+           var id=$(el).attr('id');
+           var initialStatus=$(el).attr('initialStatus')
+           var combo=$('#combo'+id);
+
+           if(combo&&(initialStatus==1&&(combo.val()==2||combo.val()==3))||(initialStatus==2&&(combo.val()==4||combo.val()==3))){
+               swal({
+                   title: "",
+                   text: "¿Está seguro que desea cambiar al estado seleccionado?",
+                   type: "warning",
+                   showCancelButton: true,
+                   cancelButtonColor: "#18a689",
+                   confirmButtonColor: "#ed5565",
+                   confirmButtonText: "Aceptar",
+                   cancelButtonText: "Cancelar",
+                   closeOnConfirm: true
+               }, function () {
+
+                   var status= combo.val();
+                   excecuteAjax('GET', '/manage/reserved/admin/status/' + id+ '/' + status, {}, function () {
+                       combo.val(initialStatus);
+                   }, function (resp) {
+                       if (resp.success == false) {
+                           combo.val(initialStatus);
+                       }else{
+                           if(status==4||status==3){
+                               $(el).remove();
+                           }
+                           if(status==2||status==4){
+                               window.location.reload()
+                           }
+                           $(el).attr('initialStatus',status);
+                       }
+
+                   })
+               });
+
+
+           }else{
+               toastr.options = {
+                   closeButton: true,
+                   progressBar: true,
+                   showMethod: 'slideDown',
+                   timeOut: 2000
+               };
+               toastr.error('','Cambio hacia un estado incorrecto');
+           }
+       }
+   var executeFilter = function () {
+
+       var valStart = $('#start').val();
+       if (valStart == "" || valStart == undefined) {
+           valStart = -1;
+       }
+       var valEnd = $('#end').val();
+       if (valEnd == "" || valEnd == undefined) {
+           valEnd = -1;
+       }
+       var valState = $('#state').val();
+       if (valState == -1 || valState == "" || valState == undefined) {
+           valState = -1;
+       }
+
+       waitMeShow();
+       window.location='/manage/reserved/admin/show/'+valStart+'/'+valEnd+'/'+valState
+
+   }
+   $(document).ready(function() {
+
+
+
+       $('div.html5buttons').html('<div class="row"><div class="col-lg-5">' +
+           '<div class="form-group" id="data_5">' +
+
+           '<div class="input-daterange input-group" id="datepicker">' +
+           ' <input readonly="readonly" id="start" type="text" class="input-sm form-control"' +
+           'name="start" value=""/>' +
+           '<span class="input-group-addon">a</span>' +
+           ' <input readonly="readonly" id="end" type="text" class="input-sm form-control"' +
+           'name="end" value=""/>' +
+           '</div>' +
+           '</div>' +
+           '</div>' +
+           '<div class="col-lg-4">' +
+           '<select data-placeholder="Seleccione un estado" class="chosen-select"'+
+      ' tabindex="4" id="state">'+
+           '<option value="-1">Seleccione un estado</option>'+
+           '<option value="1" >Solicitada</option>'+
+           '<option value="2" >Aceptada</option>'+
+           '<option value="3" >Cancelada</option>'+
+           '<option value="4" >Terminada</option>'+
+
+       '<option value=""></option>'+
+
+           '</select>'+
+           '</div>' +
+           ' <div class="col-lg-1">' +
+           ' <button type="button" onclick="executeFilter()" class=" btn btn-primary">' +
+           ' <i class="fa fa-filter"></i>&nbsp;Filtrar</button>' +
+           '</div>' +
+           '</div>'
+       )
+       $('.chosen-select').chosen({width: "100%"});
+       $('#data_5 .input-daterange').datepicker({
+           keyboardNavigation: false,
+           forceParse: false,
+           autoclose: true,
+           format: 'mm-dd-yyyy'
+       });
+       {% if finicio %}
+       $('#start').val('{{ finicio }}');
+       {% endif %}
+       {% if ffin %}
+       $('#end').val('{{ ffin }}');
+       {% endif %}
+       {% if estado %}
+       $('#state').val('{{ estado }}');
+       $('#state').trigger("chosen:updated");
+       {% endif %}
+   })
+    </script>
+{% endblock javascript %}

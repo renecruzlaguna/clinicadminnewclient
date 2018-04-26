@@ -1,0 +1,49 @@
+<html>
+
+<head>
+
+    <style>
+        {% include 'AppBundle:Default:boostrap.css.twig' %}
+
+    </style>
+</head>
+<body>
+<table width="90%">
+    <tr>
+        <td width="2%">
+            <img height="50px" width="50px" src="{{ app.request.scheme ~'://' ~ app.request.httpHost ~ asset('bundles/app/images/logo.png') }}">
+        </td>
+        <td  width="60%">
+            <h4 style=" text-align: center;">{{ company_name }}</h4>
+            <h5 style=" text-align: center;">{{ leader_company }}</h5>
+            <p style=" text-align: center;">Actividades de administración de Centros Médicos</p>
+            <p style=" text-align: center;">Actividades de asesoramiento empresarial</p>
+            <p><strong>Dir:{{ address_company }} </strong> </p>
+            <p style=" text-align: center;"><strong>Web: <a href="http://{{ web_company }}">{{ web_company }}</a></strong> <i class="fa  fa-twitter"></i><span> @{{ twitter }}</span> <i class="fa fa-facebook"></i><span> {{ facebook }}</span></p>
+            <p style=" text-align: center;"><strong>{{ city_company }}</strong></p>
+
+
+        </td>
+        <td width="45%">
+<table  width="60%"  >
+    <tr><td>  <h5 style=" text-align: center;">RUC:{{ ruc_company }}</h5></td></tr>
+    <tr><td>   <h5 style=" text-align: center;">FACTURA</h5></td></tr>
+    <tr><td>  <p style=" text-align: center;">{{ check_number }}</p></td></tr>
+    <tr><td> <h5 style=" text-align: center;color:#a41e22">{{ factura.numeroFactura }}</h5></td></tr>
+    <tr><td>   <p style=" text-align: center;">FECHA DE AUT. {{ date_auth }}</p></td></tr>
+    <tr><td>  <p style=" text-align: center;">Auth S.R.I.# {{ auth_sri }}</p></td></tr>
+</table>
+
+
+
+
+
+
+
+
+
+
+    </tr>
+</table>
+</body>
+</html>

@@ -1,0 +1,99 @@
+{% extends 'base.html.twig' %}
+{% block css %}
+    {{ parent() }}
+    <link href="{{asset('bundles/app/css/plugins/touchspin/jquery.bootstrap-touchspin.min.css')}}" rel="stylesheet">
+
+
+
+{% endblock %}
+{% block content %}
+
+    <h3 class="center-block">Adicionar especialidad  </h3>
+    <div class="panel  panel-primary"></div>
+
+        <form class="m-t" role="form"  id="form-speciality"  action="{{ path('manage_speciality_add') }}" method="POST">
+
+            <div class="row">
+                {% if exception is defined %}
+                    <div class="form-group has-error">{{ exception  }} </div>
+                {% endif %}
+                <div class="col-lg-6">
+
+
+                        {% if errors and errors.nombre is defined %}
+                        <div class="form-group has-error">
+                            <span class="help-block">
+                                        <strong>{{ errors['nombre'] }}</strong>
+                                    </span>
+                            {% else %}
+                            <div class="form-group">
+                                {% endif %}
+
+                                <input type="text"   id="nombre"  {% if data and data['nombre'] %}
+                                 value="{{ data['nombre'] }}"
+                                {% endif %} class="form-control" name="nombre" placeholder="Nombre" required="">
+                            </div>
+                            {% if errors and errors.descripcion is defined%}
+                            <div class="form-group has-error">
+                            <span class="help-block">
+                                        <strong>{{ errors['descripcion'] }}</strong>
+                                    </span>
+                                {% else %}
+                                <div class="form-group">
+                                    {% endif %}
+
+                                    <input type="text" {% if data and data['descripcion'] %}
+                                        value="{{ data['descripcion'] }}"
+                                    {% endif %} class="form-control" name="descripcion" placeholder="Descripción"
+                                           required="">
+                                </div>
+
+
+
+
+
+                    <div class="form-group">
+
+
+                        <div class="col-lg-offset-6">
+
+
+                            <button type="submit" class=" btn btn-primary">Aceptar</button>
+                            <a href="{{ path('manage_especiality_list') }}" class=" btn btn-warning">Volver al listado</a>
+                        </div>
+                    </div>
+                                </div>
+
+                                </div>
+
+
+
+
+
+    </form>
+
+
+
+<!-- Mainly scripts -->
+<script src="{{ asset('bundles/app/js/jquery-2.1.1.js') }}"></script>
+<script src="{{ asset('bundles/app/js/bootstrap.min.js') }}"></script>
+
+    <script src="{{ asset('bundles/app/js/plugins/touchspin/jquery.bootstrap-touchspin.min.js') }}"></script>
+<script src="{{ asset('bundles/app/js/plugins/jasny/jasny-bootstrap.min.js') }}"></script>
+
+    <script src="{{asset('bundles/app/js/plugins/validation/jquery.validationEngine.js')}}"></script>
+
+
+    <script src="{{asset('bundles/app/js/plugins/validation/jquery.validate.min.js')}}"></script>
+
+    <script src="{{asset('bundles/app/js/plugins/validation/additionalValidator.js')}}"></script>
+    <script src="{{ asset('bundles/app/js/custom/validationSpeciality.js') }}"></script>
+    {{ parent() }}
+
+    <script>
+
+        id_speciality=-1;
+        $(function () { formSpecialityValidation(); });
+    </script>
+
+{% endblock %}

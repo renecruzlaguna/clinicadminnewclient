@@ -1,0 +1,28 @@
+<script>
+
+    $(document).ready(function(){
+
+    {% if message is defined and message%}
+    toastr.options = {
+    closeButton: true,
+    progressBar: true,
+    showMethod: 'slideDown',
+    timeOut: 2000
+};
+    toastr.success('',"{{ message }}");
+    {% endif %}
+
+    {% if error is defined and error %}
+    toastr.options = {
+    closeButton: true,
+    progressBar: true,
+    showMethod: 'slideDown',
+    timeOut: 2000
+};
+    toastr.error('',"{{ error }}");
+    {% endif %}
+
+
+
+});
+</script>

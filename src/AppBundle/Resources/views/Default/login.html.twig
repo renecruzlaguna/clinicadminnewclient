@@ -1,0 +1,91 @@
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- CSRF Token -->
+
+
+    <title>YC DENTAL Acceder</title>
+
+
+    <link href="{{asset('bundles/app/css/bootstrap.min.css')}}" rel="stylesheet">
+    <link href="{{asset('bundles/app/font-awesome/css/font-awesome.css')}}" rel="stylesheet">
+
+    <link href="{{asset('bundles/app/css/animate.css')}}" rel="stylesheet">
+    <link href="{{asset('bundles/app/css/style.css')}}" rel="stylesheet">
+    <script src='https://www.google.com/recaptcha/api.js?hl=es'></script>
+    <style>
+
+        .custom-gray{
+            background-image: url({{ asset('bundles/app/images/login.jpg') }}) !important;
+            background-repeat: no-repeat;
+  }
+        .btn-success:hover,
+        .btn-success:focus,
+        .btn-success.focus,
+        .btn-success:active,
+        .btn-success.active,
+        .open > .dropdown-toggle.btn-success {
+            color: #fff;
+            background-color: #043276;
+            border-color: #043276;
+        }
+        .btn-success {
+            background-color: #05347a;
+            border-color: #1c84c6;
+            color: #FFFFFF;
+        }
+        .form-control:focus, .single-line:focus {
+            border-color:#043276 !important;
+        }
+    </style>
+   
+</head>
+<body class="gray-bg">
+
+
+
+<div style="position: absolute;top: 20%;left: 40%" class="middle-box text-center loginscreenlogin animated fadeInDown">
+    <div>
+        <div>
+
+            <img src="{{  asset('bundles/app/images/logo_inicio.png') }}">
+
+        </div>
+        <h3>Bienvenido a YC DENTAL</h3>
+
+
+        <form class="m-t" role="form"  role="form" method="POST" action="{{path('_security_check')}}">
+            <div id="error">  {% if error %}{{ error.message |trans() }}{% endif %}</div>
+            <div class="form-group">
+                <input id="userName" type="text" class="form-control" name="_username" required autofocus placeholder="Nombre de usuario">
+
+               
+               
+            </div>
+            <div class="form-group" >
+
+                <input id="password" type="password" class="form-control"  name="_password" required placeholder="Contraseña">
+
+              
+            </div>
+
+            <div class="g-recaptcha" data-sitekey="6Ld3-EIUAAAAAHZSKKhAaK1aIH30Grb7xWuxUE0A"></div>
+            <button type="submit" class="btn btn-success block full-width m-b">Acceder</button>
+
+        </form>
+
+    </div>
+</div>
+<!-- Mainly scripts -->
+<script src="{{asset('bundles/app/js/jquery-2.1.1.js')}}"></script>
+<script src="{{asset('bundles/app/js/bootstrap.min.js')}}"></script>
+<script>
+
+    $('body').addClass('custom-gray');
+
+
+</script>
+</body></html>
+

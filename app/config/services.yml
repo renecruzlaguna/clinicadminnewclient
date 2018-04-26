@@ -1,0 +1,11 @@
+# Learn more about services, parameters and containers at
+# http://symfony.com/doc/current/service_container.html
+parameters:
+#    parameter_name: value
+
+services:
+  twig_encoder:
+          class: AppBundle\Twig\Extension\VarsExtension
+          arguments: ["@service_container"]
+          tags:
+             - { name: twig.extension }

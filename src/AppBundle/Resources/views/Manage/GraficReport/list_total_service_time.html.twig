@@ -1,0 +1,151 @@
+{% extends 'base.html.twig' %}
+{% block css %}
+    {{ parent() }}
+    <link href="{{ asset('bundles/app/css/plugins/chosen/bootstrap-chosen.css') }}" rel="stylesheet">
+    <link href="{{ asset('bundles/app/css/plugins/datapicker/datepicker3.css') }}" rel="stylesheet">
+
+{% endblock %}
+{% block content %}
+    <script src="{{ asset('bundles/app/js/plugins/chosen/chosen.jquery.js') }}"></script>
+    <script src="{{ asset('bundles/app/js/plugins/chartJs/Chart.min.js') }}"></script>
+    <div class="ibox float-e-margins">
+        <div class="ibox-title">
+
+
+            <h5>Cantidad de servicios consumidos en un rango de fecha</h5>
+            <div class="ibox-tools">
+                <a class="collapse-link">
+                    <i class="fa fa-chevron-up"></i>
+                </a>
+            </div>
+        </div>
+
+        <div class="ibox-content inspinia-timeline" style="display: block;">
+
+            <div class="timeline-item">
+
+                <form class="m-t" role="form" action="#" method="POST">
+
+                    <div class="row">
+
+
+                        <div class="col-lg-3">
+                            <div class="form-group">
+                                <label>Seleccione uno o varios servicios</label>
+                                <select id="combo-servicio" multiple="multiple" data-placeholder=" "
+                                        class="chosen-select"
+                                        style="width:350px;" tabindex="4" name="servicio">
+                                    {% for service in services %}
+                                        <option value="{{ service.id }}">{{ service.nombre }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+
+                        
+                        <div class="col-lg-2">
+                            <div class="form-group" id="data_5">
+                                <label>Seleccione la fecha inicial</label>
+                                <div class="input-daterange input-group" id="datepicker">
+                                    <input  id="start" type="text" class="input-sm form-control"
+                                            name="start" value=""/>
+
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="col-lg-2" style="margin-top: 20px">
+                            <button type="button" onclick="executeFilter()" class=" btn btn-primary"> <i class="fa fa-line-chart"></i>&nbsp;Graficar</button>
+                        </div>
+                    </div>
+
+                </form>
+
+            </div>
+
+
+
+
+        </div>
+    </div>
+    <div id="content-canvas">
+
+        <canvas id="lineChart" height="140"></canvas>
+
+        {# incluir el listado #}
+        {# {{ render( controller( 'AppBundle:AdminReport:filterQueryTotalReportSalary',{'speciality':-1,'doctor':-1,'initialDate':-1,'endDate':-1})) }}#}
+    </div>
+{% endblock %}
+
+{% block javascript %}
+
+    {{ parent() }}
+    <script src="{{ asset('bundles/app/js/plugins/bootstrap-tagsinput/bootstrap-tagsinput.js') }}"></script>
+    <script src="{{ asset('bundles/app/js/plugins/datapicker/bootstrap-datepicker.js') }}"></script>
+
+    <script src="{{ asset('bundles/app/js/plugins/chosen/chosen.jquery.js') }}"></script>
+
+    <script>
+                                var executeFilter = function () {
+                                    var valService = $('#combo-servicio').val();
+                                    
+                                    if (valService == -1 || valService == "" || valService == undefined) {
+                                        valService = -1;
+                                    }
+
+                                    var valStart = $('#start').val();
+                                    if (valStart == "" || valStart == undefined) {
+                                        valStart = -1;
+                                    }
+                                    //si no se elimina la libreria de chart no funciona bien cuando se repinta sobre el mismo canvas
+                                    var oldcanv = document.getElementById('lineChart');
+                                    
+                                    document.getElementById('content-canvas').removeChild(oldcanv);
+                                     
+                                    var canv = document.createElement('canvas');
+                                    canv.id = 'lineChart';
+                                    canv.height="140";
+                                    document.getElementById('content-canvas').appendChild(canv);
+
+                                    waitMeShow();
+                                    excecuteAjaxHtml('GET', '/manage/report/grafic/total/service/action', {
+                                        service: valService,
+                                        initialDate: valStart
+                                    }, null, function (response) {
+
+                                        waitMeHide();
+                                        if (response.success == true) {
+
+                                            var ctx = document.getElementById("lineChart").getContext("2d");
+                                            new Chart(ctx, {
+                                                type: 'line',
+                                                data: response.data,
+                                                options: {responsive: true}
+                                            });
+                                        }
+
+                                    })
+                                    /*
+                                     $('#content-table').html('');
+                                     waitMeShow();
+                                     appendContent(' /manage/report/total/reserve/salary/' + valService + '/' + valDoctor + '/' + valStart + '/' + valEnd, 'content-table', {}, function () {
+                                     waitMeHide();
+                                     });
+                                     */
+
+                                }
+                                $(document).ready(function () {
+                                    $('.chosen-select').chosen({width: "100%"});
+                                    $('#data_5 .input-daterange').datepicker({
+                                        keyboardNavigation: false,
+                                        forceParse: false,
+                                        autoclose: true,
+                                        format: 'mm-dd-yyyy'
+                                    });
+                                    executeFilter();
+                                })
+
+
+    </script>
+{% endblock %}

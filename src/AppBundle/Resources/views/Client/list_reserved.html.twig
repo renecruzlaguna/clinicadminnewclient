@@ -1,0 +1,113 @@
+{% extends 'base.html.twig' %}
+{% block css %}
+    {{ parent() }}
+    <link href="{{ asset('bundles/app/css/plugins/sweetalert/sweetalert.css') }}" rel="stylesheet">
+
+
+
+{% endblock %}
+
+
+{% block content %}
+
+    <div>
+
+
+        <h3>Listado de reservaciones realizadas</h3>
+        <div class="panel  panel-primary"></div>
+        <a href="{{ path('client_query_register') }}" title="Registrar una reservación"
+           class="btn btn-primary btn-circle pull-right" type="button"><i class="fa fa-plus"></i>
+        </a>
+
+    </div>
+    <div class="table-responsive">
+    <table class="table table-striped table-bordered table-hover dataTables-example">
+        <thead>
+        <tr>
+            <th>Especialidad</th>
+            <th>Nombre del Doctor</th>
+            <th>Fecha de la consulta</th>
+            <th>Hora inicial</th>
+            <th>Hora final</th>
+            <th>Estado de la reserva</th>
+
+            <th>Acciones</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for esp in especialities %}
+            <tr>
+
+                <td>{{ esp.especialidad.nombre }}</td>
+                <td>{{ esp.usuario.getCompleteName() }}</td>
+                <td>{{ esp.dia }}/{{ esp.mes }}/{{ esp.anno }}</td>
+                <td>{{ esp.horaInicialC }}:{{ esp.minutoInicialC }}</td>
+                <td>{{ esp.horaFinalC }}:{{ esp.minutoFinalC }}</td>
+                <td>{{ esp.estado.nombre }}</td>
+
+                <td>
+
+                    {% if  esp.estado.id ==1 %}
+                        <a title="Actualizar reservación" class="btn btn-info btn-circle"
+                           href="{{ path('cliente_query_update',{id:esp.id}) }}"
+                           type="button"><i class="fa fa-check"></i>
+                        </a>
+
+
+                        <a
+                           data-record-id="{{ path('client_query_cancel',{id:esp.id}) }}"
+                           class="btn btn-warning btn-circle demo3" title="Cancelar reservación" href="#"><i
+                                    class="fa fa-ban"></i>
+                        </a>
+
+                    {% endif %}
+                     {% if esp.estado.id==4 and esp.factura is not null  %}
+
+                <a  title="Visualizar factura digital" class="btn btn-info btn-circle" href="{{ path('manage_check_client_pdf_generate',{id:esp.factura.id}) }}"
+                  type="button"><i class="fa fa-file-pdf-o"></i>
+               </a>
+                  {% endif %}
+                </td>
+
+
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    {{ parent() }}
+    {% include 'AppBundle:Default:show_datatable_message.js.twig' %}
+{% endblock %}
+        {% block javascript %}
+
+    {{ parent() }}
+
+    <script src="{{ asset('bundles/app/js/plugins/sweetalert/sweetalert.min.js') }}"></script>
+    <script>
+
+    $(document).ready(function () {
+
+
+
+        $('.demo3').click(function (e) {
+            var url = $(this).data('recordId');
+
+            swal({
+                title:'',
+                text: "¿Está seguro que desea cancelar la reservación?",
+                type: "warning",
+                showCancelButton: true,
+                cancelButtonColor: "#18a689",
+                confirmButtonColor: "#ed5565",
+                confirmButtonText: "Aceptar",
+                cancelButtonText: "Cancelar",
+                closeOnConfirm: true
+            }, function () {
+
+                 waitMeShow();
+                 window.location.href=url;
+            });
+        });
+        })
+        </script>
+{% endblock javascript %}

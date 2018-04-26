@@ -1,0 +1,513 @@
+{% extends 'base.html.twig' %}
+{% block css %}
+    {{ parent() }}
+    <link href="{{ asset('bundles/app/css/plugins/chosen/bootstrap-chosen.css') }}" rel="stylesheet">
+    <link href="{{ asset('bundles/app/css/plugins/datapicker/datepicker3.css') }}" rel="stylesheet">
+    <link href="{{ asset('bundles/app/css/plugins/awesome-bootstrap-checkbox/awesome-bootstrap-checkbox.css') }}"
+          rel="stylesheet">
+    <link href="{{ asset('bundles/app/css/plugins/clockpicker/clockpicker.css') }}" rel="stylesheet">
+    <style>
+
+
+    </style>
+{% endblock %}
+{% block content %}
+
+    <h3 class="center-block">Registrar consulta </h3>
+    <div class="panel  panel-primary"></div>
+
+    <form id="form-query" class="m-t" role="form" action="{{ path('manage_cliente_query_save') }}" method="POST">
+
+        <div class="row">
+            <div class="col-lg-2">
+                <div class="form-group">
+
+                    <select data-placeholder="Seleccione un paciente" class="chosen-select"
+                            style="width:350px;" tabindex="4" name="usuarioRegistro" onchange="selectClientType(this)">
+                        <option value="-1" selected>Seleccione un paciente</option>
+                        {% for user in users %}
+                            <option data-client="{{ user.tipocliente }}" id="option-client-{{ user.id }}"
+                                    value="{{ user.id }}">{{ user.getCompleteName() }}</option>
+                        {% endfor %}
+                    </select>
+
+                </div>
+
+            </div>
+            <div id="clientType" class="col-lg-4 hidden">
+
+                {% for client in  client_type %}
+                    <div class="radio {{ client.class }} radio-inline">
+                        <input disabled="disabled" type="radio" id="radio-client-{{ client.value }}" name="tipocliente">
+                        <label for="inlineRadio1"><span
+                                class="{{ client.label_class }}">{{ client.name |raw }}</span></label>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="row">
+
+            <input type="hidden" name="tipoConsulta" value="1">
+            <input readonly="readonly" id="input-anno" type="hidden" name="anno">
+            <input readonly="readonly" id="input-mes" type="hidden" name="mes">
+            <input readonly="readonly" id="input-dia" type="hidden" name="dia">
+            {% if exception is defined %}
+                <div class="form-group has-error">{{ exception }} </div>
+            {% endif %}
+
+
+            <div class="col-lg-6">
+
+
+                <div class="form-group">
+
+                    <select id="combo-especialidad" data-placeholder="Seleccione una especialidad" class="chosen-select"
+                            style="width:350px;" tabindex="4" name="especialidad">
+                        <option value="-1" selected>Seleccione una especialidad</option>
+                        {% for spe in speciality %}
+                            <option value="{{ spe.id }}">{{ spe.nombre }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+
+                <div class="form-group hide" id="content-medico">
+
+
+                </div>
+
+                <div class="form-group hide" id="data_4">
+
+                    <div class="input-group date ">
+                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                        <input readonly="readonly" name="monthSelected" id="monthSelected" onchange="clearCalendar()"
+                               class="form-control" value="{{ "now"|date("m/d/Y") }}" type="text">
+
+                    </div>
+                </div>
+
+
+                <div class="form-group col-lg-offset-8 hide" id="btn-generator">
+                    <button onclick="generateCalendar()" type="button" name="generar" class=" btn btn-success"
+                            value="1"><i
+                            class="fa fa-repeat"></i>&nbsp;&nbsp;Generar Calendario
+                    </button>
+                </div>
+
+
+                <div class="form-group" id="calendar-container">
+
+                </div>
+                <div class="form-group" id="detail-container">
+
+                </div>
+
+                <div class="form-group hide" id="clock-container">
+                    <h4 class="center-block">Seleccione la hora de inicio de su consulta: </h4>
+                    <div class="calendar-time">
+                        <div><i class="fa fa-clock-o glyphicon glyphicon-time"></i>&nbsp;
+                            <select style="width: 100px;height: 30px" id="horainicial" onchange="checkMinutes(this)"
+                                    name="horaInicial" class="hourselect"
+                                    >
+                                {% for k in 0..24 %}
+
+                                    <option value="{{ k }}">{{ k }}</option>
+                                {% endfor %}
+
+                            </select> :
+                            <select style="width: 100px;height: 30px" id="minutoinicial" name="minutoInicial"
+                                    class="minuteselect"
+                                    >
+                                {% for l in range(0, 55, 5) %}
+
+
+
+                                    <option value="{{ l }}">{% if l<10 %}0{{ l }}{% else %}{{ l }}{% endif %}</option>
+
+
+                                {% endfor %}
+                            </select></div>
+                    </div>
+
+                </div>
+                <div class="form-group hide" id="clock-container-end">
+                    <h4 class="center-block">Hora final de la consulta: </h4>
+                    <div class="calendar-time">
+                        <div><i class="fa fa-clock-o glyphicon glyphicon-time"></i>&nbsp;
+                            <select style="width: 100px;height: 30px" id="horaFinal" 
+                                    name="horaFinal" class="hourselect"
+                                    >
+                                {% for k in 0..24 %}
+
+                                    <option value="{{ k }}">{{ k }}</option>
+                                {% endfor %}
+
+                            </select> :
+                            <select style="width: 100px;height: 30px" id="minutoFinal" name="minutoFinal"
+                                    class="minuteselect"
+                                    >
+                                {% for l in range(0, 55, 5) %}
+
+
+
+                                     <option value="{{ l }}">{% if l<10 %}0{{ l }}{% else %}{{ l }}{% endif %}</option>
+
+
+                                {% endfor %}
+                            </select></div>
+                    </div>
+
+                </div>
+                <div class="form-group hide" id="container-mensaje">
+                    <h4 class="center-block">Escriba su mensaje para el médico: </h4>
+                    <textarea name="mensaje" rows="5" cols="70"></textarea>
+
+                </div>
+                <div class="form-group">
+
+
+                    <div class="col-lg-offset-6 hide" id="btn-container">
+                        <button type="submit" class=" btn btn-primary" style="margin-bottom: 120px !important">Aceptar
+                        </button>
+
+                        <a href="{{ path('manage_reserved_admin_list') }}" class=" btn btn-warning"
+                           style="margin-bottom: 120px !important">Volver al listado</a>
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+    </form>
+
+
+
+    <!-- Mainly scripts -->
+    <script src="{{ asset('bundles/app/js/jquery-2.1.1.js') }}"></script>
+    <script src="{{ asset('bundles/app/js/bootstrap.min.js') }}"></script>
+    <script src="{{ asset('bundles/app/js/plugins/jasny/jasny-bootstrap.min.js') }}"></script>
+    <script src="{{ asset('bundles/app/js/plugins/chosen/chosen.jquery.js') }}"></script>
+
+    <script src="{{ asset('bundles/app/js/plugins/metisMenu/jquery.metisMenu.js') }}"></script>
+    <script src="{{ asset('bundles/app/js/plugins/slimscroll/jquery.slimscroll.min.js') }}"></script>
+    <script src="{{ asset('bundles/app/js/plugins/bootstrap-tagsinput/bootstrap-tagsinput.js') }}"></script>
+    <script src="{{ asset('bundles/app/js/plugins/datapicker/bootstrap-datepicker.js') }}"></script>
+    <script src="{{ asset('bundles/app/js/plugins/clockpicker/clockpicker.js') }}"></script>
+    <script>
+
+                                var selectClientType = function (cmp) {
+                                    if ($(cmp).val() != -1) {
+                                        $('#clientType').removeClass('hidden');
+                                    } else {
+
+                                        $('#clientType').addClass('hidden');
+                                    }
+
+                                    var option = $('option#' + 'option-client-' + $(cmp).val());
+                                    if (option) {
+                                        var data = $(option).data("client");
+
+                                        var radio = $('#radio-client-' + data);
+                                        if (radio) {
+                                            radio.prop('checked', true);
+                                        }
+
+
+                                    }
+
+                                }
+                                var generateCalendar = function () {
+                                    var childrens = $('#calendar-container').children();
+                                    $('#clock-container').addClass('hide');
+                                    $('#clock-container-end').addClass('hide');
+                                    $('#input-clock').val('');
+                                    if (childrens.length > 0) {
+                                        for (var i = 0; i < childrens.length; i++) {
+                                            childrens[i].remove()
+
+                                        }
+                                    }
+                                    appendContent('/manage/doctor/workplanned/' + $('#combo-medico').val(), 'calendar-container',
+                                            {
+                                                monthSelected: $('#monthSelected').val()
+
+                                            })
+                                }
+                                var clearCalendar = function () {
+                                    $('#calendar-container').html('');
+                                    $('#btn-container').addClass('hide');
+                                    $('#container-mensaje').addClass('hide');
+                                    $('#clock-container').addClass('hide');
+                                    $('#clock-container-end').addClass('hide');
+                                }
+    </script>
+
+    <script>
+
+        $(document).ready(function () {
+
+
+            var year ={{ "now"|date("Y") }}
+                    var month ={{ "now"|date("m") }}
+                    month = month - 1;
+
+            $('#data_4 .input-group.date').datepicker({
+                minViewMode: 1,
+                keyboardNavigation: false,
+                forceParse: false,
+                autoclose: true,
+                todayHighlight: true,
+                startDate: new Date(year, month, '01'), //set it here
+                endDate: new Date(year + 1, month, '31')
+
+            });
+            $('.tagsinput').tagsinput({
+                tagClass: 'label label-primary'
+            });
+            $('.chosen-select').chosen({width: "100%"});
+
+            $('#combo-especialidad').on('change', function () {
+
+                if ($('#combo-especialidad').val() != -1) {
+                    $('#btn-container').addClass('hide');
+                    $('#container-mensaje').addClass('hide');
+                    $('#data_4').addClass('hide');
+                    $('#btn-generator').addClass('hide');
+                    $('#calendar-container').html('');
+                    if ($('#combo-medico')) {
+                        var children = $('#content-medico').children();
+
+                        for (var i = 0; i < children.length; i++) {
+                            $(children[i]).remove();
+                        }
+
+                    }
+                    if (!$('#data_4').hasClass('hide')) {
+                        $('#data_4').addClass('hide');
+                    }
+                    if (!$('#btn-generator').hasClass('hide')) {
+                        $('#btn-generator').addClass('hide');
+                    }
+
+                    $('#content-medico').append('<select class="chosen-select" id="combo-medico" data-placeholder="Seleccione un médico"  style="width:350px;" tabindex="4" name="usuario">' +
+                            '<option value="-1">Seleccione un médico</option>' +
+                            '</select>');
+                    buildCombo('id', 'nombrecompleto', '/manage/doctor/speciality/' + $('#combo-especialidad').val(), 'combo-medico', function () {
+
+                        $('#content-medico').removeClass('hide');
+                        $('#combo-medico').chosen({width: "100%"});
+
+
+                        $('#combo-medico').on('change', function () {
+                            idUser=$('#combo-medico').val()
+                            if ($('#combo-medico').val() != -1) {
+                                $('#data_4').removeClass('hide');
+                                $('#btn-generator').removeClass('hide');
+                                $('#btn-container').addClass('hide');
+                                $('#container-mensaje').addClass('hide');
+                            } else {
+                                $('#btn-container').addClass('hide');
+                                $('#container-mensaje').addClass('hide');
+                                $('#data_4').addClass('hide');
+                                $('#btn-generator').addClass('hide');
+                                $('#calendar-container').html('');
+                                $('#clock-container').addClass('hide');
+                                $('#clock-container-end').addClass('hide');
+                            }
+                        });
+                    })
+                } else {
+                    $('#btn-container').addClass('hide');
+                    $('#container-mensaje').addClass('hide');
+                    $('#data_4').addClass('hide');
+                    $('#btn-generator').addClass('hide');
+                    $('#calendar-container').html('');
+                    $('#clock-container').addClass('hide');
+                    $('#content-medico').addClass('hide');
+                    $('#clock-container-end').addClass('hide');
+                }
+            })
+
+
+        })
+        
+          var checkMinutes = function (el) {
+            var hour = $(el).val();
+            var hoursInitial = parseInt(disabled[0].split(':')[0])
+            var hoursEnd = parseInt(disabled[1].split(':')[0])
+            var minuteInitial = parseInt(disabled[0].split(':')[1])
+            var minuteEnd = parseInt(disabled[1].split(':')[1])
+
+            var minutes = $('#minutoinicial option');
+            for (var i = 0; i < minutes.length; i++) {
+                $(minutes[i]).removeAttr("disabled");
+
+
+                if ((i * 5 < minuteInitial && hour == hoursInitial) || (i * 5 >= minuteEnd && hour == hoursEnd)) {
+                    $(minutes[i]).attr('disabled', 'disabled');
+                    $(minutes[i]).prop('disabled', true);
+                } else {
+                    $(minutes[i]).removeAttr("disabled");
+                }
+            }
+
+
+
+        }
+        
+
+        var check = function (el) {
+
+
+            var element = $('.select-day');
+            for (var j = 0; j < element.length; j++) {
+                $(element[j]).removeClass('select-day');
+            }
+            $(el).addClass('select-day');
+            var td = $('td.select-day')[0];
+            var dateSelected = $('#monthSelected').val().split('/');
+            $('#clock-container').addClass('hide');
+            $('#clock-container-end').addClass('hide');
+            $('#btn-container').addClass('hide');
+            $('#container-mensaje').addClass('hide');
+
+            var config2 = {
+                type: 'GET',
+                url: '/manage/doctor/workplanned/reserve/' + $('#combo-medico').val() + '/' + $(td).attr('td-val') + '/' + dateSelected[0] + '/' + dateSelected[2],
+                data: {},
+                success: function (response) {
+                    if (response.success == true) {
+                        $('#detail-container').html(response.data)
+                    }
+
+                }
+            }
+            $.ajax(config2);
+            var config = {
+                type: 'GET',
+                dataType: 'json',
+                contentType: "application/json",
+
+                url: '/manage/doctor/workplanned/' + $('#combo-medico').val() + '/' + $(td).attr('td-val') + '/' + dateSelected[0] + '/' + dateSelected[2],
+                data: {},
+                success: function (response) {
+                    if (response.success == true) {
+                        $('#input-anno').val(dateSelected[2]);
+                        $('#input-mes').val(dateSelected[0]);
+                        $('#input-dia').val($(td).attr('td-val'));
+                        disabled = [];
+                        if (response.data.min)
+                            disabled.push(response.data.min);
+                        if (response.data.max)
+                            disabled.push(response.data.max);
+                        $('#clock-container').removeClass('hide');
+                        $('#clock-container-end').removeClass('hide');
+                        var hoursInitial = parseInt(disabled[0].split(':')[0])
+                        var hoursEnd = parseInt(disabled[1].split(':')[0])
+                        var minuteInitial = parseInt(disabled[0].split(':')[1])
+                        var minuteEnd = parseInt(disabled[1].split(':')[1])
+                        var hours = $('#horainicial option');
+                        var minutes = $('#minutoinicial option');
+
+                        var hoursE = $('#horaFinal option');
+                        var minutesE = $('#minutoFinal option');
+                        for (var i = 0; i < hours.length; i++) {
+                            $(hours[i]).removeAttr("disabled");
+                            $(hours[i]).removeAttr("selected");
+                            if (i == hoursInitial) {
+                                $('#horainicial').val(i);
+                                $(hours[i]).attr('selected', '""');
+                            }
+                            if (i < hoursInitial || (i > hoursEnd || (i == hoursEnd && minuteEnd == 0))) {
+                                $(hours[i]).attr('disabled', 'disabled');
+                                $(hours[i]).prop('disabled', true);
+                            } else {
+                                $(hours[i]).removeAttr("disabled");
+                            }
+                        }
+
+                        for (var i = 0; i < minutes.length; i++) {
+                            $(minutes[i]).removeAttr("disabled");
+                            $(minutes[i]).removeAttr("selected");
+                            if (i * 5 == minuteInitial) {
+                                $('#minutoinicial').val(i * 5);
+                                $(minutes[i]).attr('selected', '""');
+                            }
+                            if (i * 5 < minuteInitial) {
+                                $(minutes[i]).attr('disabled', 'disabled');
+                                $(minutes[i]).prop('disabled', true);
+                            } else {
+                                $(minutes[i]).removeAttr("disabled");
+                            }
+                        }
+
+
+
+                        for (var i = 0; i < hoursE.length; i++) {
+                            $(hoursE[i]).removeAttr("disabled");
+                            $(hoursE[i]).removeAttr("selected");
+                            if (i == hoursInitial) {
+                                $('#horaFinal').val(i);
+                                $(hoursE[i]).attr('selected', '""');
+                            }
+                            if (i < hoursInitial || (i > hoursEnd || (i == hoursEnd && minuteEnd == 0))) {
+                                $(hoursE[i]).attr('disabled', 'disabled');
+                                $(hoursE[i]).prop('disabled', true);
+                            } else {
+                                $(hoursE[i]).removeAttr("disabled");
+                            }
+                        }
+
+                        for (var i = 0; i < minutesE.length; i++) {
+                            $(minutesE[i]).removeAttr("disabled");
+                            $(minutesE[i]).removeAttr("selected");
+                            if (i * 5 == minuteInitial) {
+                                $('#minutoFinal').val(i * 5);
+                                $(minutesE[i]).attr('selected', '""');
+                            }
+
+                        }
+
+
+                        $('#btn-container').removeClass('hide');
+                        $('#container-mensaje').removeClass('hide');
+
+
+                    }
+
+                }
+            }
+            $.ajax(config);
+
+        }
+
+
+        id = -1;
+
+
+    </script>
+    <script src="{{ asset('bundles/app/js/plugins/validation/jquery.validationEngine.js') }}"></script>
+
+
+    <script src="{{ asset('bundles/app/js/plugins/validation/jquery.validate.min.js') }}"></script>
+
+    <script src="{{ asset('bundles/app/js/plugins/validation/additionalValidator.js') }}"></script>
+    <script src="{{ asset('bundles/app/js/custom/validationHourMinute.js') }}"></script>
+    {{ parent() }}
+    <script>
+           
+                    id = -1
+            $(function () {
+                formQueryValidation();
+            });
+    </script>
+    <script>
+
+        $('#page-wrapper').addClass('custom-gray');
+
+
+    </script>
+    {% include 'AppBundle:Default:message.js.twig' %}
+
+{% endblock %}
