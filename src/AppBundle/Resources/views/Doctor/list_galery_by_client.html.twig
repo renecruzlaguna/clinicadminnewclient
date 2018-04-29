@@ -1,0 +1,205 @@
+{% extends 'base.html.twig' %}
+{% block css %}
+    {{ parent() }}
+    <link href="{{ asset('bundles/app/css/plugins/sweetalert/sweetalert.css') }}" rel="stylesheet">
+
+    <link href="{{ asset('bundles/app/css/plugins/blueimp/css/blueimp-gallery.css') }}" rel="stylesheet">
+    <style>
+        .reflect {
+            margin: 25px;
+            opacity: 0.8;
+            border: 10px solid #eee;
+
+            /*Transition*/
+            -webkit-transition: all 0.5s ease;
+            -moz-transition: all 0.5s ease;
+            -o-transition: all 0.5s ease;
+
+            /*Reflection*/
+            -webkit-box-reflect: below 0px -webkit-gradient(linear, left top, left bottom, from(transparent), color-stop(.7, transparent), to(rgba(0, 0, 0, 0.1)));
+        }
+
+        .reflect:hover {
+            opacity: 1;
+
+            /*Reflection*/
+            -webkit-box-reflect: below 0px -webkit-gradient(linear, left top, left bottom, from(transparent), color-stop(.7, transparent), to(rgba(0, 0, 0, 0.4)));
+
+            /*Glow*/
+            -webkit-box-shadow: 0px 0px 20px rgba(255, 255, 255, 0.8);
+            -moz-box-shadow: 0px 0px 20px rgba(255, 255, 255, 0.8);
+            box-shadow: 0px 0px 20px rgba(255, 255, 255, 0.8);
+        }
+
+
+    </style>
+
+{% endblock %}
+{% block content %}
+    <br>
+    <div class="row">
+
+        <h3 class="col-md-10">Historial de imágenes del paciente {{ client.getCompleteName() }} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            {% if show %} <label><input type="checkbox" id="checkAll"/> &nbsp;&nbsp;&nbsp;Marcar/Desmarcar Todos</label> {% endif %}</h3>
+        <div class="col-md-1">
+            <a href="{{ path('doctor_query_reserved_list') }}" class=" pull-right btn btn-warning">Volver al listado</a>
+        </div>
+
+        <a class=" col-md-1  btn btn-circle btn-primary" title=""
+           href="{{ path('doctor_client_galery_add',{id:client.id}) }}">
+            <i class="fa fa-plus"></i>
+        </a>
+        <a id="removeimage" class=" pull-right btn btn-circle btn-danger hidden" title="Eliminar imágenes seleccionadas"
+           href="#" onclick="removeImages()">
+            <i class="fa fa-minus"></i>
+        </a>
+
+
+    </div>
+
+
+
+
+    <br>
+
+
+
+    {% if show %}
+
+        <div class="lightBoxGallery container">
+
+            {% for item in files %}
+                {% set rute='bundles/app/images/galery/'~client.id~'/'~item.nombre %}
+
+
+
+                <div class="row col-lg-2">
+                    <div>
+                        <a href="{{ asset(rute) }}" title="{{ item.descripcion }}" data-gallery=""><img class="reflect"
+                                                                                                        src="{{ asset(rute) }}"
+                                                                                                        height="100px"
+                                                                                                        width="150px"
+                                                                                                        style="border: solid white;">
+                        </a>
+                    </div>
+
+                    <span style="color:#1AB394;"><i
+                                class="fa fa-calendar"></i>&nbsp;&nbsp;&nbsp;{{ item.fecha |date("m/d/Y") }}
+
+</span>
+                    <input id="{{ item.id }}" type="checkbox" class="checkboxsel" onchange="mark(this)">
+
+
+                </div>
+
+
+
+
+
+            {% endfor %}
+
+
+        </div>
+
+
+        <!-- The Gallery as lightbox dialog, should be a child element of the document body -->
+        <div id="blueimp-gallery" class="blueimp-gallery blueimp-gallery-controls">
+            <div class="slides"></div>
+            <h3 class="title"></h3>
+            <a class="prev">‹</a>
+            <a class="next">›</a>
+            <a class="close">×</a>
+            <a class="play-pause"></a>
+            <ol class="indicator"></ol>
+        </div>
+    {% else %}
+        <div class="text-center">
+            <img src="{{ asset('bundles/app/images/sinimagen.jpg') }}">
+            <h3 class="text-center">No existen imágenes registradas para el paciente</h3>
+        </div>
+    {% endif %}
+
+    {% if message is defined and message %}
+    <script>
+
+        $(document).ready(function () {
+
+            toastr.options = {
+                closeButton: true,
+                progressBar: true,
+                showMethod: 'slideDown',
+                timeOut: 2000
+            };
+            toastr.success('', "{{ message }}");
+            {% endif %}
+
+            {% if error is defined and error %}
+            toastr.options = {
+                closeButton: true,
+                progressBar: true,
+                showMethod: 'slideDown',
+                timeOut: 2000
+            };
+            toastr.error('', "{{ error }}");
+        });
+    </script>
+    {% endif %}
+
+    {{ parent() }}
+
+{% endblock %}
+
+         {% block javascript %}
+
+             {{ parent() }}
+
+             <script src="{{ asset('bundles/app/js/plugins/metisMenu/jquery.metisMenu.js') }}"></script>
+             <script src="{{ asset('bundles/app/js/plugins/slimscroll/jquery.slimscroll.min.js') }}"></script>
+             {% if show %}
+                 <script src="{{ asset('bundles/app/js/plugins/blueimp/jquery.blueimp-gallery.min.js') }}"></script>
+                 <script src="{{ asset('bundles/app/js/plugins/3d/jquery.hover3d.min.js') }}"></script>
+             {% endif %}
+             <script src="{{ asset('bundles/app/js/plugins/sweetalert/sweetalert.min.js') }}"></script>
+
+             <script>
+                 $('document').ready(function () {
+                     $("#checkAll").change(function () {
+                         $("input:checkbox").prop('checked', $(this).prop("checked"));
+                         mark()
+                     });
+                 });
+
+
+                 var mark = function () {
+
+                     ($(document).find("input[class='checkboxsel']:checked").length > 0) ?
+                         ($('#removeimage').removeClass('hidden')) :
+                         ($('#removeimage').addClass('hidden') && $("#checkAll").prop("checked", false));
+                 }
+
+                 var removeImages = function () {
+                     var collections = $(document).find("input[class='checkboxsel']:checked");
+                     if (collections.length > 0) {
+                         var ids = [];
+                         $.each(collections, function (index, value) {
+                             ids.push(value.id);
+                         })
+
+
+                     }
+                     excecuteAjaxArray('POST', ' /manage/doctor/client/images/delete', {"ids": ids}, function () {
+
+                     }, function (resp) {
+                         if (resp.success == true) {
+
+                             window.location.reload()
+                         }
+
+                     })
+                     console.info(ids)
+                 }
+
+
+             </script>
+
+         {% endblock %}

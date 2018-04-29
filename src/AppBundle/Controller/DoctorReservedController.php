@@ -7,6 +7,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Filesystem\Filesystem;
 
 
 class DoctorReservedController extends BaseController
@@ -37,18 +38,18 @@ class DoctorReservedController extends BaseController
             $save['horaFinal'] = $data['horaFinal'];
             $save['minutoInicial'] = $data['minutoInicial'];
             $save['minutoFinal'] = $data['minutoFinal'];
-/*
-            $find = $this->getRepo('Consulta')->findQueryHour($id, $save['horaInicial'], $save['horaFinal'], $save['minutoInicial'], $save['minutoFinal'], $this->getUser()->getId(), $data['dia'], $data['mes'], $data['anno']);
-            if ($find) {
-                $initialHourQuery = $find->getHoraInicialC();
-                $endHourQuery = $find->getHoraFinalC();
+            /*
+                        $find = $this->getRepo('Consulta')->findQueryHour($id, $save['horaInicial'], $save['horaFinal'], $save['minutoInicial'], $save['minutoFinal'], $this->getUser()->getId(), $data['dia'], $data['mes'], $data['anno']);
+                        if ($find) {
+                            $initialHourQuery = $find->getHoraInicialC();
+                            $endHourQuery = $find->getHoraFinalC();
 
-                $initialMinuteQuery = $query = $find->getMinutoInicialC();
-                $endMinuteQuery = $query = $find->getMinutoFinalC();
-                $range = $initialHourQuery . ':' . $initialMinuteQuery . ' - ' . $endHourQuery . ':' . $endMinuteQuery;
-                return $this->redirect($this->generateUrl('doctor_query_update', array('message' => '', 'error' => 'Ya existe una consulta para el rango de tiempo:'
-                    . $range)));
-            }*/
+                            $initialMinuteQuery = $query = $find->getMinutoInicialC();
+                            $endMinuteQuery = $query = $find->getMinutoFinalC();
+                            $range = $initialHourQuery . ':' . $initialMinuteQuery . ' - ' . $endHourQuery . ':' . $endMinuteQuery;
+                            return $this->redirect($this->generateUrl('doctor_query_update', array('message' => '', 'error' => 'Ya existe una consulta para el rango de tiempo:'
+                                . $range)));
+                        }*/
             $entity = $this->populateModel('Consulta', $save);
             $entity->updateCompleteDate();
             $result = $this->saveEntity($entity);
@@ -69,7 +70,7 @@ class DoctorReservedController extends BaseController
 
     }
 
-   public function checkFreeRangeAction($id, $initialHour, $endHour, $initialMinute, $endMinute, $idUser, $day, $month, $year)
+    public function checkFreeRangeAction($id, $initialHour, $endHour, $initialMinute, $endMinute, $idUser, $day, $month, $year)
     {
         try {
             $find = $this->getRepo('Consulta')->checkQueryHour($id, $initialHour, $endHour, $initialMinute, $endMinute, $idUser, $day, $month, $year);
@@ -92,17 +93,17 @@ class DoctorReservedController extends BaseController
 
     }
 
-    public function listMyQueryAction(Request $request,$finicio=-1,$ffin=-1,$estado=-1)
+    public function listMyQueryAction(Request $request, $finicio = -1, $ffin = -1, $estado = -1)
     {
 
         $user = $this->getUser()->getId();
-        $result = $this->getRepo('Consulta')->getAllQueryByStateAndDoctor($estado,$finicio,$ffin,$user);
+        $result = $this->getRepo('Consulta')->getAllQueryByStateAndDoctor($estado, $finicio, $ffin, $user);
 
 
         $message = $request->query->get('message');
         $error = $request->query->get('error');
         return $this->render('AppBundle:Doctor:list_reserved.html.twig',
-            array('finicio'=>$finicio,'ffin'=>$ffin,'estado'=>$estado,'errors' => null, 'data' => null, 'exception' => null, 'especialities' => $result, 'message' => $message, 'error' => $error));
+            array('finicio' => $finicio, 'ffin' => $ffin, 'estado' => $estado, 'errors' => null, 'data' => null, 'exception' => null, 'especialities' => $result, 'message' => $message, 'error' => $error));
     }
 
 
@@ -110,11 +111,11 @@ class DoctorReservedController extends BaseController
     {
         $data = $request->request->all();
         $query = $this->getRepo('Consulta')->find($id);
-        if(!$query){
+        if (!$query) {
             return $this->redirect($this->generateUrl('doctor_query_reserved_list',
                 array('message' => '', 'error' => 'No se encontró la consulta')));
         }
-        if($query->getUsuario()->getId()!=$this->getUser()->getId()){
+        if ($query->getUsuario()->getId() != $this->getUser()->getId()) {
             return $this->redirect($this->generateUrl('doctor_query_reserved_list',
                 array('message' => '', 'error' => 'No tiene permiso para realizar esta acción')));
         }
@@ -136,7 +137,7 @@ class DoctorReservedController extends BaseController
                     $saveResultEv = $this->saveModel('Evolucion', array('consulta' => $data['consulta'], 'observaciones' => $data['observaciones']), array(), false);
                     if ($saveResultEv['success'] == true) {
                         $repoEv->commit();
-                            return $this->redirect($this->generateUrl('doctor_query_reserved_list', array('message' => 'Historia clínica registrada satisfactoriamente', 'error' => '')));
+                        return $this->redirect($this->generateUrl('doctor_query_reserved_list', array('message' => 'Historia clínica registrada satisfactoriamente', 'error' => '')));
                     } else {
                         $repoEv->rollback();
                         return $this->redirect($this->generateUrl('doctor_query_reserved_list',
@@ -165,23 +166,23 @@ class DoctorReservedController extends BaseController
     public function viewEvolutionsAction(Request $request, $queryId)
     {
         $query = $this->getRepo('Consulta')->find($queryId);
-        if(!$query){
+        if (!$query) {
             return $this->redirect($this->generateUrl('doctor_query_reserved_list',
                 array('message' => '', 'error' => 'No se encontró la consulta')));
         }
-        if($query->getUsuario()->getId()!=$this->getUser()->getId()){
+        if ($query->getUsuario()->getId() != $this->getUser()->getId()) {
             return $this->redirect($this->generateUrl('doctor_query_reserved_list',
                 array('message' => '', 'error' => 'No tiene permiso para realizar esta acción')));
         }
         $repoEv = $this->getRepo('Evolucion');
-        $idEvol=null;
-        if($query->getEvolucion()!=null){
-            $idEvol =$query->getEvolucion()->getId();
+        $idEvol = null;
+        if ($query->getEvolucion() != null) {
+            $idEvol = $query->getEvolucion()->getId();
         }
-        $evolutions = $repoEv->getAllEvolutionsByPattient($query,$idEvol);
+        $evolutions = $repoEv->getAllEvolutionsByPattient($query, $idEvol);
 
-            return $this->render('AppBundle:Default:view_evolutionquery.html.twig',
-                array('errors' => null, 'evolutions' => $evolutions, 'query' => $query, 'data' => null, 'exception' => null));
+        return $this->render('AppBundle:Default:view_evolutionquery.html.twig',
+            array('errors' => null, 'evolutions' => $evolutions, 'query' => $query, 'data' => null, 'exception' => null));
 
 
     }
@@ -189,23 +190,23 @@ class DoctorReservedController extends BaseController
     public function editResultQueryAction(Request $request, $id, $queryId)
     {
         $query = $this->getRepo('Consulta')->find($queryId);
-        if(!$query){
+        if (!$query) {
             return $this->redirect($this->generateUrl('doctor_query_reserved_list',
                 array('message' => '', 'error' => 'No se encontró la consulta')));
         }
-        if($query->getUsuario()->getId()!=$this->getUser()->getId()){
+        if ($query->getUsuario()->getId() != $this->getUser()->getId()) {
             return $this->redirect($this->generateUrl('doctor_query_reserved_list',
                 array('message' => '', 'error' => 'No tiene permiso para realizar esta acción')));
         }
         $repoEv = $this->getRepo('Evolucion');
-        $idEvol=null;
-        if($query->getEvolucion()!=null){
-            $idEvol =$query->getEvolucion()->getId();
+        $idEvol = null;
+        if ($query->getEvolucion() != null) {
+            $idEvol = $query->getEvolucion()->getId();
         }
-        $evolutions = $repoEv->getAllEvolutionsByPattient($query,$idEvol);
+        $evolutions = $repoEv->getAllEvolutionsByPattient($query, $idEvol);
         $data = $request->request->all();
         $result = $this->getRepo('ResultadoConsulta')->find($id);
-        if(!$result){
+        if (!$result) {
             return $this->redirect($this->generateUrl('doctor_query_reserved_list',
                 array('message' => '', 'error' => 'No se encontró la historia clínica')));
         }
@@ -217,11 +218,11 @@ class DoctorReservedController extends BaseController
 
                 $saveResult = $this->saveModel('ResultadoConsulta', $data, array(), false);
                 if ($saveResult['success'] == true) {
-                    $dataEvol=array( 'observaciones' => $data['observaciones'],'consulta'=>$queryId);
-                    if($idEvol!=null){
-                        $dataEvol['id']=$idEvol;
+                    $dataEvol = array('observaciones' => $data['observaciones'], 'consulta' => $queryId);
+                    if ($idEvol != null) {
+                        $dataEvol['id'] = $idEvol;
                     }
-                    $saveResultEv = $this->saveModel('Evolucion',$dataEvol, array(), false);
+                    $saveResultEv = $this->saveModel('Evolucion', $dataEvol, array(), false);
                     if ($saveResultEv['success'] == true) {
                         $repoEv->commit();
                         return $this->redirect($this->generateUrl('doctor_query_reserved_list', array('message' => 'Historia actualizada satisfactoriamente', 'error' => '')));
@@ -247,8 +248,7 @@ class DoctorReservedController extends BaseController
                 array('errors' => null, 'evolutions' => $evolutions, 'query' => $query, 'data' => null, 'result' => $result, 'exception' => null));
         }
 
-        }
-
+    }
 
 
     public function removeResultQueryAction($id)
@@ -276,6 +276,177 @@ class DoctorReservedController extends BaseController
             return $this->redirect($this->generateUrl('doctor_query_reserved_list', array('message' => '', 'error' => 'Ocurrió un error en el servidor')));
         }
 
+
+    }
+
+
+    public function addImageAction(Request $request, $id)
+    {
+        $client = $this->getRepo('Usuario')->find($id);
+        if (!$client) {
+            return $this->redirect($this->generateUrl('doctor_query_reserved_list', array('message' => '', 'error' => 'No existe el cliente')));
+        }
+
+        $images = $request->files->all();
+        $data = $request->request->all();
+
+        if ($images && array_key_exists('image', $images) && $data && array_key_exists("description", $data)) {
+            $uploadDirectory = $this->container->getParameter('kernel.root_dir') . '/../web/bundles/app/images/galery/' . $id;
+            $fs = new Filesystem();
+            $exist = $fs->exists($uploadDirectory);
+            if (!$exist) {
+                $fs->mkdir($uploadDirectory);
+            }
+            $repoUser = $this->getRepo('Usuario');
+            $repoUser->beginTransaction();
+
+            $imagesToSave = $images['image'];
+            $descriptionToSave = $data['description'];
+            $saveFile = array();
+            try {
+                $i = 0;
+                foreach ($imagesToSave as $image) {
+
+
+                    $FileType = $image->getMimeType();
+                    $isMIME = array_search($FileType, array(
+                        'jpeg' => 'image/jpeg',
+                        'png' => 'image/png',
+                        'gif' => 'image/gif',
+                        'jpg' => 'image/jpg',
+                    ), true);
+                    if ($isMIME) {
+                        ;
+                        $name = $image->getClientOriginalName();
+                        $info = pathinfo($name);
+                        $extension = $info['extension'];
+                        $name = uniqid() . '.' . $extension;
+                        $date = new \DateTime('now');
+                        $date = $date->format('Y-m-d H:i:s');
+
+
+                        $description = (@$descriptionToSave[$i]) ? (@$descriptionToSave[$i]) : 'Sin descripción';
+                        $dataSave = array('usuario' => $id, 'nombre' => $name, 'descripcion' => $description, 'fecha' => $date);
+                        $saveResult = $this->saveModel('Imagen', $dataSave, array(), false);
+
+                        if ($saveResult['success']) {
+                            $image->move($uploadDirectory, $name);
+                            $saveFile[] = $name;
+
+                        } else {
+
+                            throw new \Exception($saveResult['error']);
+                        }
+                    } else {
+                        throw new \Exception("", 12345);
+                    }
+                    $i++;
+                }
+                $repoUser->commit();
+                return $this->redirect($this->generateUrl('doctor_client_view_galery', array('id' => $id, 'message' => 'Operación realizada satisfactoriamente', 'error' => '')));
+
+
+            } catch (\Exception $e) {
+                foreach ($saveFile as $file) {
+                    try {
+                        $fs->remove($uploadDirectory . '/' . $file);
+                    } catch (\Exception $e) {
+                    }
+                }
+                try {
+                    $repoUser->rollback();
+                } catch (\Exception $e) {
+
+
+                }
+
+                //  return $this->redirect($this->generateUrl('manage_client_view_galery', array('id'=>$id,'message' => '', 'error' => (($e->getCode() == 12345) ? 'Tipo de fichero no permitido' : 'Ocurrió un error en el servidor'))));
+                return $this->redirect($this->generateUrl('doctor_client_view_galery', array('id' => $id, 'message' => '', 'error' => $e->getMessage())));
+            }
+
+        }
+
+
+        return $this->render('AppBundle:Doctor:add_image.html.twig', array('client' => $client, 'message' => '', 'error' => ''));
+    }
+
+    public function viewGaleryAction(Request $request, $id)
+    {
+        $client = $this->getRepo('Usuario')->find($id);
+        if (!$client) {
+            return $this->redirect($this->generateUrl('doctor_query_reserved_list', array('message' => '', 'error' => 'No existe el cliente')));
+        }
+        $repoImage = $this->getRepo('Imagen');
+        $fs = new Filesystem();
+        $rute = $this->getParameter('kernel.root_dir') . '/../web/bundles/app/images/galery/' . $id;
+        $exist = $fs->exists($rute);
+        $show = false;
+        $files = false;
+        if ($exist) {
+            $filesRegister = $repoImage->findBy(array('usuario' => $id), array('fecha' => 'DESC'));
+
+            foreach ($filesRegister as &$file) {
+
+                if ($fs->exists($rute . '/' . $file->getNombre())) {
+                    $dev[] = $file;
+                }
+
+
+            }
+
+            $files = $dev;
+            $show = (count($files) > 0);
+
+        }
+
+
+        return $this->render('AppBundle:Doctor:list_galery_by_client.html.twig', array('client' => $client, 'show' => $show, 'files' => $files));
+    }
+
+    public function removeImagesAction(Request $request)
+    {
+
+        if ($request->request->all()) {
+
+            $ids = ($request->request->get('ids'));
+
+            $imageRepo = $this->getRepo('Imagen');
+            $fs = new Filesystem();
+            $idClient = null;
+            foreach ($ids as $id) {
+
+                $image = $imageRepo->find($id);
+                if ($image) {
+
+                    $name = $image->getNombre();
+                    $idClient = $image->getUsuario()->getId();
+                    $rute = $this->getParameter('kernel.root_dir') . '/../web/bundles/app/images/galery/' . $idClient . '/' . $name;
+                    $result = $this->removeEntityModel('Imagen', $image);
+                    if ($result['success']) {
+                        try {
+
+                            $fs->remove($rute);
+                        } catch (\Exception $e) {
+
+                        }
+                    }
+                }
+
+            }
+
+            $existSome = $imageRepo->findBy(array('usuario' => $idClient));
+            if (count($existSome) == 0) {
+
+                $rute = $this->getParameter('kernel.root_dir') . '/../web/bundles/app/images/galery/' . $idClient;
+                try {
+
+                    $fs->remove($rute);
+                } catch (\Exception $e) {
+
+                }
+            }
+            return new JsonResponse(array('success' => true));
+        }
 
     }
 

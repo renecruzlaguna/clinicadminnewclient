@@ -307,3 +307,13 @@ manage_grafic_report_list_mony_query_total:
 manage_grafic_report_list_mony_query_total_grafic:
     path:    /manage/report/grafic/total/mony/action
     defaults: { _controller: AppBundle:AdminGraficReport:generateDataForGraphicTotalMonyQueryMadeReport }
+
+doctor_client_view_galery:
+    path:     /manage/doctor/cliente/view/galery/{id}
+    defaults: { _controller: AppBundle:DoctorReserved:viewGalery }
+doctor_client_delete_galery:
+    path:     /manage/doctor/client/images/delete
+    defaults: { _controller: AppBundle:DoctorReserved:removeImages }
+doctor_client_galery_add:
+    path:     /manage/doctor/client/galery/add/{id}
+    defaults: { _controller: AppBundle:DoctorReserved:addImage }

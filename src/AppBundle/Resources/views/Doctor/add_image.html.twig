@@ -1,0 +1,126 @@
+{% extends 'base.html.twig' %}
+{% block css %}
+    {{ parent() }}
+    <link href="{{ asset('bundles/app/css/plugins/chosen/bootstrap-chosen.css') }}" rel="stylesheet">
+    <link href="{{ asset('bundles/app/css/plugins/file/bootstrap-fileupload.min.css') }}" rel="stylesheet">
+
+{% endblock %}
+{% block content %}
+
+    <h3 class="center-block">Adicionar Imágenes a la galería de {{ client.getCompleteName() }} </h3>
+    <div class="panel  panel-primary"></div>
+
+    <form class="m-t" role="form" enctype="multipart/form-data" action="{{ path('doctor_client_galery_add',{id:client.id}) }}" method="POST"
+          id="form">
+
+        <div class="container" id="containerTemplate">
+            <div class="containerfile" style="border: solid 1px #1ab394;width: 520px;padding-left: 20px;padding-top: 20px;margin-bottom: 30px;padding-bottom: 30px">
+            <div class="form-group" style="padding-bottom: 10px;">
+                <label class="col-xs-12">Imagen del paciente</label>
+                <div class="input-group col-xs-12" style="max-width: 400px;">
+                    <input type="file" name="image[]" class="filestyle">
+                </div>
+            </div>
+
+            <div class="form-group">
+                    <label>Descripción:</label>
+                <div class="input-group col-xs-12" style="max-width: 400px;">
+                   <textarea  name="description[]"  cols="2" style="resize: none;" class="form-control required customtextarea"
+                             rows="2"></textarea>
+                </div>
+
+            </div>
+                <a class=" col-md-1 pull-right btn btn-primary" title="Adicionar" onclick="addTemplate(this)" >
+                    <i class="fa fa-plus"></i>
+                </a>
+
+        </div>
+        </div>
+        <div class="col-lg-offset-3">
+
+
+            <button type="submit" class=" btn btn-primary">Aceptar</button>
+            <a href="{{ path('doctor_client_view_galery',{id:client.id}) }}" class=" btn btn-warning">Volver a la galería</a>
+        </div>
+    </form>
+
+    <!-- Mainly scripts -->
+    <script src="{{ asset('bundles/app/js/jquery-2.1.1.js') }}"></script>
+    <script src="{{ asset('bundles/app/js/bootstrap.min.js') }}"></script>
+    <script src="{{ asset('bundles/app/js/plugins/jasny/jasny-bootstrap.min.js') }}"></script>
+    <script src="{{ asset('bundles/app/js/plugins/chosen/chosen.jquery.js') }}"></script>
+
+    <script src="{{ asset('bundles/app/js/plugins/metisMenu/jquery.metisMenu.js') }}"></script>
+    <script src="{{ asset('bundles/app/js/plugins/slimscroll/jquery.slimscroll.min.js') }}"></script>
+    <script src="{{ asset('bundles/app/js/plugins/bootstrap-tagsinput/bootstrap-tagsinput.js') }}"></script>
+
+
+    <script src="{{ asset('bundles/app/js/plugins/validation/jquery.validationEngine.js') }}"></script>
+
+
+    <script src="{{ asset('bundles/app/js/plugins/validation/jquery.validate.min.js') }}"></script>
+
+    <script src="{{ asset('bundles/app/js/plugins/validation/additionalValidator.js') }}"></script>
+    <script src="{{ asset('bundles/app/js/plugins/file/bootstrap-filestyle.min.js') }}"></script>
+    <script>
+        id_user = -1;
+        $(document).ready(function () {
+            $.validator.setDefaults({ignore: ":hidden:not(select)"})
+            $('.tagsinput').tagsinput({
+                tagClass: 'label label-primary'
+            });
+            $('.chosen-select').chosen({width: "100%"});
+        })</script>
+    {{ parent() }}
+    <script src="{{ asset('bundles/app/js/custom/validationGalery.js') }}"></script>
+    <script>
+        var convertFile=function () {
+            $(":file:last").filestyle({
+                buttonName: "btn-info",
+                buttonText: 'Buscar',
+                placeholder: 'No hay fichero seleccionado',
+                buttonBefore: true,
+                size: "sm",
+                iconName: "glyphicon glyphicon-picture"
+            });
+            $('input.filestyle').attr('accept', 'image/*');
+        }
+
+        $(function () {
+            formGaleryValidation();
+        });
+        convertFile()
+        var addTemplate = function () {
+
+        var template='<div class="containerfile" style="border: solid 1px #1ab394;width: 520px;margin-bottom: 30px;padding-bottom: 30px;padding-left: 20px;padding-top: 20px">'+
+            ' <div class="form-group" style="padding-bottom: 10px;">'+
+            ' <label class="col-xs-12">Fichero</label>'+
+            ' <div class="input-group col-xs-12" style="max-width: 400px;">'+
+            ' <input type="file" name="image[]"  class="filestyle">'+
+            ' </div>'+
+            '  </div>'+
+
+            '  <div class="form-group">'+
+            '  <label>Descripción:</label>'+
+            ' <div class="input-group col-xs-12" style="max-width: 400px;">'+
+            '  <textarea style="resize: none;" name="description[]" cols="2" class="form-control required customtextarea"'+
+            ' rows="2"></textarea>'+
+            '</div>'+
+
+            ' </div>'+
+            ' <a class=" col-md-1 pull-right btn btn-primary" title="Adicionar" onclick="addTemplate(this)" >'+
+            ' <i class="fa fa-plus"></i>'+
+            ' </a>'+
+            ' <a class=" col-md-1 pull-right btn btn-danger" title="Eliminar" onclick="removeTemplate(this)">'+
+            ' <i class="fa fa-minus"></i>'+
+            ' </a>'+
+            '  </div>';
+        $('#containerTemplate').append(template)
+            convertFile()
+        }
+        var removeTemplate=function(el){
+            if($('.containerfile').length>1)
+           $(el).parent().remove()
+        }
+    </script>
+{% endblock %}

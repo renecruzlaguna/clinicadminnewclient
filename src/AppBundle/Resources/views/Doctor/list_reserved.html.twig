@@ -54,6 +54,9 @@
                   type="button"><i class="fa fa-check"></i>
                </a>
                  {% endif %}
+               <a title="Ver galeria de imágenes"  class="btn btn-info btn-circle" href="{{ path('doctor_client_view_galery',{id: esp.usuarioRegistro.id}) }}"
+                  type="button"><i class="fa fa-file-image-o"></i>
+               </a>
 
                {% if esp.estado.id==4 %}
 
