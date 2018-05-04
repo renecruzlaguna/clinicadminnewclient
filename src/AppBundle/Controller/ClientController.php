@@ -131,9 +131,7 @@ class ClientController extends BaseController {
             $year = $date->format('Y');
             $month = $date->format('m');
         }
-        print_r($year);
-        print_r($month);
-  
+
         $util = $this->get('app.dates');
         $initialDay = $util->firstDayOfMonth($month, $year);
         $totalWeek = $util->getNumberOfWeek($month, $year);
